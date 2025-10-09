@@ -1,120 +1,90 @@
-// ===============================================
-// LÓGICA PRINCIPAL DEL TOUR GUATAPÉ 360°
-// ===============================================
+// =============================================
+// 🎥 TOUR VIRTUAL 360° - CALLE DE LOS ZÓCALOS
+// =============================================
 
-let escenaActual = null;
+// 📌 Función principal: cargar una escena
+function mostrarEscena(id) {
+  const escena = window.TOUR_DATA.escenas.find(e => e.id === id);
+  if (!escena) {
+    console.error("❌ No se encontró la escena:", id);
+    return;
+  }
 
-// Inicia el tour cuando todo haya cargado
+  // 🎬 Cargar video principal (videosphere)
+  const video360 = document.querySelector("#video360");
+  video360.setAttribute("src", escena.archivo);
+
+  // 🎥 Cargar video lateral informativo
+  const videoLateral = document.querySelector("#videoLateral");
+  if (escena.lateralVideo) {
+    videoLateral.setAttribute("src", escena.lateralVideo);
+    document.getElementById("videoLateralContainer").style.display = "block";
+  } else {
+    document.getElementById("videoLateralContainer").style.display = "none";
+  }
+
+  // 🔄 Eliminar hotspots anteriores (si los hay)
+  document.querySelectorAll(".hotspot").forEach(h => h.remove());
+
+  // 🟡 Crear nuevos hotspots de información
+  if (escena.hotspots && escena.hotspots.length > 0) {
+    escena.hotspots.forEach(hs => {
+      const hotspot = document.createElement("a-entity");
+      hotspot.setAttribute("geometry", "primitive: sphere; radius: 0.05");
+      hotspot.setAttribute("material", "color: #ffd166; shader: flat");
+      hotspot.setAttribute("position", hs.posicion);
+      hotspot.classList.add("hotspot");
+
+      // Al hacer clic, muestra la información
+      hotspot.addEventListener("click", () => {
+        mostrarInfo(hs.titulo, hs.texto);
+      });
+
+      document.querySelector("a-scene").appendChild(hotspot);
+    });
+  }
+
+  console.log(`✅ Escena cargada: ${escena.nombre}`);
+}
+
+// =============================================
+// 🧠 Panel informativo al hacer clic en un hotspot
+// =============================================
+function mostrarInfo(titulo, texto) {
+  const panel = document.getElementById("infoPanel");
+  const tituloEl = document.getElementById("infoTitulo");
+  const textoEl = document.getElementById("infoTexto");
+
+  tituloEl.textContent = titulo;
+  textoEl.textContent = texto;
+  panel.style.display = "block";
+}
+
+function cerrarInfo() {
+  const panel = document.getElementById("infoPanel");
+  panel.style.display = "none";
+}
+
+// =============================================
+// 🚀 Inicializar el tour al cargar la página
+// =============================================
 window.addEventListener("DOMContentLoaded", () => {
-
-    // ============================
-  // ANIMACIÓN DE INICIO (mundo girando)
-  // ============================
-  const scene = document.querySelector("#scene");
-  const media = document.getElementById("media");
-
-  // Crear esfera de bienvenida
-  const esferaInicio = document.createElement("a-sphere");
-  esferaInicio.setAttribute("radius", "5");
-  esferaInicio.setAttribute("color", "#3fa7d6");
-  esferaInicio.setAttribute("material", "shader: flat; opacity: 0.8");
-  esferaInicio.setAttribute("animation", "property: rotation; to: 0 360 0; loop: true; dur: 20000");
-  esferaInicio.setAttribute("position", "0 0 -5");
-  scene.appendChild(esferaInicio);
-
-  // Animación de acercamiento a los 3 segundos
+  // Esperar un momento por si data.js tarda en cargar
   setTimeout(() => {
-    esferaInicio.setAttribute("animation__zoom", "property: scale; to: 0 0 0; dur: 2500; easing: easeInOutQuad");
-
-    // Después de acercarse, mostrar la primera escena del tour
-    setTimeout(() => {
-      esferaInicio.parentNode.removeChild(esferaInicio);
-      mostrarEscena("escena1");
-    }, 2500);
-  }, 3000);
-  // Cargar todos los archivos del tour (videos, imágenes, audios)
-  const assets = document.getElementById("assets");
-  TOUR_DATA.escenas.forEach((escena) => {
-    if (escena.tipo === "video") {
-      const vid = document.createElement("video");
-      vid.setAttribute("id", escena.id);
-      vid.setAttribute("src", escena.archivo);
-      vid.setAttribute("loop", true);
-      vid.setAttribute("crossorigin", "anonymous");
-      assets.appendChild(vid);
+    if (window.TOUR_DATA && window.TOUR_DATA.escenas && window.TOUR_DATA.escenas.length > 0) {
+      const primera = window.TOUR_DATA.escenas[0];
+      mostrarEscena(primera.id);
     } else {
-      const img = document.createElement("img");
-      img.setAttribute("id", escena.id);
-      img.setAttribute("src", escena.archivo);
-      assets.appendChild(img);
+      console.error("⚠️ No se encontraron escenas en data.js");
     }
-
-    // Precargar audios
-    const audio = document.createElement("audio");
-    audio.setAttribute("id", `audio-${escena.id}`);
-    audio.setAttribute("src", escena.audioGuia);
-    assets.appendChild(audio);
-  });
-
-  // Mostrar la primera escena
-  mostrarEscena("escena1");
-
-  // Bloquear clic derecho y teclas de inspección
-  document.addEventListener("contextmenu", (e) => e.preventDefault());
-  document.addEventListener("keydown", (e) => {
-    if (
-      e.ctrlKey &&
-      ["s", "u", "c", "i", "j"].includes(e.key.toLowerCase())
-    ) {
-      e.preventDefault();
-    }
-  });
+  }, 500);
 });
 
-// Cambia de escena
-function mostrarEscena(id) {
-  const escena = TOUR_DATA.escenas.find((e) => e.id === id);
-  if (!escena) return;
+// =============================================
+// 🧭 Extras opcionales (control manual o depuración)
+// =============================================
 
-  escenaActual = escena;
+// Si quieres probar cambiar de escena manualmente desde la consola:
+// mostrarEscena("zocalos");
 
-  const media = document.getElementById("media");
-  const sceneTitle = document.getElementById("sceneTitle");
-  const audioGuia = document.getElementById("audioGuia");
-  const hotspot = document.getElementById("hotspot");
-
-  // Limpia cualquier media anterior
-  media.innerHTML = "";
-
-  // Crear nueva esfera según el tipo
-  let elemento;
-  if (escena.tipo === "video") {
-    elemento = document.createElement("a-videosphere");
-    elemento.setAttribute("src", `#${escena.id}`);
-  } else {
-    elemento = document.createElement("a-sky");
-    elemento.setAttribute("src", `#${escena.id}`);
-  }
-  elemento.setAttribute("rotation", "0 -90 0");
-  media.appendChild(elemento);
-
-  // Mostrar título
-  sceneTitle.setAttribute("value", escena.nombre);
-
-  // Reproducir audio del guía
-  audioGuia.setAttribute("src", escena.audioGuia);
-  audioGuia.components.sound.stopSound();
-  audioGuia.components.sound.playSound();
-
-  // Configurar hotspot
-  if (escena.hotspotSiguiente) {
-    hotspot.setAttribute("visible", true);
-    hotspot.setAttribute(
-      "onclick",
-      `mostrarEscena('${escena.hotspotSiguiente}')`
-    );
-  } else {
-    hotspot.setAttribute("visible", false);
-  }
-}
 
