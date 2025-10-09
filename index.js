@@ -6,6 +6,32 @@ let escenaActual = null;
 
 // Inicia el tour cuando todo haya cargado
 window.addEventListener("DOMContentLoaded", () => {
+
+    // ============================
+  // ANIMACIÓN DE INICIO (mundo girando)
+  // ============================
+  const scene = document.querySelector("#scene");
+  const media = document.getElementById("media");
+
+  // Crear esfera de bienvenida
+  const esferaInicio = document.createElement("a-sphere");
+  esferaInicio.setAttribute("radius", "5");
+  esferaInicio.setAttribute("color", "#3fa7d6");
+  esferaInicio.setAttribute("material", "shader: flat; opacity: 0.8");
+  esferaInicio.setAttribute("animation", "property: rotation; to: 0 360 0; loop: true; dur: 20000");
+  esferaInicio.setAttribute("position", "0 0 -5");
+  scene.appendChild(esferaInicio);
+
+  // Animación de acercamiento a los 3 segundos
+  setTimeout(() => {
+    esferaInicio.setAttribute("animation__zoom", "property: scale; to: 0 0 0; dur: 2500; easing: easeInOutQuad");
+
+    // Después de acercarse, mostrar la primera escena del tour
+    setTimeout(() => {
+      esferaInicio.parentNode.removeChild(esferaInicio);
+      mostrarEscena("escena1");
+    }, 2500);
+  }, 3000);
   // Cargar todos los archivos del tour (videos, imágenes, audios)
   const assets = document.getElementById("assets");
   TOUR_DATA.escenas.forEach((escena) => {
