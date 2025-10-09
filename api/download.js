@@ -1,3 +1,4 @@
+// /api/download.js
 import B2 from "backblaze-b2";
 
 export default async function handler(req, res) {
@@ -12,21 +13,25 @@ export default async function handler(req, res) {
 
     await b2.authorize();
 
-    // Generar enlace temporal válido para buckets privados
-    const auth = await b2.getDownloadAuthorization({
+    // ⚙️ 1 mes = 30 días = 2,592,000 segundos
+    const { data } = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
       fileNamePrefix: file,
-      validDurationInSeconds: 3600, // 1 hora
+      validDurationInSeconds: 2592000,
     });
 
-    const token = auth.data.authorizationToken;
+    const authToken = data.authorizationToken;
     const bucketName = process.env.B2_BUCKET_NAME;
-    const baseUrl = "https://f005.backblazeb2.com";
-    const url = `${baseUrl}/file/${bucketName}/${encodeURIComponent(file)}?Authorization=${token}`;
+    const baseUrl =
+      process.env.B2_BASE_URL || "https://s3.us-west-002.backblazeb2.com";
+
+    const url = `${baseUrl}/file/${bucketName}/${encodeURIComponent(
+      file
+    )}?Authorization=${authToken}`;
 
     res.status(200).json({ downloadUrl: url });
-  } catch (err) {
-    console.error("❌ Error en /api/download:", err.message);
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error("❌ Error Backblaze:", error.message);
+    res.status(500).json({ error: error.message });
   }
 }
