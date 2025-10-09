@@ -1,0 +1,9 @@
+{
+  "name": "guatape-tour",
+  "version": "1.0.0",
+  "description": "Tour virtual 360° de Guatapé con conexión Backblaze B2",
+  "type": "module",
+  "dependencies": {
+    "backblaze-b2": "^2.0.0"
+  }
+}
