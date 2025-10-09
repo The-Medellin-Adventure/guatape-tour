@@ -5,17 +5,15 @@ window.TOUR_DATA = {
       id: "zocalos",
       nombre: "Calle de los Zócalos",
       tipo: "video",
-      archivo: "/api/download?file=guatape1.mp4", // 🎥 tu video 360 principal
-      lateralVideo: "/api/download?file=video1.mp4", // 🎬 video informativo al costado
+      archivo: "/api/download?file=guatape1.mp4",
+      lateralVideo: "/api/download?file=video1.mp4",
       descripcion: "Recorre la emblemática Calle de los Zócalos en Guatapé, un rincón lleno de color, cultura y arte.",
-      
-      // 🟡 Hotspots de información
       hotspots: [
         {
           id: "hs1",
           titulo: "Los Zócalos",
           texto: "Cada casa tiene un zócalo diferente, con figuras que representan la historia o la profesión de sus habitantes.",
-          posicion: "2 1.5 -3" // (x, y, z) dónde aparece el punto
+          posicion: "2 1.5 -3"
         },
         {
           id: "hs2",
