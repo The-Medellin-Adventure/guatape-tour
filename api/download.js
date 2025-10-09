@@ -12,16 +12,19 @@ export default async function handler(req, res) {
 
     await b2.authorize();
 
-    // obtener enlace directo (sin token)
+    // Generar enlace temporal válido para buckets privados
+    const auth = await b2.getDownloadAuthorization({
+      bucketId: process.env.B2_BUCKET_ID,
+      fileNamePrefix: file,
+      validDurationInSeconds: 3600, // 1 hora
+    });
+
+    const token = auth.data.authorizationToken;
     const bucketName = process.env.B2_BUCKET_NAME;
     const baseUrl = "https://f005.backblazeb2.com";
-    const fileUrl = `${baseUrl}/file/${bucketName}/${encodeURIComponent(file)}`;
+    const url = `${baseUrl}/file/${bucketName}/${encodeURIComponent(file)}?Authorization=${token}`;
 
-    // comprobar si el archivo existe
-    const headResp = await fetch(fileUrl, { method: "HEAD" });
-    if (!headResp.ok) throw new Error(`File not found: ${fileUrl}`);
-
-    res.status(200).json({ downloadUrl: fileUrl });
+    res.status(200).json({ downloadUrl: url });
   } catch (err) {
     console.error("❌ Error en /api/download:", err.message);
     res.status(500).json({ error: err.message });
