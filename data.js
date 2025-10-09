@@ -1,25 +1,30 @@
-// =========================================
-// INFORMACIÓN DEL TOUR GUATAPÉ 360°
-// =========================================
-
-// Cada escena puede ser tipo "video" o "imagen".
-// Puedes cambiar las rutas de cada archivo según tus nombres.
-const TOUR_DATA = {
-  titulo: "Guatapé Travel",
+window.TOUR_DATA = {
+  titulo: "Tour Virtual - Calle de los Zócalos, Guatapé",
   escenas: [
     {
-      id: "escena1",
-      nombre: "Calle de Zócalos",
+      id: "zocalos",
+      nombre: "Calle de los Zócalos",
       tipo: "video",
-      archivo: "https://f005.backblazeb2.com/file/guatape-travel/guatape1.mp4",
-      lateralvideo: "https://f005.backblazeb2.com/file/guatape-travel/video1.mp4
-      audioGuia: "audios/guia1.mp3",
-      hotspotSiguiente: "escena2",
-     descripcion: "Explora el colorido malecón de Guatapé. Mueve la vista o entra en modo VR.",
-      carrusel: [
-        "imagenes/guatape1.jpg",
-        "imagenes/guatape2.jpg"
+      archivo: "/api/download?file=guatape1.mp4", // 🎥 tu video 360 principal
+      lateralVideo: "/api/download?file=video1.mp4", // 🎬 video informativo al costado
+      descripcion: "Recorre la emblemática Calle de los Zócalos en Guatapé, un rincón lleno de color, cultura y arte.",
+      
+      // 🟡 Hotspots de información
+      hotspots: [
+        {
+          id: "hs1",
+          titulo: "Los Zócalos",
+          texto: "Cada casa tiene un zócalo diferente, con figuras que representan la historia o la profesión de sus habitantes.",
+          posicion: "2 1.5 -3" // (x, y, z) dónde aparece el punto
+        },
+        {
+          id: "hs2",
+          titulo: "Los Colores de Guatapé",
+          texto: "El colorido de sus fachadas convierte a Guatapé en uno de los pueblos más fotogénicos de Colombia.",
+          posicion: "-1 1.4 -2"
+        }
       ]
     }
   ]
 };
+
