@@ -12,25 +12,23 @@ export default async function handler(req, res) {
 
     await b2.authorize();
 
-    // token temporal válido 1 mes (30 días)
-    const { data } = await b2.getDownloadAuthorization({
+    // token válido 30 días (bucket privado)
+    const auth = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
       fileNamePrefix: file,
       validDurationInSeconds: 2592000,
     });
 
-    const token = data.authorizationToken;
-    const bucketName = process.env.B2_BUCKET_NAME;
+    const token = auth.data.authorizationToken;
 
-    // 🔗 Endpoint correcto (tu región)
-    const baseUrl = process.env.B2_BASE_URL; // ahora apunta a s3.us-east-005
-    const downloadUrl = `${baseUrl}/file/${bucketName}/${encodeURIComponent(
-      file
-    )}?Authorization=${token}`;
+    // usa tu dominio S3 específico del bucket
+    const baseUrl = "https://guatape-travel.s3.us-east-005.backblazeb2.com";
+    const url = `${baseUrl}/${encodeURIComponent(file)}?Authorization=${token}`;
 
-    res.status(200).json({ downloadUrl });
+    res.status(200).json({ downloadUrl: url });
   } catch (err) {
     console.error("❌ Error Backblaze:", err.message);
     res.status(500).json({ error: err.message });
   }
 }
+
