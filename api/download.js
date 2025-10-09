@@ -1,10 +1,9 @@
-// /api/download.js
 import B2 from "backblaze-b2";
 
 export default async function handler(req, res) {
   try {
-    const file = req.query.file;
-    if (!file) return res.status(400).send("Missing file query param");
+    const { file } = req.query;
+    if (!file) return res.status(400).json({ error: "Missing file name" });
 
     const b2 = new B2({
       applicationKeyId: process.env.B2_KEY_ID,
@@ -13,22 +12,18 @@ export default async function handler(req, res) {
 
     await b2.authorize();
 
-    const auth = await b2.getDownloadAuthorization({
-      bucketId: process.env.B2_BUCKET_ID,
-      fileNamePrefix: file,
-      validDurationInSeconds: 3600, // 1 hora
-    });
+    // obtener enlace directo (sin token)
+    const bucketName = process.env.B2_BUCKET_NAME;
+    const baseUrl = "https://f005.backblazeb2.com";
+    const fileUrl = `${baseUrl}/file/${bucketName}/${encodeURIComponent(file)}`;
 
-    const token = auth.data.authorizationToken;
-    const bucket = process.env.B2_BUCKET_NAME;
+    // comprobar si el archivo existe
+    const headResp = await fetch(fileUrl, { method: "HEAD" });
+    if (!headResp.ok) throw new Error(`File not found: ${fileUrl}`);
 
-    const downloadUrl = `https://f005.backblazeb2.com/file/${bucket}/${encodeURIComponent(file)}?Authorization=${token}`;
-
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.writeHead(302, { Location: downloadUrl });
-    res.end();
+    res.status(200).json({ downloadUrl: fileUrl });
   } catch (err) {
-    console.error("Error in /api/download:", err);
-    res.status(500).send("Error generating download URL");
+    console.error("❌ Error en /api/download:", err.message);
+    res.status(500).json({ error: err.message });
   }
 }
