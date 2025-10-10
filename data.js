@@ -10,22 +10,21 @@ const tourData = {
       hotspots: [
         {
           id: "hs1",
-          tipo: "info",
           x: 0,
           y: 1.5,
           z: -3,
           titulo: "Piedra del Peñol",
           descripcion:
-            "Un monolito de 220 metros de altura con vista panorámica."
+            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé."
         },
         {
           id: "hs2",
-          tipo: "camara",
-          x: -1.5,
+          x: 2,
           y: 1.2,
-          z: -2.5,
-          titulo: "Vista del embalse",
-          descripcion: "Haz clic para ver la galería de imágenes."
+          z: -2,
+          titulo: "Embalse de Guatapé",
+          descripcion:
+            "Un lago artificial rodeado de montañas, ideal para paseos en lancha y actividades acuáticas."
         }
       ]
     }
@@ -33,3 +32,4 @@ const tourData = {
 };
 
 export default tourData;
+
