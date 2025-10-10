@@ -3,64 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Tour 360°</title>
+  <title>Guatapé Tour Profesional</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script type="module" src="index.js" defer></script>
 </head>
 <body>
 
-<div class="container">
+<div class="tour-container">
 
-  <div class="main-layout">
+  <!-- Video principal fijo -->
+  <div class="video-area">
+    <video id="video-main" src="" autoplay muted loop></video>
 
-    <!-- Video principal 360° con A-Frame -->
-    <div class="video-wrapper">
-      <a-scene embedded>
-        <a-assets>
-          <video id="video360" src="" autoplay loop="true" crossorigin="anonymous"></video>
-        </a-assets>
+    <!-- Hotspots flotantes -->
+    <div id="hotspot-container"></div>
 
-        <!-- Esfera para video 360° -->
-        <a-videosphere src="#video360"></a-videosphere>
-
-        <!-- Hotspots -->
-        <a-entity id="hotspot-container"></a-entity>
-      </a-scene>
-
-      <!-- Icono de cámara flotante -->
-      <img src="img/Camara.png" alt="Cámara" id="camara-icon">
-    </div>
-
-    <!-- Panel izquierdo -->
-    <div class="left-panel">
-      <!-- Tarjeta de información de hotspots -->
-      <div id="info-panel" class="hidden">
-        <h3 id="hotspot-titulo">Título</h3>
-        <p id="hotspot-descripcion">Descripción...</p>
-        <button id="close-info">Cerrar</button>
-      </div>
-
-      <!-- Video lateral -->
-      <div id="lateral-video-container">
-        <video id="lateralVideo" src="" controls muted></video>
-      </div>
-    </div>
-
+    <!-- Icono de cámara -->
+    <img src="img/Camara.png" id="camara-icon" alt="Cámara">
   </div>
 
-  <!-- Overlay de galería -->
+  <!-- Panel lateral para información -->
+  <div class="info-area">
+    <div id="info-panel" class="hidden">
+      <h2 id="hotspot-title">Título</h2>
+      <p id="hotspot-description">Descripción...</p>
+      <button id="close-info">Cerrar</button>
+    </div>
+
+    <!-- Video lateral -->
+    <div class="lateral-video-container">
+      <video id="video-lateral" src="" controls muted></video>
+    </div>
+  </div>
+
+  <!-- Overlay de galería de imágenes -->
   <div id="gallery-overlay" class="overlay hidden">
     <img id="gallery-image" src="images/imagen1.jpg" alt="Imagen de cámara">
     <div class="gallery-buttons">
       <button id="prev-gallery">⬅️</button>
-      <button id="next-gallery">➡️</button>
-      <button id="close-gallery">Cerrar</button>
-    </div>
-  </div>
+      <button id="next-gallery">
 
-</div>
-
-</body>
-</html>
 
