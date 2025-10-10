@@ -11,27 +11,41 @@
 
 <div class="container">
 
-  <!-- Video principal 360° -->
-  <video id="video360" controls autoplay muted></video>
+  <!-- Contenedor principal: video guatape1 y panel izquierdo -->
+  <div class="main-layout">
 
-  <!-- Video lateral -->
-  <video id="lateralVideo" controls muted class="lateral-video"></video>
+    <!-- Video principal -->
+    <div class="video-wrapper">
+      <video id="video360" src="" controls autoplay muted></video>
 
-  <!-- Panel lateral de información -->
-  <div id="lateral-panel" class="side-panel hidden">
-    <h2 id="info-titulo">Título de escena</h2>
-    <p id="info-descripcion">Descripción de la escena...</p>
-    <button id="close-panel" class="close-panel">✖</button>
+      <!-- Iconos de información flotando -->
+      <div class="info-icons">
+        <img src="img/info.png" alt="Info" class="info-icon" data-info="Piedra del Peñol">
+        <img src="img/info.png" alt="Info" class="info-icon" data-info="Embalse de Guatapé">
+      </div>
+
+      <!-- Icono de cámara flotante -->
+      <img src="img/Camara.png" alt="Cámara" id="camara-icon">
+    </div>
+
+    <!-- Panel izquierdo dividido -->
+    <div class="left-panel">
+      <!-- Parte superior: tarjeta de información -->
+      <div id="info-panel">
+        <h2 id="info-titulo">Título</h2>
+        <p id="info-descripcion">Descripción de la información</p>
+      </div>
+
+      <!-- Parte inferior: video lateral -->
+      <div id="lateral-video-container">
+        <video id="lateralVideo" src="" controls muted></video>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Hotspot container -->
-  <div id="hotspot-container"></div>
-
-  <!-- Botón cámara -->
-  <button id="camara-btn" class="camara-btn">📷 Cámara</button>
-
-  <!-- Overlay galería -->
-  <div id="gallery-modal" class="overlay hidden">
+  <!-- Overlay de galería de imágenes -->
+  <div id="gallery-overlay" class="overlay hidden">
     <img id="gallery-image" src="images/imagen1.jpg" alt="Imagen de cámara">
     <div class="gallery-buttons">
       <button id="prev-gallery">⬅️</button>
