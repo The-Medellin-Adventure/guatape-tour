@@ -1,110 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Tour Virtual 360° por la Calle de los Zócalos, Guatapé - Vive la experiencia inmersiva con videos, información y realidad virtual."
-    />
-    <meta property="og:title" content="Tour Virtual - Calle de los Zócalos, Guatapé" />
-    <meta
-      property="og:description"
-      content="Explora el colorido encanto de Guatapé en este tour 360° compatible con VR."
-    />
-    <meta property="og:type" content="website" />
-    <title>Tour Virtual - Calle de los Zócalos</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guatapé Travel | Tour Virtual 360°</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
 
-    <!-- A-Frame para video 360 -->
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<body>
+  <!-- 🌍 Escena 360 -->
+  <a-scene>
+    <!-- Video 360° -->
+    <a-videosphere id="video360" rotation="0 -90 0"></a-videosphere>
 
-    <!-- Hoja de estilos -->
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <!-- 🎥 Escena principal -->
-    <a-scene
-      vr-mode-ui="enabled: true"
-      loading-screen="enabled: true"
-      device-orientation-permission-ui="enabled: true"
-      embedded
-    >
-      <!-- Video 360 -->
-      <a-videosphere
-        id="video360"
-        src="#"
-        rotation="0 -90 0"
-        autoplay="true"
-        loop="true"
-        crossorigin="anonymous"
-      ></a-videosphere>
-      <!-- Hotspots se agregan desde index.js -->
-    </a-scene>
+    <!-- Cámara -->
+    <a-entity camera look-controls position="0 1.6 0"></a-entity>
+  </a-scene>
 
-    <!-- 🎬 Video lateral informativo -->
-    <div
-      id="videoLateralContainer"
-      style="
-        position: fixed;
-        bottom: 2%;
-        right: 2%;
-        width: 300px;
-        background: rgba(0, 0, 0, 0.6);
-        border-radius: 1rem;
-        padding: 0.5rem;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-        z-index: 10;
-      "
-    >
-      <video
-        id="videoLateral"
-        width="100%"
-        controls
-        autoplay
-        loop
-        muted
-        style="border-radius: 1rem;"
-      ></video>
-    </div>
+  <!-- 🎬 Panel lateral de video -->
+  <div id="videoLateralContainer" class="panel">
+    <video id="videoLateral" autoplay loop muted></video>
+  </div>
 
-    <!-- 🧠 Panel de información -->
-    <div
-      id="infoPanel"
-      style="
-        position: fixed;
-        bottom: 15%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.75);
-        color: white;
-        padding: 1rem;
-        border-radius: 1rem;
-        width: 90%;
-        max-width: 400px;
-        display: none;
-        z-index: 20;
-        text-align: center;
-      "
-    >
-      <h3 id="infoTitulo" style="margin: 0; font-size: 1.2rem;"></h3>
-      <p id="infoTexto" style="font-size: 1rem; margin-top: 0.5rem;"></p>
-      <button
-        onclick="cerrarInfo()"
-        style="
-          background: #ffd166;
-          border: none;
-          color: #000;
-          padding: 0.4rem 1rem;
-          border-radius: 0.5rem;
-          margin-top: 0.5rem;
-          cursor: pointer;
-        "
-      >
-        Cerrar
-      </button>
-    </div>
+  <!-- 🟡 Panel de información -->
+  <div id="infoPanel" class="info">
+    <h3 id="infoTitulo"></h3>
+    <p id="infoTexto"></p>
+    <button onclick="cerrarInfo()">Cerrar</button>
+  </div>
 
-    <!-- Scripts -->
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
+pts -->
     <script src="data.js"></script>
     <script src="index.js"></script>
   </body>
