@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     await b2.authorize();
 
-    // token válido 30 días (bucket privado)
+    // token válido 30 días
     const auth = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
       fileNamePrefix: file,
@@ -20,8 +20,6 @@ export default async function handler(req, res) {
     });
 
     const token = auth.data.authorizationToken;
-
-    // usa tu dominio S3 específico del bucket
     const baseUrl = "https://guatape-travel.s3.us-east-005.backblazeb2.com";
     const url = `${baseUrl}/${encodeURIComponent(file)}?Authorization=${token}`;
 
