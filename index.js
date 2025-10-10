@@ -1,14 +1,14 @@
 import tourData from "./data.js";
 
-// === Elementos del DOM ===
 const escena = tourData.escenas[0];
-const video360 = document.getElementById("video360");
-const lateralVideo = document.getElementById("lateralVideo");
+
+const videoMain = document.getElementById("video-main");
+const videoLateral = document.getElementById("video-lateral");
 
 const hotspotContainer = document.getElementById("hotspot-container");
 const infoPanel = document.getElementById("info-panel");
-const hotspotTitulo = document.getElementById("hotspot-titulo");
-const hotspotDesc = document.getElementById("hotspot-descripcion");
+const hotspotTitle = document.getElementById("hotspot-title");
+const hotspotDescription = document.getElementById("hotspot-description");
 const closeInfo = document.getElementById("close-info");
 
 const camaraIcon = document.getElementById("camara-icon");
@@ -18,43 +18,42 @@ const prevGallery = document.getElementById("prev-gallery");
 const nextGallery = document.getElementById("next-gallery");
 const closeGallery = document.getElementById("close-gallery");
 
-// === Inicialización ===
-video360.src = escena.archivo;
-lateralVideo.src = escena.lateralVideo;
+// Inicialización de videos
+videoMain.src = escena.archivo;
+videoLateral.src = escena.lateralVideo;
 
-// === Hotspots 360° ===
-escena.hotspots.forEach(hs => {
-  const hotspot = document.createElement("a-entity");
+// Crear hotspots flotantes
+escena.hotspots.forEach((hs, index) => {
+  const hotspot = document.createElement("div");
+  hotspot.classList.add("hotspot");
 
-  hotspot.setAttribute("geometry", { primitive: "plane", height: 0.5, width: 1 });
-  hotspot.setAttribute("material", { color: "#ff9900", opacity: 0.8 });
-  hotspot.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
-  hotspot.setAttribute("look-at", "[camera]");
-  hotspot.setAttribute("class", "clickable");
+  const icon = document.createElement("img");
+  icon.src = "img/info.png";
+  const label = document.createElement("span");
+  label.textContent = hs.titulo;
 
-  // Texto del hotspot
-  const text = document.createElement("a-text");
-  text.setAttribute("value", hs.titulo);
-  text.setAttribute("align", "center");
-  text.setAttribute("color", "#fff");
-  text.setAttribute("position", "0 0 0.01");
-  hotspot.appendChild(text);
+  hotspot.appendChild(icon);
+  hotspot.appendChild(label);
+
+  // Posición flotante (aproximada)
+  hotspot.style.top = `${10 + index * 60}px`;
+  hotspot.style.left = `20px`;
 
   hotspot.addEventListener("click", () => {
-    hotspotTitulo.textContent = hs.titulo;
-    hotspotDesc.textContent = hs.descripcion;
+    hotspotTitle.textContent = hs.titulo;
+    hotspotDescription.textContent = hs.descripcion;
     infoPanel.classList.remove("hidden");
   });
 
   hotspotContainer.appendChild(hotspot);
 });
 
-// Cerrar tarjeta de información
+// Cerrar info panel
 closeInfo.addEventListener("click", () => {
   infoPanel.classList.add("hidden");
 });
 
-// === Galería de cámara ===
+// Galería de cámara
 const galleryImages = ["images/imagen1.jpg","images/imagen2.jpg"];
 let currentGalleryIndex = 0;
 
@@ -73,17 +72,17 @@ camaraIcon.addEventListener("click",()=>{
   galleryOverlay.classList.remove("hidden");
 });
 
-prevGallery.addEventListener("click", ()=>{
+prevGallery.addEventListener("click",()=>{
   currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
-nextGallery.addEventListener("click", ()=>{
+nextGallery.addEventListener("click",()=>{
   currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
-closeGallery.addEventListener("click", ()=>{
+closeGallery.addEventListener("click",()=>{
   galleryOverlay.classList.remove("visible");
   setTimeout(()=>galleryOverlay.classList.add("hidden"),300);
 });
