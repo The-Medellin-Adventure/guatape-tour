@@ -1,8 +1,8 @@
 import B2 from "backblaze-b2";
 
 /**
- * Proxy entre Vercel y Backblaze que evita errores CORS
- * y permite reproducir videos directamente en el navegador.
+ * Descarga un archivo de Backblaze y lo reenvía al navegador
+ * sin problemas de CORS ni dependencias de stream.
  */
 export default async function handler(req, res) {
   try {
@@ -16,48 +16,33 @@ export default async function handler(req, res) {
       applicationKey: process.env.B2_APP_KEY,
     });
 
-    // 🔐 Autoriza cuenta
     await b2.authorize();
 
-    // 🔹 Construye URL directa en el endpoint nativo B2
-    const baseUrl = b2.downloadUrl; // ejemplo: https://f005.backblazeb2.com
+    const baseUrl = b2.downloadUrl;
     const url = `${baseUrl}/file/guatape-travel/${encodeURIComponent(file)}`;
 
-    // 🔹 Descarga el archivo desde Backblaze
-    const fetchRes = await fetch(url, {
+    const response = await fetch(url, {
       headers: { Authorization: b2.authorizationToken },
     });
 
-    if (!fetchRes.ok) {
-      console.error("❌ Backblaze response:", fetchRes.status, fetchRes.statusText);
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Backblaze error:", response.status, text);
       return res
-        .status(fetchRes.status)
-        .json({ error: `Backblaze responded ${fetchRes.status}` });
+        .status(response.status)
+        .json({ error: `Backblaze ${response.status}`, message: text });
     }
 
-    // 🔹 Copia encabezados útiles
+    const arrayBuffer = await response.arrayBuffer();
+
     res.setHeader(
       "Content-Type",
-      fetchRes.headers.get("content-type") || "video/mp4"
+      response.headers.get("content-type") || "video/mp4"
     );
     res.setHeader("Cache-Control", "public, max-age=3600");
+    res.status(200).send(Buffer.from(arrayBuffer));
 
-    // 🔹 Reenvía el stream directamente
-    const reader = fetchRes.body.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(value);
-    }
-    res.end();
-
-    console.log("✅ Archivo enviado:", file);
-  } catch (err) {
-    console.error("❌ Proxy error:", err);
-    res.status(500).json({ error: err.message });
-  }
-}
-
+    console.log("✅ Archivo enviado correctamente:", file);
   } catch (err) {
     console.error("❌ Proxy error:", err);
     res.status(500).json({ error: err.message });
