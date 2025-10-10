@@ -9,12 +9,17 @@ document.getElementById("video-lateral-normal").src = escena.lateralVideo;
 videoMain.src = escena.archivo;
 videoLateral.src = escena.lateralVideo;
 
-// Reproducir video tras interacción
+// Reproducir video principal al interactuar con la escena
 function playVideos() {
   videoMain.play().catch(()=>console.log("Interacción requerida para video principal"));
-  videoLateral.play().catch(()=>console.log("Interacción requerida para video lateral"));
 }
 document.querySelector("a-scene").addEventListener("click", playVideos);
+
+// Reproducir video lateral VR al tocarlo
+const videoLateralVR = document.getElementById("video-lateral-vr");
+videoLateralVR.addEventListener("click", ()=> {
+  videoLateral.play().catch(()=>console.log("Interacción requerida para video lateral VR"));
+});
 
 // Hotspots pantalla normal
 const hotspotList = document.getElementById("hotspot-list");
@@ -49,15 +54,28 @@ escena.hotspots.forEach((hs, index) => {
   });
   hotspotList.appendChild(item);
 
-  // VR hotspot animado
-  const hsVR = document.createElement("a-image");
-  hsVR.setAttribute("src","#info-img");
+  // VR hotspot animado con fondo gris semitransparente y no encima del video
+  const hsVR = document.createElement("a-plane");
+  hsVR.setAttribute("width","0.35");
+  hsVR.setAttribute("height","0.35");
+  hsVR.setAttribute("color","#555"); // fondo gris
+  hsVR.setAttribute("opacity","0.8");
   hsVR.setAttribute("class","clickable");
-  hsVR.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
-  hsVR.setAttribute("width","0.3");
-  hsVR.setAttribute("height","0.3");
+  // Ajustar posición si el hotspot está en la zona del video lateral
+  const adjustedY = (hs.y < 1.4) ? hs.y + 0.5 : hs.y; // desplazar hacia arriba si está bajo
+  hsVR.setAttribute("position", `${hs.x} ${adjustedY} ${hs.z}`);
   hsVR.setAttribute("look-at","[camera]");
   hsVR.setAttribute("animation__pulse","property: scale; dir: alternate; dur: 1000; loop: true; to: 1.2 1.2 1.2");
+
+  // Texto dentro del hotspot
+  const text = document.createElement("a-text");
+  text.setAttribute("value", hs.titulo);
+  text.setAttribute("align","center");
+  text.setAttribute("color","#fff");
+  text.setAttribute("position","0 0 0.01");
+  text.setAttribute("width","0.3");
+  hsVR.appendChild(text);
+
   hsVR.addEventListener("click", ()=>{
     infoTitleVR.setAttribute("value", hs.titulo);
     infoDescVR.setAttribute("value", hs.descripcion);
