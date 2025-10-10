@@ -4,14 +4,13 @@ import tourData from "./data.js";
 const escena = tourData.escenas[0];
 const video360 = document.getElementById("video360");
 const lateralVideo = document.getElementById("lateralVideo");
-const hotspotContainer = document.getElementById("hotspot-container");
 const infoTitulo = document.getElementById("info-titulo");
 const infoDescripcion = document.getElementById("info-descripcion");
-const lateralPanel = document.getElementById("lateral-panel");
-const closePanel = document.getElementById("close-panel");
 
-const camaraBtn = document.getElementById("camara-btn");
-const galleryModal = document.getElementById("gallery-modal");
+const infoIcons = document.querySelectorAll(".info-icon");
+const camaraIcon = document.getElementById("camara-icon");
+
+const galleryOverlay = document.getElementById("gallery-overlay");
 const galleryImage = document.getElementById("gallery-image");
 const prevGallery = document.getElementById("prev-gallery");
 const nextGallery = document.getElementById("next-gallery");
@@ -21,28 +20,13 @@ const closeGallery = document.getElementById("close-gallery");
 video360.src = escena.archivo;
 lateralVideo.src = escena.lateralVideo;
 
-// === Hotspots ===
-escena.hotspots.forEach(hs => {
-  const hotspot = document.createElement("div");
-  hotspot.className = "hotspot";
-  hotspot.textContent = "ℹ️";
-  
-  // Ajuste de posición aproximada en porcentaje
-  hotspot.style.left = `${50 + hs.x * 10}%`;
-  hotspot.style.top = `${50 - hs.y * 10}%`;
-
-  hotspot.addEventListener("click", () => {
+// === Info Icons ===
+infoIcons.forEach((icon, index) => {
+  const hs = escena.hotspots[index];
+  icon.addEventListener("click", () => {
     infoTitulo.textContent = hs.titulo;
     infoDescripcion.textContent = hs.descripcion;
-    lateralPanel.classList.add("visible");
   });
-
-  hotspotContainer.appendChild(hotspot);
-});
-
-// Cerrar panel lateral
-closePanel.addEventListener("click", () => {
-  lateralPanel.classList.remove("visible");
 });
 
 // === Galería de cámara ===
@@ -60,24 +44,26 @@ function showGallery(index) {
   }, 150);
 }
 
-camaraBtn.addEventListener("click", () => {
+// Abrir overlay al hacer clic en icono de cámara
+camaraIcon.addEventListener("click", () => {
   currentGalleryIndex = 0;
   showGallery(currentGalleryIndex);
-  galleryModal.classList.add("visible");
-  galleryModal.classList.remove("hidden");
+  galleryOverlay.classList.add("visible");
+  galleryOverlay.classList.remove("hidden");
 });
 
+// Navegación del carrusel
 prevGallery.addEventListener("click", () => {
   currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
-
 nextGallery.addEventListener("click", () => {
   currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
+// Cerrar overlay
 closeGallery.addEventListener("click", () => {
-  galleryModal.classList.remove("visible");
-  setTimeout(() => galleryModal.classList.add("hidden"), 300);
+  galleryOverlay.classList.remove("visible");
+  setTimeout(() => galleryOverlay.classList.add("hidden"), 300);
 });
