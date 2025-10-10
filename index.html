@@ -5,76 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tour Virtual Guatapé 360°</title>
 
-    <!-- Librería A-Frame -->
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
 
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        background-color: #000;
-        display: flex;
-        flex-direction: row;
-        height: 100vh;
-      }
-
-      #tour-container {
-        position: relative;
-        flex: 1;
-      }
-
-      #sidebar {
-        width: 340px;
-        background: rgba(17, 17, 17, 0.9);
-        color: #fff;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.6);
-        z-index: 50;
-      }
-
-      #sidebar h3 {
-        margin: 0 0 10px;
-        text-align: center;
-      }
-
-      #lateral-video {
-        width: 100%;
-        border-radius: 8px;
-        outline: none;
-      }
-
-      #enter-vr {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        z-index: 10;
-        padding: 10px 15px;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        border: 1px solid #fff;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-
-      a-scene {
-        width: 100%;
-        height: 100%;
-      }
-    </style>
+    <!-- Estilos -->
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
     <div id="tour-container">
-      <button id="enter-vr">Entrar en modo VR</button>
+      <button id="enter-vr">Vista inmersiva</button>
 
-      <!-- Escena principal 360° -->
       <a-scene embedded id="scene">
         <a-assets>
-          <!-- Video 360° -->
+          <!-- Video 360 -->
           <video
             id="video360"
             autoplay
@@ -84,127 +29,28 @@
             crossorigin="anonymous"
           ></video>
 
-          <!-- Íconos personalizados -->
+          <!-- Íconos -->
           <img id="icon-info" src="./img/info.png" />
           <img id="icon-camara" src="./img/Camara.png" />
         </a-assets>
 
-        <!-- Esfera con el video 360° -->
+        <!-- Video 360° -->
         <a-videosphere src="#video360" rotation="0 -90 0"></a-videosphere>
 
-        <!-- Hotspots dinámicos se generarán aquí -->
+        <!-- Contenedor de hotspots -->
         <a-entity id="hotspot-container"></a-entity>
       </a-scene>
     </div>
 
-    <!-- Panel lateral fuera de VR -->
+    <!-- Panel lateral -->
     <div id="sidebar">
       <h3 id="sidebar-title">Video informativo</h3>
       <video id="lateral-video" controls autoplay muted playsinline></video>
     </div>
 
-    <!-- Script principal -->
-    <script type="module">
-      // ====== DATOS DEL TOUR ======
-      const tourData = {
-        escenas: [
-          {
-            id: "escena1",
-            titulo: "Guatapé - Escena principal",
-            archivo:
-              "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
-            lateralVideo:
-              "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
-            hotspots: [
-              {
-                id: "hs1",
-                tipo: "info", // mostrará información
-                x: 0,
-                y: 1.5,
-                z: -3,
-                titulo: "Piedra del Peñol",
-                descripcion:
-                  "Un monolito de 220 metros de altura con vista panorámica."
-              },
-              {
-                id: "hs2",
-                tipo: "camara", // mostrará carrusel de imágenes
-                x: -1.5,
-                y: 1.2,
-                z: -2.5,
-                titulo: "Vista del embalse",
-                descripcion: "Haz clic para ver la galería de imágenes."
-              }
-            ]
-          }
-        ]
-      };
-
-      // ====== VARIABLES GLOBALES ======
-      const escena = tourData.escenas[0];
-      const video360 = document.getElementById("video360");
-      const lateralVideo = document.getElementById("lateral-video");
-      const sidebarTitle = document.getElementById("sidebar-title");
-      const scene = document.getElementById("scene");
-      const hotspotContainer = document.getElementById("hotspot-container");
-
-      // ====== CONFIGURAR VIDEOS ======
-      video360.src = escena.archivo;
-      lateralVideo.src = escena.lateralVideo;
-      sidebarTitle.textContent = escena.titulo;
-
-      // ====== REPRODUCCIÓN SEGURA ======
-      async function playVideo() {
-        try {
-          await video360.play();
-          console.log("🎥 Video 360° reproduciéndose correctamente");
-        } catch (err) {
-          console.warn("⚠️ No se pudo reproducir automáticamente:", err);
-        }
-      }
-      window.addEventListener("load", playVideo);
-      document.body.addEventListener("click", playVideo);
-
-      document.getElementById("enter-vr").addEventListener("click", () => {
-        playVideo();
-        scene.enterVR();
-      });
-
-      // ====== CREAR HOTSPOTS DINÁMICAMENTE ======
-      escena.hotspots.forEach((hs) => {
-        const icon =
-          hs.tipo === "camara" ? "#icon-camara" : "#icon-info";
-
-        // Crear el icono
-        const hotspot = document.createElement("a-image");
-        hotspot.setAttribute("src", icon);
-        hotspot.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
-        hotspot.setAttribute("width", "0.4");
-        hotspot.setAttribute("height", "0.4");
-        hotspot.setAttribute("look-at", "[camera]");
-        hotspot.setAttribute("class", "clickable");
-
-        // Crear el panel de texto
-        const infoPanel = document.createElement("a-entity");
-        infoPanel.setAttribute("visible", "false");
-        infoPanel.setAttribute("position", `${hs.x} ${hs.y + 0.6} ${hs.z}`);
-        infoPanel.setAttribute("text", {
-          value: `${hs.titulo}\n${hs.descripcion}`,
-          align: "center",
-          color: "#fff",
-          width: 2
-        });
-
-        // Evento al hacer clic en el hotspot
-        hotspot.addEventListener("click", () => {
-          const isVisible = infoPanel.getAttribute("visible");
-          infoPanel.setAttribute("visible", !isVisible);
-        });
-
-        hotspotContainer.appendChild(hotspot);
-        hotspotContainer.appendChild(infoPanel);
-      });
-    </script>
+    <!-- Scripts -->
+    <script type="module" src="data.js"></script>
+    <script type="module" src="index.js"></script>
   </body>
 </html>
 
