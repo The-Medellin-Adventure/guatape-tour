@@ -3,9 +3,18 @@ import tourData from "./data.js";
 const escena = tourData.escenas[0];
 
 // Video principal y lateral
-document.getElementById("video-main").src = escena.archivo;
-document.getElementById("video-lateral").src = escena.lateralVideo;
+const videoMain = document.getElementById("video-main");
+const videoLateral = document.getElementById("video-lateral");
 document.getElementById("video-lateral-normal").src = escena.lateralVideo;
+videoMain.src = escena.archivo;
+videoLateral.src = escena.lateralVideo;
+
+// Reproducir video tras interacción
+function playVideos() {
+  videoMain.play().catch(()=>console.log("Interacción requerida para video principal"));
+  videoLateral.play().catch(()=>console.log("Interacción requerida para video lateral"));
+}
+document.querySelector("a-scene").addEventListener("click", playVideos);
 
 // Hotspots pantalla normal
 const hotspotList = document.getElementById("hotspot-list");
@@ -20,7 +29,7 @@ const infoPanelVR = document.getElementById("info-panel-vr");
 const infoTitleVR = document.getElementById("info-title-vr");
 const infoDescVR = document.getElementById("info-desc-vr");
 
-// Crear hotspots para pantalla normal y VR
+// Crear hotspots
 escena.hotspots.forEach((hs, index) => {
   // Pantalla normal
   const item = document.createElement("div");
@@ -48,7 +57,6 @@ escena.hotspots.forEach((hs, index) => {
   hsVR.setAttribute("width","0.3");
   hsVR.setAttribute("height","0.3");
   hsVR.setAttribute("look-at","[camera]");
-  // Animación de pulso
   hsVR.setAttribute("animation__pulse","property: scale; dir: alternate; dur: 1000; loop: true; to: 1.2 1.2 1.2");
   hsVR.addEventListener("click", ()=>{
     infoTitleVR.setAttribute("value", hs.titulo);
@@ -109,7 +117,5 @@ closeGallery.addEventListener("click", ()=>{
 const exitVRBtn = document.getElementById("exit-vr-btn");
 exitVRBtn.addEventListener("click", ()=>{
   const sceneEl = document.querySelector("a-scene");
-  if(sceneEl.is("vr-mode")){
-    sceneEl.exitVR();
-  }
+  sceneEl.exitVR();
 });
