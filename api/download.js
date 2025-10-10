@@ -26,7 +26,6 @@ export default async function handler(req, res) {
     const url = `${baseUrl}/${encodeURIComponent(file)}?Authorization=${token}`;
 
     console.log("✅ URL generada:", url);
-
     return res.status(200).json({ downloadUrl: url });
   } catch (err) {
     console.error("❌ Error en descarga Backblaze:", err);
