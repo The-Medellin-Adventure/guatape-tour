@@ -2,7 +2,7 @@ import tourData from "./data.js";
 
 const escena = tourData.escenas[0];
 
-// Video principal fijo
+// Video principal 360° y lateral
 const videoMain = document.getElementById("video-main");
 const videoLateral = document.getElementById("video-lateral");
 videoMain.src = escena.archivo;
@@ -32,6 +32,7 @@ escena.hotspots.forEach(hs => {
   item.addEventListener("click", ()=>{
     hotspotTitle.textContent = hs.titulo;
     hotspotDescription.textContent = hs.descripcion;
+    infoPanel.classList.add("show");
     infoPanel.classList.remove("hidden");
   });
 
@@ -39,7 +40,10 @@ escena.hotspots.forEach(hs => {
 });
 
 // Cerrar info panel
-closeInfo.addEventListener("click", ()=> infoPanel.classList.add("hidden"));
+closeInfo.addEventListener("click", ()=> {
+  infoPanel.classList.remove("show");
+  setTimeout(()=> infoPanel.classList.add("hidden"),300);
+});
 
 // Galería cámara
 const camaraIcon = document.getElementById("camara-icon");
