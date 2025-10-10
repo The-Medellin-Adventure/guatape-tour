@@ -3,35 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Travel | Tour Virtual 360°</title>
+  <title>Tour Guatapé</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 </head>
-
 <body>
-  <!-- 🌍 Escena 360 -->
-  <a-scene vr-mode-ui="enabled: true" embedded>
-    <!-- Video 360° -->
-    <a-videosphere id="video360" rotation="0 -90 0"></a-videosphere>
+  <div id="tour-container">
+    <video id="main-video" autoplay loop muted playsinline></video>
+    <div id="hotspots-container"></div>
 
-    <!-- Cámara -->
-    <a-entity camera look-controls position="0 1.6 0"></a-entity>
-  </a-scene>
-
-  <!-- 🎬 Panel lateral de video -->
-  <div id="videoLateralContainer" class="panel">
-    <video id="videoLateral" autoplay loop muted></video>
+    <div id="sidebar">
+      <h3 id="sidebar-title">Video informativo</h3>
+      <video id="lateral-video" controls></video>
+    </div>
   </div>
 
-  <!-- 🟡 Panel de información -->
-  <div id="infoPanel" class="info">
-    <h3 id="infoTitulo"></h3>
-    <p id="infoTexto"></p>
-    <button onclick="cerrarInfo()">Cerrar</button>
-  </div>
-
-  <!-- Scripts -->
-  <script src="data.js"></script>
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 </html>
