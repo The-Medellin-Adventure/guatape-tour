@@ -5,34 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Guatapé Tour</title>
   <link rel="stylesheet" href="style.css">
+  <script type="module" src="index.js" defer></script>
 </head>
 <body>
 
-<div class="video-container">
-  <video id="mainVideo" src="video.mp4" controls></video>
-  
-  <!-- Barra de iconos debajo del video -->
-  <div class="icon-bar">
-    <button id="infoBtn">ℹ️ Información</button>
-    <button id="cameraBtn">📷 Cámara</button>
-  </div>
-  
+<div class="container">
+
+  <!-- Video principal 360° -->
+  <video id="video360" controls autoplay muted></video>
+
   <!-- Panel lateral de información -->
-  <div id="infoPanel" class="side-panel hidden">
-    <p id="infoText">Aquí va la información detallada...</p>
+  <div id="lateral-video" class="side-panel">
+    <h2 id="info-titulo">Título de escena</h2>
+    <p id="info-descripcion">Descripción de la escena...</p>
   </div>
-  
-  <!-- Overlay de cámara -->
-  <div id="cameraOverlay" class="overlay hidden">
-    <img id="cameraImage" src="images/imagen1.jpg" alt="Imagen de cámara">
-    <div class="overlay-buttons">
-      <button id="prevImage">⬅️</button>
-      <button id="nextImage">➡️</button>
-      <button id="closeOverlay">Cerrar</button>
+
+  <!-- Contenedor de hotspots -->
+  <div id="hotspot-container"></div>
+
+  <!-- Botón cámara -->
+  <button id="camara-btn" class="camara-btn">📷 Cámara</button>
+
+  <!-- Galería overlay -->
+  <div id="gallery-modal" class="hidden">
+    <img id="gallery-image" src="images/imagen1.jpg" alt="Imagen de cámara">
+    <div class="gallery-buttons">
+      <button id="prev-gallery">⬅️</button>
+      <button id="next-gallery">➡️</button>
+      <button id="close-gallery">Cerrar</button>
     </div>
   </div>
+
 </div>
 
-<script src="index.js"></script>
 </body>
 </html>
