@@ -43,6 +43,7 @@ escena.hotspots.forEach((hs, index) => {
   // VR hotspot
   const hsVR = document.createElement("a-image");
   hsVR.setAttribute("src","#info-img");
+  hsVR.setAttribute("class","clickable");
   hsVR.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
   hsVR.setAttribute("width","0.3");
   hsVR.setAttribute("height","0.3");
@@ -62,11 +63,51 @@ closeInfo.addEventListener("click", ()=>{
 });
 
 // Galería pantalla normal
-// ...igual que antes con #camara-icon y #gallery-overlay...
+const camaraIcon = document.getElementById("camara-icon");
+const galleryOverlay = document.getElementById("gallery-overlay");
+const galleryImage = document.getElementById("gallery-image");
+const prevGallery = document.getElementById("prev-gallery");
+const nextGallery = document.getElementById("next-gallery");
+const closeGallery = document.getElementById("close-gallery");
+
+const galleryImages = ["images/imagen1.jpeg", "images/imagen2.jpeg"];
+let currentGalleryIndex = 0;
+
+function showGallery(index){
+  galleryImage.style.transform = "scale(0.9)";
+  setTimeout(()=>{
+    galleryImage.src = galleryImages[index];
+    galleryImage.style.transform = "scale(1)";
+  },150);
+}
+
+camaraIcon.addEventListener("click", ()=>{
+  currentGalleryIndex = 0;
+  showGallery(currentGalleryIndex);
+  galleryOverlay.classList.add("visible");
+  galleryOverlay.classList.remove("hidden");
+});
+
+prevGallery.addEventListener("click", ()=>{
+  currentGalleryIndex = (currentGalleryIndex-1+galleryImages.length)%galleryImages.length;
+  showGallery(currentGalleryIndex);
+});
+
+nextGallery.addEventListener("click", ()=>{
+  currentGalleryIndex = (currentGalleryIndex+1)%galleryImages.length;
+  showGallery(currentGalleryIndex);
+});
+
+closeGallery.addEventListener("click", ()=>{
+  galleryOverlay.classList.remove("visible");
+  setTimeout(()=>galleryOverlay.classList.add("hidden"),300);
+});
 
 // Salir VR
 const exitVRBtn = document.getElementById("exit-vr-btn");
 exitVRBtn.addEventListener("click", ()=>{
   const sceneEl = document.querySelector("a-scene");
-  sceneEl.exitVR();
+  if(sceneEl.is("vr-mode")){
+    sceneEl.exitVR();
+  }
 });

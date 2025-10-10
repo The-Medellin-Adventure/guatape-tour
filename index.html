@@ -16,8 +16,8 @@
   <div class="video-area">
     <a-scene embedded vr-mode-ui="enabled: true">
       <a-assets>
-        <video id="video-main" src="" autoplay loop crossorigin="anonymous"></video>
-        <video id="video-lateral" src="" muted loop crossorigin="anonymous"></video>
+        <video id="video-main" autoplay loop muted crossorigin="anonymous"></video>
+        <video id="video-lateral" muted loop crossorigin="anonymous"></video>
         <img id="camara-img" src="img/Camara.png">
         <img id="info-img" src="img/info.png">
       </a-assets>
@@ -26,23 +26,24 @@
       <a-videosphere id="sphere" src="#video-main"></a-videosphere>
 
       <!-- Hotspots VR -->
-      <a-entity id="hotspot-container" position="0 1.6 -2"></a-entity>
+      <a-entity id="hotspot-container"></a-entity>
 
       <!-- Panel flotante de información -->
       <a-plane id="info-panel-vr" visible="false" width="1.2" height="0.7" color="#0a1e2b" opacity="0.95" position="0 1.6 -1.5" material="shader: flat">
         <a-text id="info-title-vr" value="Título" align="center" position="0 0.25 0" color="#ffcc00"></a-text>
-        <a-text id="info-desc-vr" value="Descripción..." align="center" position="0 -0.1 0" width="1.1" color="#ffffff"></a-text>
-        <!-- Video lateral VR -->
+        <a-text id="info-desc-vr" value="Descripción..." align="center" position="0 -0.05 0" width="1.1" color="#ffffff"></a-text>
         <a-video id="video-lateral-vr" src="#video-lateral" width="0.6" height="0.35" position="0 -0.3 0"></a-video>
       </a-plane>
 
       <!-- Botón salir VR -->
-      <a-box id="exit-vr-btn" position="0 2 -1.2" depth="0.05" height="0.2" width="0.5" color="#ffcc00">
+      <a-box id="exit-vr-btn" class="clickable" position="0 2 -1.2" depth="0.05" height="0.2" width="0.5" color="#ffcc00">
         <a-text value="Salir de VR" align="center" color="#000" position="0 0 0.03"></a-text>
       </a-box>
 
-      <!-- Cámara VR -->
-      <a-entity camera look-controls position="0 1.6 0"></a-entity>
+      <!-- Cámara VR con cursor -->
+      <a-entity camera look-controls position="0 1.6 0">
+        <a-cursor fuse="true" fuse-timeout="1000" raycaster="objects:.clickable"></a-cursor>
+      </a-entity>
     </a-scene>
 
     <!-- Icono de cámara flotante en pantalla normal -->
@@ -52,7 +53,7 @@
   <!-- Panel lateral normal -->
   <div class="side-panel">
     <div class="lateral-video-container">
-      <video id="video-lateral-normal" src="" controls muted></video>
+      <video id="video-lateral-normal" controls muted></video>
     </div>
     <div id="hotspot-list"></div>
     <div id="info-panel" class="hidden">
