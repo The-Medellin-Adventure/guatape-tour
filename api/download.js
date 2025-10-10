@@ -5,14 +5,16 @@ export default async function handler(req, res) {
     const { file } = req.query;
     if (!file) return res.status(400).json({ error: "Missing file name" });
 
+    console.log("📦 Solicitando archivo:", file);
+
     const b2 = new B2({
       applicationKeyId: process.env.B2_KEY_ID,
       applicationKey: process.env.B2_APP_KEY,
     });
 
     await b2.authorize();
+    console.log("🔐 Autorizado con Backblaze.");
 
-    // token válido 30 días
     const auth = await b2.getDownloadAuthorization({
       bucketId: process.env.B2_BUCKET_ID,
       fileNamePrefix: file,
@@ -23,9 +25,11 @@ export default async function handler(req, res) {
     const baseUrl = "https://guatape-travel.s3.us-east-005.backblazeb2.com";
     const url = `${baseUrl}/${encodeURIComponent(file)}?Authorization=${token}`;
 
-    res.status(200).json({ downloadUrl: url });
+    console.log("✅ URL generada:", url);
+
+    return res.status(200).json({ downloadUrl: url });
   } catch (err) {
-    console.error("❌ Error Backblaze:", err.message);
+    console.error("❌ Error en descarga Backblaze:", err);
     res.status(500).json({ error: err.message });
   }
 }
