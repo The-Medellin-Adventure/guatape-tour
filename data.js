@@ -7,11 +7,11 @@ window.TOUR_DATA = {
     {
       id: "zocalos",
       nombre: "Calle de los Zócalos",
-      // 🎥 Video principal (Google Drive)
-      archivo: "https://drive.google.com/uc?export=download&id=1C0oTZRAVgSrG0ElkAN2WoA_SNEoCyOEK",
+      // 🎥 Video principal 360° desde Backblaze
+      archivo: "b2:videos/escena1-360.mp4",
 
-      // 🎬 Video lateral opcional
-      lateralVideo: "",
+      // 🎬 Video lateral pequeño
+      lateralVideo: "b2:videos/video1.mp4",
 
       // 🟡 Hotspots informativos
       hotspots: [
@@ -34,4 +34,3 @@ window.TOUR_DATA = {
     }
   ]
 };
-
