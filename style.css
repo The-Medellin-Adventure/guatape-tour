@@ -12,29 +12,73 @@ body {
   gap: 15px;
 }
 
-/* Video principal */
+/* Video principal 360° */
 .video-area {
   position: relative;
-  width: 80%;
+  width: 80%; /* 4/5 */
+  height: 600px;
   border-radius: 12px;
   overflow: hidden;
 }
-#video-main {
-  width: 100%;
-  height: 600px;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-}
-
-/* Hotspots flotantes */
-#hotspot-container {
-  position: absolute;
-  top: 0;
-  left: 0;
+.video-area a-scene {
   width: 100%;
   height: 100%;
 }
+
+/* Icono de cámara flotante */
+#camara-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #ffcc00;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 5;
+}
+#camara-icon:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px #ffcc00;
+}
+
+/* Panel lateral */
+.side-panel {
+  width: 20%; /* 1/5 */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Video lateral */
+.lateral-video-container video {
+  width: 100%;
+  max-height: 250px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* Tarjeta de hotspot debajo del video lateral */
+#info-panel {
+  background: rgba(10,30,50,0.95);
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+}
+#info-panel.hidden { display: none; }
+#close-info {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #ffcc00;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Hotspots flotantes en video 360° */
 .hotspot {
   position: absolute;
   display: flex;
@@ -55,59 +99,7 @@ body {
   border-radius: 5px;
   font-size: 14px;
 }
-.hotspot:hover {
-  transform: scale(1.2);
-}
-
-/* Icono de cámara */
-#camara-icon {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 3px solid #ffcc00;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-#camara-icon:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 15px #ffcc00;
-}
-
-/* Panel lateral */
-.info-area {
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-#info-panel {
-  background: rgba(10,30,50,0.95);
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-}
-#info-panel.hidden { display: none; }
-#close-info {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: #ffcc00;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #000;
-}
-
-/* Video lateral */
-.lateral-video-container video {
-  width: 100%;
-  max-height: 250px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-}
+.hotspot:hover { transform: scale(1.2); }
 
 /* Overlay galería */
 .overlay {
@@ -152,3 +144,4 @@ body {
   color: #000;
   font-weight: bold;
 }
+
