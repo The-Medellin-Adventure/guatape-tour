@@ -11,7 +11,7 @@ window.TOUR_DATA = {
       archivo: "b2:videos/escena1-360.mp4",
 
       // 🎬 Video lateral pequeño
-      lateralVideo: "b2:videos/video1.mp4",
+      lateralVideo: "b2:guatape1.mp4",
 
       // 🟡 Hotspots informativos
       hotspots: [
