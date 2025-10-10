@@ -40,7 +40,7 @@ escena.hotspots.forEach((hs, index) => {
   });
   hotspotList.appendChild(item);
 
-  // VR hotspot
+  // VR hotspot animado
   const hsVR = document.createElement("a-image");
   hsVR.setAttribute("src","#info-img");
   hsVR.setAttribute("class","clickable");
@@ -48,6 +48,8 @@ escena.hotspots.forEach((hs, index) => {
   hsVR.setAttribute("width","0.3");
   hsVR.setAttribute("height","0.3");
   hsVR.setAttribute("look-at","[camera]");
+  // Animación de pulso
+  hsVR.setAttribute("animation__pulse","property: scale; dir: alternate; dur: 1000; loop: true; to: 1.2 1.2 1.2");
   hsVR.addEventListener("click", ()=>{
     infoTitleVR.setAttribute("value", hs.titulo);
     infoDescVR.setAttribute("value", hs.descripcion);
@@ -70,7 +72,7 @@ const prevGallery = document.getElementById("prev-gallery");
 const nextGallery = document.getElementById("next-gallery");
 const closeGallery = document.getElementById("close-gallery");
 
-const galleryImages = ["images/imagen1.jpeg", "images/imagen2.jpeg"];
+const galleryImages = ["images/imagen1.jpeg","images/imagen2.jpeg"];
 let currentGalleryIndex = 0;
 
 function showGallery(index){
