@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Tour Virtual Premium</title>
+  <title>Guatapé Tour VR Premium</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script type="module" src="index.js" defer></script>
@@ -12,41 +12,52 @@
 
 <div class="tour-container">
 
-  <!-- Video principal 360° inmersivo -->
+  <!-- Video principal 360° -->
   <div class="video-area">
     <a-scene embedded vr-mode-ui="enabled: true">
       <a-assets>
         <video id="video-main" src="" autoplay loop crossorigin="anonymous"></video>
+        <video id="video-lateral" src="" muted loop crossorigin="anonymous"></video>
+        <img id="camara-img" src="img/Camara.png">
+        <img id="info-img" src="img/info.png">
       </a-assets>
 
-      <!-- Esfera para 360° -->
+      <!-- Esfera 360° -->
       <a-videosphere id="sphere" src="#video-main"></a-videosphere>
 
-      <!-- Hotspots flotantes -->
-      <a-entity id="hotspot-container"></a-entity>
+      <!-- Hotspots VR -->
+      <a-entity id="hotspot-container" position="0 1.6 -2"></a-entity>
+
+      <!-- Panel flotante de información -->
+      <a-plane id="info-panel-vr" visible="false" width="1.2" height="0.7" color="#0a1e2b" opacity="0.95" position="0 1.6 -1.5" material="shader: flat">
+        <a-text id="info-title-vr" value="Título" align="center" position="0 0.25 0" color="#ffcc00"></a-text>
+        <a-text id="info-desc-vr" value="Descripción..." align="center" position="0 -0.1 0" width="1.1" color="#ffffff"></a-text>
+        <!-- Video lateral VR -->
+        <a-video id="video-lateral-vr" src="#video-lateral" width="0.6" height="0.35" position="0 -0.3 0"></a-video>
+      </a-plane>
+
+      <!-- Botón salir VR -->
+      <a-box id="exit-vr-btn" position="0 2 -1.2" depth="0.05" height="0.2" width="0.5" color="#ffcc00">
+        <a-text value="Salir de VR" align="center" color="#000" position="0 0 0.03"></a-text>
+      </a-box>
 
       <!-- Cámara VR -->
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
     </a-scene>
 
-    <!-- Icono de cámara flotante -->
+    <!-- Icono de cámara flotante en pantalla normal -->
     <img src="img/Camara.png" id="camara-icon" alt="Cámara">
   </div>
 
-  <!-- Panel lateral -->
+  <!-- Panel lateral normal -->
   <div class="side-panel">
-    <!-- Video lateral -->
     <div class="lateral-video-container">
-      <video id="video-lateral" src="" controls muted></video>
+      <video id="video-lateral-normal" src="" controls muted></video>
     </div>
-
-    <!-- Hotspots list: icono + título -->
     <div id="hotspot-list"></div>
-
-    <!-- Información del hotspot -->
     <div id="info-panel" class="hidden">
       <h2 id="hotspot-title">Título</h2>
-      <p id="hotspot-description">Descripción completa...</p>
+      <p id="hotspot-description">Descripción...</p>
       <button id="close-info">Cerrar</button>
     </div>
   </div>
