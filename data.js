@@ -3,8 +3,8 @@ window.TOUR_DATA = {
     {
       id: "zocalos",
       nombre: "Calle de los Zócalos",
-      archivo: "b2:videos/guatape1.mp4",
-      lateralVideo: "b2:videos/video1.mp4",
+      archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
       hotspots: [
         {
           titulo: "Los Zócalos de Guatapé",
