@@ -2,19 +2,41 @@
 // Guatapé Travel - Control del Tour
 // ===============================
 
-function mostrarEscena(id) {
+async function obtenerUrlBackblaze(file) {
+  try {
+    const res = await fetch(`/api/download?file=${file}`);
+    const data = await res.json();
+    return data.downloadUrl || null;
+  } catch (err) {
+    console.error("Error obteniendo URL Backblaze:", err);
+    return null;
+  }
+}
+
+async function mostrarEscena(id) {
   const escena = window.TOUR_DATA.escenas.find(e => e.id === id);
   if (!escena) return;
 
-  // 🎥 Cargar video principal
   const video360 = document.querySelector("#video360");
-  video360.setAttribute("src", escena.archivo);
-
-  // 🎬 Cargar video lateral (si existe)
   const videoLateral = document.querySelector("#videoLateral");
+
+  // 🎥 Cargar video principal
+  if (escena.archivo.startsWith("b2:")) {
+    const file = escena.archivo.replace("b2:", "");
+    const url = await obtenerUrlBackblaze(file);
+    if (url) video360.setAttribute("src", url);
+  } else {
+    video360.setAttribute("src", escena.archivo);
+  }
+
+  // 🎬 Cargar video lateral
   if (escena.lateralVideo) {
-    videoLateral.setAttribute("src", escena.lateralVideo);
-    document.getElementById("videoLateralContainer").style.display = "block";
+    const file = escena.lateralVideo.replace("b2:", "");
+    const url = await obtenerUrlBackblaze(file);
+    if (url) {
+      videoLateral.setAttribute("src", url);
+      document.getElementById("videoLateralContainer").style.display = "block";
+    }
   } else {
     document.getElementById("videoLateralContainer").style.display = "none";
   }
@@ -40,9 +62,6 @@ function mostrarEscena(id) {
   console.log(`✅ Escena cargada: ${escena.nombre}`);
 }
 
-// ===============================
-// Mostrar información
-// ===============================
 function mostrarInfo(titulo, texto) {
   const panel = document.getElementById("infoPanel");
   document.getElementById("infoTitulo").textContent = titulo;
@@ -54,9 +73,6 @@ function cerrarInfo() {
   document.getElementById("infoPanel").style.display = "none";
 }
 
-// ===============================
-// Iniciar
-// ===============================
 window.addEventListener("DOMContentLoaded", () => {
   if (window.TOUR_DATA?.escenas?.length) {
     mostrarEscena(window.TOUR_DATA.escenas[0].id);
@@ -64,3 +80,4 @@ window.addEventListener("DOMContentLoaded", () => {
     console.error("❌ No se encontró ninguna escena en data.js");
   }
 });
+
