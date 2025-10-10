@@ -5,21 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tour Virtual Guatapé 360°</title>
 
-    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-
-    <!-- Estilos -->
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <div id="tour-container">
-      <button id="enter-vr">Vista inmersiva</button>
-
+    <div id="vr-container">
+      <!-- Escena VR -->
       <a-scene embedded id="scene">
         <a-assets>
-          <!-- Video 360 -->
           <video
             id="video360"
             autoplay
@@ -28,27 +23,45 @@
             playsinline
             crossorigin="anonymous"
           ></video>
-
-          <!-- Íconos -->
           <img id="icon-info" src="./img/info.png" />
-          <img id="icon-camara" src="./img/Camara.png" />
         </a-assets>
 
-        <!-- Video 360° -->
         <a-videosphere src="#video360" rotation="0 -90 0"></a-videosphere>
-
-        <!-- Contenedor de hotspots -->
         <a-entity id="hotspot-container"></a-entity>
       </a-scene>
+
+      <!-- UI flotante sobre VR -->
+      <div id="ui-overlay">
+        <div id="top-bar">
+          <button id="exit-vr" class="ui-btn">Salir VR</button>
+          <h2 id="scene-title">Guatapé 360°</h2>
+        </div>
+
+        <div id="side-panel">
+          <video id="lateral-video" controls autoplay muted playsinline></video>
+          <div id="hotspot-info">
+            <h3 id="hotspot-title">Selecciona un punto</h3>
+            <p id="hotspot-desc">Haz clic en los íconos dentro del video 360°.</p>
+          </div>
+          <img id="camara-btn" src="./img/Camara.png" alt="Cámara" />
+        </div>
+
+        <div id="info-card">
+          <h3 id="info-titulo"></h3>
+          <p id="info-descripcion"></p>
+        </div>
+
+        <!-- Carrusel de imágenes flotante -->
+        <div id="gallery-modal" class="hidden">
+          <div id="gallery-content">
+            <span id="close-gallery">✕</span>
+            <img id="gallery-img" src="./img/Camara.png" alt="Galería" />
+            <div id="gallery-caption">Galería de Guatapé</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Panel lateral -->
-    <div id="sidebar">
-      <h3 id="sidebar-title">Video informativo</h3>
-      <video id="lateral-video" controls autoplay muted playsinline></video>
-    </div>
-
-    <!-- Scripts -->
     <script type="module" src="data.js"></script>
     <script type="module" src="index.js"></script>
   </body>
