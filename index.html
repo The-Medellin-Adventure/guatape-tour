@@ -3,40 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Tour</title>
+  <title>Guatapé Tour 360°</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script type="module" src="index.js" defer></script>
 </head>
 <body>
 
 <div class="container">
 
-  <!-- Contenedor principal: video guatape1 y panel izquierdo -->
   <div class="main-layout">
 
-    <!-- Video principal -->
+    <!-- Video principal 360° con A-Frame -->
     <div class="video-wrapper">
-      <video id="video360" src="" controls autoplay muted></video>
+      <a-scene embedded>
+        <a-assets>
+          <video id="video360" src="" autoplay loop="true" crossorigin="anonymous"></video>
+        </a-assets>
 
-      <!-- Iconos de información flotando -->
-      <div class="info-icons">
-        <img src="img/info.png" alt="Info" class="info-icon" data-info="Piedra del Peñol">
-        <img src="img/info.png" alt="Info" class="info-icon" data-info="Embalse de Guatapé">
-      </div>
+        <!-- Esfera para video 360° -->
+        <a-videosphere src="#video360"></a-videosphere>
+
+        <!-- Hotspots -->
+        <a-entity id="hotspot-container"></a-entity>
+      </a-scene>
 
       <!-- Icono de cámara flotante -->
       <img src="img/Camara.png" alt="Cámara" id="camara-icon">
     </div>
 
-    <!-- Panel izquierdo dividido -->
+    <!-- Panel izquierdo -->
     <div class="left-panel">
-      <!-- Parte superior: tarjeta de información -->
-      <div id="info-panel">
-        <h2 id="info-titulo">Título</h2>
-        <p id="info-descripcion">Descripción de la información</p>
+      <!-- Tarjeta de información de hotspots -->
+      <div id="info-panel" class="hidden">
+        <h3 id="hotspot-titulo">Título</h3>
+        <p id="hotspot-descripcion">Descripción...</p>
+        <button id="close-info">Cerrar</button>
       </div>
 
-      <!-- Parte inferior: video lateral -->
+      <!-- Video lateral -->
       <div id="lateral-video-container">
         <video id="lateralVideo" src="" controls muted></video>
       </div>
@@ -44,7 +49,7 @@
 
   </div>
 
-  <!-- Overlay de galería de imágenes -->
+  <!-- Overlay de galería -->
   <div id="gallery-overlay" class="overlay hidden">
     <img id="gallery-image" src="images/imagen1.jpg" alt="Imagen de cámara">
     <div class="gallery-buttons">
@@ -58,3 +63,4 @@
 
 </body>
 </html>
+
