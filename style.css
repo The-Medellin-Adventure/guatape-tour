@@ -12,7 +12,7 @@ body {
   gap: 15px;
 }
 
-/* Video principal 360° */
+/* Video principal 360° inmersivo */
 .video-area {
   position: relative;
   width: 80%;
@@ -79,7 +79,11 @@ body {
   background: rgba(30,30,30,0.85);
   padding: 8px 12px;
   border-radius: 10px;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, opacity 0.5s;
+  opacity: 0;
+}
+.hotspot-item.show {
+  opacity: 1;
 }
 .hotspot-item:hover {
   transform: scale(1.05);
