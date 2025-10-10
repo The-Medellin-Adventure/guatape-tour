@@ -14,20 +14,24 @@
   <!-- Video principal 360° -->
   <video id="video360" controls autoplay muted></video>
 
+  <!-- Video lateral -->
+  <video id="lateralVideo" controls muted class="lateral-video"></video>
+
   <!-- Panel lateral de información -->
-  <div id="lateral-video" class="side-panel">
+  <div id="lateral-panel" class="side-panel hidden">
     <h2 id="info-titulo">Título de escena</h2>
     <p id="info-descripcion">Descripción de la escena...</p>
+    <button id="close-panel" class="close-panel">✖</button>
   </div>
 
-  <!-- Contenedor de hotspots -->
+  <!-- Hotspot container -->
   <div id="hotspot-container"></div>
 
   <!-- Botón cámara -->
   <button id="camara-btn" class="camara-btn">📷 Cámara</button>
 
-  <!-- Galería overlay -->
-  <div id="gallery-modal" class="hidden">
+  <!-- Overlay galería -->
+  <div id="gallery-modal" class="overlay hidden">
     <img id="gallery-image" src="images/imagen1.jpg" alt="Imagen de cámara">
     <div class="gallery-buttons">
       <button id="prev-gallery">⬅️</button>
