@@ -3,57 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Tour Virtual</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="index.js" defer></script>
-</head>
-<body>
-
-<div class="tour-container">
-
-  <!-- Video principal fijo -->
-  <div class="video-area">
-    <video id="video-main" src="" autoplay muted loop></video>
-    <img src="img/Camara.png" id="camara-icon" alt="Cámara">
-  </div>
-
-  <!-- Panel lateral -->
-  <div class="side-panel">
-    <!-- Video lateral -->
-    <div class="lateral-video-container">
-      <video id="video-lateral" src="" controls muted></video>
-    </div>
-
-    <!-- Hotspots: icono + título -->
-    <div id="hotspot-list"></div>
-
-    <!-- Información del hotspot -->
-    <div id="info-panel" class="hidden">
-      <h2 id="hotspot-title">Título</h2>
-      <p id="hotspot-description">Descripción completa...</p>
-      <button id="close-info">Cerrar</button>
-    </div>
-  </div>
-
-  <!-- Overlay galería -->
-  <div id="gallery-overlay" class="overlay hidden">
-    <img id="gallery-image" src="images/imagen1.jpeg" alt="Imagen de cámara">
-    <div class="gallery-buttons">
-      <button id="prev-gallery">⬅️</button>
-      <button id="next-gallery">➡️</button>
-      <button id="close-gallery">Cerrar</button>
-    </div>
-  </div>
-
-</div>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Tour VR Premium</title>
+  <title>Guatapé Tour Virtual Premium</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script type="module" src="index.js" defer></script>
@@ -62,7 +12,7 @@
 
 <div class="tour-container">
 
-  <!-- Video principal 360° -->
+  <!-- Video principal 360° inmersivo -->
   <div class="video-area">
     <a-scene embedded vr-mode-ui="enabled: true">
       <a-assets>
@@ -70,12 +20,12 @@
       </a-assets>
 
       <!-- Esfera para 360° -->
-      <a-videosphere src="#video-main"></a-videosphere>
+      <a-videosphere id="sphere" src="#video-main"></a-videosphere>
 
       <!-- Hotspots flotantes -->
       <a-entity id="hotspot-container"></a-entity>
 
-      <!-- Cámara para VR -->
+      <!-- Cámara VR -->
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
     </a-scene>
 
@@ -115,4 +65,3 @@
 
 </body>
 </html>
-
