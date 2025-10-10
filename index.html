@@ -1,22 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tour Guatapé</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="tour-container">
-    <video id="main-video" autoplay loop muted playsinline></video>
-    <div id="hotspots-container"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tour 360° Guatapé</title>
 
-    <div id="sidebar">
-      <h3 id="sidebar-title">Video informativo</h3>
-      <video id="lateral-video" controls></video>
-    </div>
-  </div>
+    <!-- Librería A-Frame para escenas VR y 360° -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-  <script type="module" src="index.js"></script>
-</body>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+        font-family: sans-serif;
+      }
+      #enter-vr {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+        padding: 10px 15px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border: 1px solid #fff;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <button id="enter-vr">Entrar en modo VR</button>
+
+    <!-- Escena inmersiva -->
+    <a-scene>
+      <!-- La esfera mostrará el video como textura envolvente -->
+      <a-videosphere
+        src="#video360"
+        rotation="0 -90 0"
+      ></a-videosphere>
+
+      <!-- Fuente de video alojada en Cloud Storage -->
+      <video
+        id="video360"
+        autoplay
+        loop
+        muted
+        crossorigin="anonymous"
+        playsinline
+        webkit-playsinline
+      ></video>
+    </a-scene>
+
+    <script>
+      // Reemplaza esta URL por el enlace público de tu archivo en Cloud Storage
+      // Debe ser el link de descarga directa (termina en .mp4?alt=media)
+      const videoUrl =
+        "https://firebasestorage.googleapis.com/v0/b/TU_BUCKET/o/video360.mp4?alt=media";
+
+      const videoEl = document.getElementById("video360");
+      videoEl.src = videoUrl;
+
+      // Botón para forzar entrada a modo VR (útil en Meta Quest)
+      const scene = document.querySelector("a-scene");
+      document
+        .getElementById("enter-vr")
+        .addEventListener("click", () => scene.enterVR());
+    </script>
+  </body>
 </html>
