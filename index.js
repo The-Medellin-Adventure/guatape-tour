@@ -15,8 +15,8 @@ const hotspotTitle = document.getElementById("hotspot-title");
 const hotspotDescription = document.getElementById("hotspot-description");
 const closeInfo = document.getElementById("close-info");
 
-// Crear hotspots: icono + título
-escena.hotspots.forEach(hs => {
+// Crear hotspots: icono + título con animación fade-in
+escena.hotspots.forEach((hs, index) => {
   const item = document.createElement("div");
   item.classList.add("hotspot-item");
 
@@ -29,7 +29,11 @@ escena.hotspots.forEach(hs => {
   item.appendChild(icon);
   item.appendChild(title);
 
-  item.addEventListener("click", ()=>{
+  // Animación de aparición escalonada
+  setTimeout(() => item.classList.add("show"), index * 300);
+
+  // Mostrar info al clic
+  item.addEventListener("click", () => {
     hotspotTitle.textContent = hs.titulo;
     hotspotDescription.textContent = hs.descripcion;
     infoPanel.classList.add("show");
@@ -40,9 +44,9 @@ escena.hotspots.forEach(hs => {
 });
 
 // Cerrar info panel
-closeInfo.addEventListener("click", ()=> {
+closeInfo.addEventListener("click", () => {
   infoPanel.classList.remove("show");
-  setTimeout(()=> infoPanel.classList.add("hidden"),300);
+  setTimeout(() => infoPanel.classList.add("hidden"), 300);
 });
 
 // Galería cámara
@@ -53,35 +57,35 @@ const prevGallery = document.getElementById("prev-gallery");
 const nextGallery = document.getElementById("next-gallery");
 const closeGallery = document.getElementById("close-gallery");
 
-const galleryImages = ["images/imagen1.jpeg","images/imagen2.jpeg"];
+const galleryImages = ["images/imagen1.jpeg", "images/imagen2.jpeg"];
 let currentGalleryIndex = 0;
 
-function showGallery(index){
+function showGallery(index) {
   galleryImage.style.transform = "scale(0.9)";
-  setTimeout(()=>{
+  setTimeout(() => {
     galleryImage.src = galleryImages[index];
     galleryImage.style.transform = "scale(1)";
-  },150);
+  }, 150);
 }
 
-camaraIcon.addEventListener("click", ()=>{
+camaraIcon.addEventListener("click", () => {
   currentGalleryIndex = 0;
   showGallery(currentGalleryIndex);
   galleryOverlay.classList.add("visible");
   galleryOverlay.classList.remove("hidden");
 });
 
-prevGallery.addEventListener("click", ()=>{
-  currentGalleryIndex = (currentGalleryIndex-1+galleryImages.length)%galleryImages.length;
+prevGallery.addEventListener("click", () => {
+  currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
-nextGallery.addEventListener("click", ()=>{
-  currentGalleryIndex = (currentGalleryIndex+1)%galleryImages.length;
+nextGallery.addEventListener("click", () => {
+  currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
-closeGallery.addEventListener("click", ()=>{
+closeGallery.addEventListener("click", () => {
   galleryOverlay.classList.remove("visible");
-  setTimeout(()=>galleryOverlay.classList.add("hidden"),300);
+  setTimeout(() => galleryOverlay.classList.add("hidden"), 300);
 });
