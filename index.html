@@ -4,8 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tour 360° Guatapé</title>
-
-    <!-- Librería A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
     <style>
@@ -24,15 +22,16 @@
       }
 
       #sidebar {
-        width: 360px;
-        background: #111;
+        width: 340px;
+        background: rgba(17, 17, 17, 0.9);
         color: #fff;
         padding: 15px;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.5);
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.6);
+        z-index: 50;
       }
 
       #sidebar h3 {
@@ -43,6 +42,7 @@
       #lateral-video {
         width: 100%;
         border-radius: 8px;
+        outline: none;
       }
 
       #enter-vr {
@@ -57,6 +57,11 @@
         border-radius: 6px;
         cursor: pointer;
       }
+
+      a-scene {
+        width: 100%;
+        height: 100%;
+      }
     </style>
   </head>
 
@@ -65,69 +70,67 @@
       <button id="enter-vr">Entrar en modo VR</button>
 
       <!-- Escena 360° -->
-      <a-scene>
-        <!-- Esfera que muestra el video 360° -->
-        <a-videosphere
-          src="#video360"
-          rotation="0 -90 0"
-        ></a-videosphere>
+      <a-scene embedded>
+        <a-assets>
+          <video
+            id="video360"
+            autoplay
+            muted
+            loop
+            playsinline
+            webkit-playsinline
+            crossorigin="anonymous"
+          ></video>
+        </a-assets>
 
-        <!-- Fuente de video -->
-        <video
-          id="video360"
-          autoplay
-          loop
-          muted
-          playsinline
-          webkit-playsinline
-          crossorigin="anonymous"
-        ></video>
+        <a-videosphere src="#video360" rotation="0 -90 0"></a-videosphere>
       </a-scene>
     </div>
 
-    <!-- Panel lateral con video informativo -->
     <div id="sidebar">
-      <h3 id="sidebar-title">Video informativo</h3>
-      <video id="lateral-video" controls></video>
+      <h3>Video informativo</h3>
+      <video
+        id="lateral-video"
+        src="https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4"
+        controls
+        autoplay
+        muted
+        playsinline
+      ></video>
     </div>
 
     <script>
-      // URLs de tus videos en Cloudflare R2
-      const MAIN_VIDEO_URL =
-        "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4";
-      const LATERAL_VIDEO_URL =
-        "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4";
-
       const video360 = document.getElementById("video360");
-      const lateralVideo = document.getElementById("lateral-video");
-      const enterVrBtn = document.getElementById("enter-vr");
       const scene = document.querySelector("a-scene");
+      const enterVrBtn = document.getElementById("enter-vr");
 
-      // Asigna las fuentes
-      video360.src = MAIN_VIDEO_URL;
-      lateralVideo.src = LATERAL_VIDEO_URL;
+      // URL de tu video principal
+      const VIDEO_URL =
+        "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4";
 
-      // Asegura la reproducción del video 360
-      async function playVideo() {
+      // Asigna el origen del video
+      video360.src = VIDEO_URL;
+
+      // Intentar reproducir el video automáticamente
+      async function ensureVideoPlaying() {
         try {
           await video360.play();
           console.log("🎥 Video 360° reproduciéndose correctamente");
         } catch (err) {
-          console.warn("⚠️ Error al reproducir el video 360°:", err);
+          console.warn("⚠️ No se pudo reproducir automáticamente:", err);
         }
       }
 
-      // Intentar reproducir en cuanto se cargue la página
-      window.addEventListener("load", playVideo);
+      // Reintentar cuando haya interacción
+      window.addEventListener("load", ensureVideoPlaying);
+      document.body.addEventListener("click", ensureVideoPlaying);
 
-      // También al hacer clic en cualquier parte de la pantalla
-      document.body.addEventListener("click", () => {
-        playVideo();
-      });
+      // Cuando el video esté listo para reproducirse
+      video360.addEventListener("canplay", ensureVideoPlaying);
 
-      // Al entrar en modo VR, forzar reproducción
+      // Botón VR
       enterVrBtn.addEventListener("click", () => {
-        playVideo();
+        ensureVideoPlaying();
         scene.enterVR();
       });
     </script>
