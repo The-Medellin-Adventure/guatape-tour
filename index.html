@@ -54,12 +54,8 @@
   </head>
 
   <body>
-    <a-scene
-      id="scene"
-      vr-mode-ui="enabled: true"
-      embedded
-      renderer="antialias: true; colorManagement: true;"
-    >
+    <a-scene id="scene" vr-mode-ui="enabled: true" renderer="antialias: true; colorManagement: true" embedded>
+
       <!-- Assets -->
       <a-assets>
         <video id="video-main" crossorigin="anonymous" playsinline webkit-playsinline loop></video>
@@ -232,8 +228,10 @@
       </a-entity>
 
       <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
-      <a-entity id="laser-left" laser-controls="hand: left" raycaster="objects: .clickable" visible="false"></a-entity>
-      <a-entity id="laser-right" laser-controls="hand: right" raycaster="objects: .clickable" visible="false"></a-entity>
+      <a-entity id="laser-left" laser-controls="hand: left" raycaster="objects: .clickable; lineColor: #ffd34d"></a-entity>
+<a-entity id="laser-right" laser-controls="hand: right" raycaster="objects: .clickable; lineColor: #ffd34d"></a-entity>
+
+
     </a-scene>
   </body>
 </html>
