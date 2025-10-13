@@ -15,7 +15,7 @@
   <script type="module" src="index.js" defer></script>
 
   <style>
-    /* Forzar visibilidad y estilo del botón nativo Enter VR */
+    /* Botón nativo Entrar VR */
     a-enter-vr-button {
       display: block !important;
       position: fixed !important;
@@ -40,7 +40,12 @@
   <div class="tour-container">
 
     <!-- Escena A-Frame -->
-    <a-scene id="scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" renderer="antialias: true; colorManagement: true">
+    <a-scene
+      id="scene"
+      vr-mode-ui="enabled: true"
+      loading-screen="enabled: false"
+      renderer="antialias: true; colorManagement: true"
+    >
       <a-assets>
         <video id="video-main" crossorigin="anonymous" playsinline webkit-playsinline></video>
         <video id="video-lateral" crossorigin="anonymous" playsinline webkit-playsinline></video>
@@ -59,48 +64,133 @@
         <img id="g3" src="images/imagen3.jpeg" />
       </a-assets>
 
+      <!-- Esfera principal 360° -->
       <a-videosphere id="sphere" src="#video-main" rotation="0 0 0"></a-videosphere>
 
+      <!-- Contenedor de hotspots -->
       <a-entity id="hotspot-container"></a-entity>
 
-      <!-- Info panel estilo marzipano, posicionado dinámicamente -->
-      <a-plane id="info-panel-vr" visible="false" width="1.4" height="0.7" color="#073047" opacity="0.96" position="0 1.6 -1.5" look-at="[camera]">
-        <a-text id="info-title-vr" value="Título" color="#ffd34d" align="left" position="-0.62 0.22 0.01" width="1.25"></a-text>
-        <a-text id="info-desc-vr" value="Descripción..." color="#fff" align="left" position="-0.62 -0.06 0.01" width="1.25"></a-text>
-        <a-image id="info-close-vr" src="#close-img" width="0.12" height="0.12" position="0.62 0.26 0.01" class="clickable"></a-image>
+      <!-- Panel de información (tipo Marzipano) -->
+      <a-plane
+        id="info-panel-vr"
+        visible="false"
+        width="1.4"
+        height="0.7"
+        color="#073047"
+        opacity="0.96"
+        position="0 1.6 -1.5"
+        look-at="[camera]"
+      >
+        <a-text
+          id="info-title-vr"
+          value="Título"
+          color="#ffd34d"
+          align="left"
+          position="-0.62 0.22 0.01"
+          width="1.25"
+        ></a-text>
+        <a-text
+          id="info-desc-vr"
+          value="Descripción..."
+          color="#fff"
+          align="left"
+          position="-0.62 -0.06 0.01"
+          width="1.25"
+        ></a-text>
+        <a-image
+          id="info-close-vr"
+          src="#close-img"
+          width="0.12"
+          height="0.12"
+          position="0.62 0.26 0.01"
+          class="clickable"
+        ></a-image>
       </a-plane>
 
-      <!-- Ventana carrusel inmersivo -->
+      <!-- Galería inmersiva tipo carrusel -->
       <a-entity id="immersive-gallery" visible="false" position="0 1.5 -1.8" look-at="[camera]">
         <a-plane id="gallery-bg" width="2.4" height="1.6" color="#000" opacity="0.92"></a-plane>
         <a-image id="gallery-image" src="#g1" position="0 0 0.01" width="2.1" height="1.2"></a-image>
-        <a-text id="gallery-caption" value="" position="0 -0.78 0.01" width="2.0" align="center" color="#fff"></a-text>
-        <a-image id="gallery-prev" src="#next-img" position="-1.15 0 0.02" width="0.22" height="0.22" class="clickable" scale="-1 1 1"></a-image>
-        <a-image id="gallery-next" src="#next-img" position="1.15 0 0.02" width="0.22" height="0.22" class="clickable"></a-image>
-        <a-image id="gallery-close-vr" src="#close-img" position="1.05 0.68 0.02" width="0.18" height="0.18" class="clickable"></a-image>
+        <a-text
+          id="gallery-caption"
+          value=""
+          position="0 -0.78 0.01"
+          width="2.0"
+          align="center"
+          color="#fff"
+        ></a-text>
+        <a-image
+          id="gallery-prev"
+          src="#next-img"
+          position="-1.15 0 0.02"
+          width="0.22"
+          height="0.22"
+          class="clickable"
+          scale="-1 1 1"
+        ></a-image>
+        <a-image
+          id="gallery-next"
+          src="#next-img"
+          position="1.15 0 0.02"
+          width="0.22"
+          height="0.22"
+          class="clickable"
+        ></a-image>
+        <a-image
+          id="gallery-close-vr"
+          src="#close-img"
+          position="1.05 0.68 0.02"
+          width="0.18"
+          height="0.18"
+          class="clickable"
+        ></a-image>
       </a-entity>
 
-      <!-- Video lateral en la escena (más apartado) -->
+      <!-- Video lateral dentro de la escena -->
       <a-video id="video-lateral-vr" src="#video-lateral" width="1.2" height="1.68" position="3.2 0 -3.5"></a-video>
 
-      <!-- Botones VR para control de video lateral -->
+      <!-- Botones de control para video lateral -->
       <a-image id="btn-play-vr" src="#play-img" position="2.8 1.6 -3.1" width="0.26" height="0.26" class="clickable"></a-image>
       <a-image id="btn-pause-vr" src="#pause-img" position="3.15 1.6 -3.1" width="0.26" height="0.26" class="clickable"></a-image>
       <a-image id="btn-close-video-vr" src="#cerrar-img" position="3.5 1.6 -3.1" width="0.26" height="0.26" class="clickable"></a-image>
 
-      <!-- Menu flotante (icono) y panel -->
-      <a-image id="menu-icon" src="#next-img" position="-1.6 2 -2.2" width="0.36" height="0.36" class="clickable"></a-image>
-      <a-entity id="scene-menu" position="-1.6 1.45 -2.2" visible="false" scale="1 0 1"></a-entity>
+      <!-- 🌟 MENÚ DE ESCENAS (visible en 360° y VR) -->
+      <a-image
+        id="menu-icon"
+        src="#next-img"
+        position="0 1.7 -2.5"
+        width="0.35"
+        height="0.35"
+        class="clickable"
+        look-at="[camera]"
+        animation__hover="property: scale; to: 0.45 0.45 0.45; startEvents: mouseenter; dur: 200"
+        animation__unhover="property: scale; to: 0.35 0.35 0.35; startEvents: mouseleave; dur: 200"
+      ></a-image>
 
-      <!-- Logo flotante y tarjeta (más arriba, no bloquea vista) -->
+      <a-entity
+        id="scene-menu"
+        position="0 1.2 -2.5"
+        visible="false"
+        look-at="[camera]"
+      ></a-entity>
+
+      <!-- Logo flotante -->
       <a-plane id="logo-panel" width="1.1" height="0.34" position="0 2.6 -2.6" color="#073047" opacity="0.96" look-at="[camera]">
         <a-image src="#logo-img" position="-0.42 0 0.01" width="0.26" height="0.26"></a-image>
         <a-text value="Guatapé Travel" align="left" color="#ffd34d" position="-0.05 0.08 0.01" width="1"></a-text>
         <a-text value="Proyecto desarrollado por The Medellín Adventure" align="left" color="#fff" position="-0.05 -0.07 0.01" width="1.3"></a-text>
       </a-plane>
 
-      <!-- Botón Salir VR dentro de escena -->
-      <a-box id="exit-vr-btn" class="clickable" position="0 2.25 -2" depth="0.05" height="0.18" width="0.9" color="#ffd34d">
+      <!-- Botón para salir de VR -->
+      <a-box
+        id="exit-vr-btn"
+        class="clickable"
+        position="0 2.25 -2"
+        depth="0.05"
+        height="0.18"
+        width="0.9"
+        color="#ffd34d"
+      >
         <a-text value="Salir VR" align="center" color="#000" position="0 0 0.03" width="1.5"></a-text>
       </a-box>
 
@@ -109,13 +199,13 @@
         <a-entity camera look-controls></a-entity>
       </a-entity>
 
+      <!-- Cursores -->
       <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
       <a-entity id="laser-left" laser-controls="hand: left" raycaster="objects: .clickable" visible="false"></a-entity>
       <a-entity id="laser-right" laser-controls="hand: right" raycaster="objects: .clickable" visible="false"></a-entity>
-
     </a-scene>
 
-    <!-- PANEL NORMAL (DOM) a la derecha -->
+    <!-- Panel lateral DOM (fuera de VR) -->
     <div class="side-panel">
       <div class="lateral-video-container">
         <video id="video-lateral-normal" controls muted></video>
@@ -127,10 +217,9 @@
         <button id="close-info">Cerrar</button>
       </div>
     </div>
-
   </div>
 
-  <!-- DOM Carrusel para usuarios no-VR -->
+  <!-- Carrusel DOM para usuarios no VR -->
   <div id="gallery-overlay" class="overlay hidden">
     <img id="gallery-image" src="images/imagen1.jpeg" alt="Imagen de cámara">
     <div class="gallery-buttons">

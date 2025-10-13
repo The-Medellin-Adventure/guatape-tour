@@ -14,70 +14,59 @@ window.onload = () => {
   const infoPanelVR = document.getElementById("info-panel-vr");
   const infoTitleVR = document.getElementById("info-title-vr");
   const infoDescVR = document.getElementById("info-desc-vr");
-  const infoCloseVR = document.getElementById("info-close-vr");
-
   const immersiveGallery = document.getElementById("immersive-gallery");
   const galleryImage = document.getElementById("gallery-image");
   const galleryCaption = document.getElementById("gallery-caption");
-  const galleryPrev = document.getElementById("gallery-prev");
-  const galleryNext = document.getElementById("gallery-next");
-  const galleryCloseVR = document.getElementById("gallery-close-vr");
-
-  const btnPlayVR = document.getElementById("btn-play-vr");
-  const btnPauseVR = document.getElementById("btn-pause-vr");
-  const btnCloseVideoVR = document.getElementById("btn-close-video-vr");
 
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
-  const exitVrBtn = document.getElementById("exit-vr-btn");
 
   let currentSceneIndex = 0;
-  let galleryList = [];
-  let currentGalleryIndex = 0;
-  let lastOpenedHotspotId = null;
+  let menuVisible = false;
 
-  /* 🎬 Reproducir videos al primer clic (requerido por navegadores móviles) */
+  /* ▶️ Reproducir videos al primer clic */
   const startPlayback = () => {
-    if (videoMain) videoMain.play().catch(() => {});
-    if (videoLateral) videoLateral.play().catch(() => {});
+    videoMain?.play().catch(() => {});
+    videoLateral?.play().catch(() => {});
     window.removeEventListener("click", startPlayback);
   };
   window.addEventListener("click", startPlayback);
 
-  /* 🎥 Cargar videos y assets por escena */
-  function setVideoSourcesForScene(sceneData) {
+  /* 🎥 Cargar escena */
+  function loadScene(index) {
+    const sceneData = tourData.escenas[index];
     if (!sceneData) return;
-    if (videoMain) {
-      videoMain.src = sceneData.archivo;
-      videoMain.load();
-    }
-    if (videoLateral) {
-      videoLateral.src = sceneData.lateralVideo;
-      videoLateral.load();
-    }
-    if (videoLateralNormal) {
-      videoLateralNormal.src = sceneData.lateralVideo;
-      videoLateralNormal.load();
-    }
-    if (sphere && videoMain) sphere.setAttribute("src", "#video-main");
+    currentSceneIndex = index;
+
+    videoMain.src = sceneData.archivo;
+    videoLateral.src = sceneData.lateralVideo;
+    videoLateralNormal.src = sceneData.lateralVideo;
+
+    videoMain.load();
+    videoLateral.load();
+    videoLateralNormal.load();
+    sphere.setAttribute("src", "#video-main");
+
+    createHotspots(sceneData);
+    console.log("🎬 Escena cargada:", sceneData.titulo);
   }
 
-  /* 📍 Crear hotspots (info o galería) */
-  function createHotspotsForScene(escena) {
+  /* 📍 Crear hotspots */
+  function createHotspots(escena) {
     hotspotContainerVR.innerHTML = "";
-    if (!escena || !escena.hotspots) return;
+    if (!escena.hotspots) return;
 
     escena.hotspots.forEach((hs) => {
       const el = document.createElement("a-plane");
       el.setAttribute("width", "0.45");
       el.setAttribute("height", "0.45");
-      el.setAttribute("material", "src: #info-img; transparent: true; opacity: 0.98");
-      el.setAttribute("class", "clickable hotspot");
+      el.setAttribute("material", "src: #info-img; transparent: true; opacity: 0.95");
+      el.setAttribute("class", "clickable");
       el.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
       el.setAttribute("look-at", "[camera]");
       el.setAttribute(
         "animation__pulse",
-        "property: scale; dir: alternate; dur: 1200; loop: true; to: 1.25 1.25 1.25"
+        "property: scale; dir: alternate; dur: 1200; loop: true; to: 1.2 1.2 1.2"
       );
 
       const text = document.createElement("a-text");
@@ -85,157 +74,104 @@ window.onload = () => {
       text.setAttribute("align", "center");
       text.setAttribute("color", "#fff");
       text.setAttribute("position", "0 -0.35 0.01");
-      text.setAttribute("width", "1");
+      text.setAttribute("width", "1.2");
       el.appendChild(text);
 
-      // 🔸 Hotspot tipo cámara (galería)
-      if (hs.tipo === "camera") {
-        el.addEventListener("click", () => {
-          if (lastOpenedHotspotId === hs.id && immersiveGallery.getAttribute("visible") === "true") {
-            immersiveGallery.setAttribute("visible", "false");
-            lastOpenedHotspotId = null;
-            return;
-          }
-          galleryList = hs.imagenes ? hs.imagenes.slice() : [];
-          if (!galleryList.length) return;
-          currentGalleryIndex = 0;
-          galleryImage.setAttribute("src", galleryList[currentGalleryIndex]);
-          galleryCaption.setAttribute("value", hs.caption || hs.titulo || "");
+      el.addEventListener("click", () => {
+        if (hs.tipo === "info") {
+          infoTitleVR.setAttribute("value", hs.titulo);
+          infoDescVR.setAttribute("value", hs.descripcion);
+          const offsetX = hs.x >= 0 ? hs.x - 0.9 : hs.x + 0.9;
+          infoPanelVR.setAttribute("position", `${offsetX} ${hs.y} ${hs.z}`);
+          infoPanelVR.setAttribute("visible", "true");
+        } else if (hs.tipo === "camera") {
           immersiveGallery.setAttribute("visible", "true");
-          lastOpenedHotspotId = hs.id;
-        });
-      }
-      // 🔸 Hotspot tipo información
-      else {
-        el.addEventListener("click", () => {
-          const visible = infoPanelVR.getAttribute("visible") === "true";
-          const currentTitle = infoTitleVR.getAttribute("value");
-          if (visible && currentTitle === hs.titulo) {
-            infoPanelVR.setAttribute("visible", "false");
-            lastOpenedHotspotId = null;
-          } else {
-            infoTitleVR.setAttribute("value", hs.titulo);
-            infoDescVR.setAttribute("value", hs.descripcion);
-            const offsetX = hs.x >= 0 ? hs.x - 0.9 : hs.x + 0.9;
-            const panelPos = `${offsetX} ${hs.y} ${hs.z}`;
-            infoPanelVR.setAttribute("position", panelPos);
-            infoPanelVR.setAttribute("visible", "true");
-            lastOpenedHotspotId = hs.id;
-          }
-        });
-      }
+          galleryImage.setAttribute("src", hs.imagenes[0]);
+          galleryCaption.setAttribute("value", hs.caption);
+        }
+      });
 
       hotspotContainerVR.appendChild(el);
     });
   }
 
-  /* 🔄 Cambiar de escena */
-  function loadScene(index) {
-    const sceneData = tourData.escenas[index];
-    if (!sceneData) return;
-    currentSceneIndex = index;
-    setVideoSourcesForScene(sceneData);
-    createHotspotsForScene(sceneData);
-    immersiveGallery.setAttribute("visible", "false");
-    infoPanelVR.setAttribute("visible", "false");
-    lastOpenedHotspotId = null;
-    console.log("🎬 Escena cargada:", sceneData.titulo);
-  }
-
-  /* 🧭 Crear menú de escenas */
+  /* 🧭 Crear menú profesional */
   function createSceneMenuButtons() {
-    const sceneMenu = document.getElementById("scene-menu");
-    if (!sceneMenu) {
-      console.warn("⏳ Menú no encontrado, reintentando...");
-      setTimeout(createSceneMenuButtons, 500);
-      return;
-    }
-
     sceneMenu.innerHTML = "";
-    console.log("🧭 Creando menú de escenas...");
 
     tourData.escenas.forEach((esc, i) => {
       const btn = document.createElement("a-plane");
-      btn.setAttribute("width", "1.6");
-      btn.setAttribute("height", "0.32");
-      btn.setAttribute("color", "#ffd34d");
-      btn.setAttribute("position", `0 ${-0.38 * i} 0.01`);
+      btn.setAttribute("width", "1.7");
+      btn.setAttribute("height", "0.35");
+      btn.setAttribute("color", "#ffffff");
+      btn.setAttribute("opacity", "0.9");
+      btn.setAttribute("position", `0 ${-0.45 * i} 0`);
       btn.setAttribute("class", "clickable");
       btn.setAttribute("look-at", "[camera]");
-      btn.setAttribute("scale", "1 1 1");
+      btn.setAttribute("shadow", "receive: true");
+      btn.setAttribute(
+        "animation__hover",
+        "property: color; to: #ffd34d; startEvents: mouseenter; dur: 200"
+      );
+      btn.setAttribute(
+        "animation__unhover",
+        "property: color; to: #ffffff; startEvents: mouseleave; dur: 200"
+      );
 
       const text = document.createElement("a-text");
       text.setAttribute("value", esc.titulo);
       text.setAttribute("align", "center");
       text.setAttribute("color", "#073047");
       text.setAttribute("width", "1.5");
+      text.setAttribute("position", "0 0 0.01");
       btn.appendChild(text);
 
       btn.addEventListener("click", () => {
         loadScene(i);
-        sceneMenu.setAttribute("visible", "false");
-        console.log("📍 Cambiado a:", esc.titulo);
+        toggleMenu(false);
       });
 
       sceneMenu.appendChild(btn);
     });
-
-    sceneMenu.setAttribute("visible", "true");
   }
 
-  // Esperar a que A-Frame cargue completamente antes de crear el menú
-  setTimeout(createSceneMenuButtons, 1500);
+  /* ✨ Animar apertura / cierre */
+  function toggleMenu(forceState) {
+    menuVisible = typeof forceState === "boolean" ? forceState : !menuVisible;
+    if (menuVisible) {
+      sceneMenu.setAttribute("visible", true);
+      sceneMenu.setAttribute(
+        "animation__fadein",
+        "property: components.material.material.opacity; from: 0; to: 1; dur: 400; easing: easeOutQuad"
+      );
+      Array.from(sceneMenu.children).forEach((btn, i) => {
+        btn.setAttribute("scale", "0.5 0.5 0.5");
+        setTimeout(() => {
+          btn.setAttribute(
+            "animation__in",
+            "property: scale; to: 1 1 1; dur: 250; easing: easeOutQuad"
+          );
+        }, i * 120);
+      });
+    } else {
+      sceneMenu.setAttribute(
+        "animation__fadeout",
+        "property: components.material.material.opacity; from: 1; to: 0; dur: 300; easing: easeInQuad"
+      );
+      setTimeout(() => sceneMenu.setAttribute("visible", false), 300);
+    }
+  }
 
-  /* 🟡 Mostrar / ocultar menú al hacer clic en el icono */
-  menuIcon.addEventListener("click", () => {
-    const visible = sceneMenu.getAttribute("visible") === "true";
-    sceneMenu.setAttribute("visible", !visible);
-    console.log(visible ? "👁️ Cerrando menú" : "📋 Mostrando menú");
-  });
+  /* 👆 Clic en el icono */
+  menuIcon.addEventListener("click", () => toggleMenu());
 
-  /* ▶️ Controles de video lateral */
-  if (btnPlayVR) btnPlayVR.addEventListener("click", () => videoLateral.play().catch(() => {}));
-  if (btnPauseVR) btnPauseVR.addEventListener("click", () => videoLateral.pause());
-  if (btnCloseVideoVR)
-    btnCloseVideoVR.addEventListener("click", () => {
-      videoLateral.pause();
-      videoLateral.currentTime = 0;
-    });
-
-  /* 🚪 Botón salir de VR */
-  if (exitVrBtn)
-    exitVrBtn.addEventListener("click", () => {
-      try {
-        if (sceneEl && sceneEl.exitVR) sceneEl.exitVR();
-      } catch (e) {
-        console.warn(e);
-      }
-    });
-
-  /* 🕶️ Eventos de entrada y salida VR */
+  /* 🕶️ Mostrar automáticamente en VR */
   sceneEl.addEventListener("enter-vr", () => {
-    const laserL = document.getElementById("laser-left");
-    const laserR = document.getElementById("laser-right");
-    const cursor = document.getElementById("cursor");
-    if (laserL) laserL.setAttribute("visible", "true");
-    if (laserR) laserR.setAttribute("visible", "true");
-    if (cursor) cursor.setAttribute("raycaster", "objects: .clickable");
-
-    console.log("🕶️ Entrando a VR... mostrando menú automáticamente");
-    setTimeout(() => {
-      if (menuIcon) menuIcon.emit("click");
-    }, 1000);
+    setTimeout(() => toggleMenu(true), 1000);
   });
 
-  sceneEl.addEventListener("exit-vr", () => {
-    const laserL = document.getElementById("laser-left");
-    const laserR = document.getElementById("laser-right");
-    if (laserL) laserL.setAttribute("visible", "false");
-    if (laserR) laserR.setAttribute("visible", "false");
-    console.log("👋 Saliste del modo VR");
-  });
-
-  /* 🚀 Carga inicial */
+  /* 🚀 Cargar */
+  createSceneMenuButtons();
   loadScene(0);
-  console.log("✅ Tour listo, primera escena cargada.");
+  console.log("✅ Tour 360 listo con menú profesional");
 };
