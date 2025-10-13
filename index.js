@@ -30,6 +30,7 @@ window.onload = () => {
   function enablePlaybackOnce() {
     videoMain.play().catch(() => {});
     videoLateral.play().catch(() => {});
+    videoLateralVR.play().catch(() => {});
     window.removeEventListener("click", enablePlaybackOnce);
   }
   window.addEventListener("click", enablePlaybackOnce);
@@ -39,11 +40,16 @@ window.onload = () => {
     const data = tourData.escenas[index];
     if (!data) return;
 
-    // 🛑 Detener reproducción de cualquier video anterior
+    // 🛑 Detener completamente videos anteriores
     [videoMain, videoLateral, videoLateralVR].forEach((v) => {
-      v.pause();
-      v.removeAttribute("src");
-      v.load();
+      try {
+        v.pause();
+        v.currentTime = 0;
+        v.removeAttribute("src");
+        v.load();
+      } catch (e) {
+        console.warn("⚠️ Error al limpiar video anterior:", e);
+      }
     });
 
     currentSceneIndex = index;
@@ -58,7 +64,7 @@ window.onload = () => {
     console.log("🎬 Escena cargada:", data.titulo);
   }
 
-  // 🔹 Crear hotspots con efecto visual suave
+  // 🔹 Crear hotspots (fijos, sin movimiento)
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
 
@@ -74,18 +80,8 @@ window.onload = () => {
       icon.classList.add("clickable");
       icon.setAttribute("look-at", "[camera]");
       icon.setAttribute(
-        "animation__pulse",
-        "property: scale; dir: alternate; dur: 1200; loop: true; to: 1.25 1.25 1.25"
-      );
-
-      // ✨ Efecto de aparición suave
-      icon.setAttribute(
         "animation__fadein",
-        `property: opacity; from: 0; to: 1; dur: 1000; delay: ${200 * i}`
-      );
-      icon.setAttribute(
-        "animation__float",
-        "property: position; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 0 0.05 0"
+        `property: opacity; from: 0; to: 1; dur: 800; delay: ${150 * i}`
       );
 
       // título debajo
@@ -208,6 +204,13 @@ window.onload = () => {
         )
       );
       btn.addEventListener("click", () => {
+        // 🛑 Pausar videos actuales antes de cambiar
+        [videoMain, videoLateral, videoLateralVR].forEach((v) => {
+          try {
+            v.pause();
+            v.currentTime = 0;
+          } catch {}
+        });
         loadScene(i);
         toggleMenu(false);
       });
@@ -221,10 +224,16 @@ window.onload = () => {
     menuVisible = typeof force === "boolean" ? force : !menuVisible;
     if (menuVisible) {
       sceneMenu.setAttribute("visible", "true");
-      sceneMenu.setAttribute("animation", "property: scale; to: 1 1 1; dur: 300; easing: easeOutQuad");
+      sceneMenu.setAttribute(
+        "animation",
+        "property: scale; to: 1 1 1; dur: 300; easing: easeOutQuad"
+      );
       sceneMenu.setAttribute("scale", "0.1 0.1 0.1");
     } else {
-      sceneMenu.setAttribute("animation", "property: scale; to: 0.1 0.1 0.1; dur: 250; easing: easeInQuad");
+      sceneMenu.setAttribute(
+        "animation",
+        "property: scale; to: 0.1 0.1 0.1; dur: 250; easing: easeInQuad"
+      );
       setTimeout(() => sceneMenu.setAttribute("visible", "false"), 250);
     }
   }
@@ -241,5 +250,5 @@ window.onload = () => {
   createSceneMenu();
   loadScene(0);
 
-  console.log("✅ Tour 360° profesional con control de videos y hotspots animados listo.");
+  console.log("✅ Tour 360° listo con videos controlados y hotspots fijos.");
 };
