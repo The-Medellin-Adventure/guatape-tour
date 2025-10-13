@@ -283,4 +283,15 @@ window.onload = () => {
   loadScene(0);
 
   console.log("✅ Tour 360° profesional con fade suave entre escenas.");
+// 🧠 Asegura que los láseres se activen apenas entra en VR
+  sceneEl.addEventListener("enter-vr", () => {
+    const lasers = document.querySelectorAll("[laser-controls]");
+    setTimeout(() => {
+      lasers.forEach(l => {
+        l.setAttribute("visible", true);
+        l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
+      });
+    }, 500);
+  });
 };
+
