@@ -9,16 +9,22 @@ document.getElementById("video-lateral-normal").src = escena.lateralVideo;
 videoMain.src = escena.archivo;
 videoLateral.src = escena.lateralVideo;
 
-// Reproducir video principal al interactuar con la escena
-function playVideos() {
-  videoMain.play().catch(()=>console.log("Interacción requerida para video principal"));
-}
-document.querySelector("a-scene").addEventListener("click", playVideos);
+// 🔹 Reproducir videos con retraso programado
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    videoMain.play().catch(() => console.log("Interacción requerida para video principal"));
+  }, 3000); // 3 segundos después de ingresar
+
+  setTimeout(() => {
+    videoLateral.muted = false;
+    videoLateral.play().catch(() => console.log("Interacción requerida para video lateral"));
+  }, 5000); // 5 segundos después de ingresar
+});
 
 // Reproducir video lateral VR al tocarlo
 const videoLateralVR = document.getElementById("video-lateral-vr");
-videoLateralVR.addEventListener("click", ()=> {
-  videoLateral.play().catch(()=>console.log("Interacción requerida para video lateral VR"));
+videoLateralVR.addEventListener("click", () => {
+  videoLateral.play().catch(() => console.log("Interacción requerida para video lateral VR"));
 });
 
 // Hotspots pantalla normal
@@ -45,8 +51,8 @@ escena.hotspots.forEach((hs, index) => {
   title.textContent = hs.titulo;
   item.appendChild(icon);
   item.appendChild(title);
-  setTimeout(()=>item.classList.add("show"), index*300);
-  item.addEventListener("click", ()=>{
+  setTimeout(() => item.classList.add("show"), index * 300);
+  item.addEventListener("click", () => {
     hotspotTitle.textContent = hs.titulo;
     hotspotDescription.textContent = hs.descripcion;
     infoPanel.classList.add("show");
@@ -54,86 +60,87 @@ escena.hotspots.forEach((hs, index) => {
   });
   hotspotList.appendChild(item);
 
-  // VR hotspot animado con fondo gris semitransparente y no encima del video
+  // 🔹 Hotspots VR mejorados visualmente
   const hsVR = document.createElement("a-plane");
-  hsVR.setAttribute("width","0.35");
-  hsVR.setAttribute("height","0.35");
-  hsVR.setAttribute("color","#555"); // fondo gris
-  hsVR.setAttribute("opacity","0.8");
-  hsVR.setAttribute("class","clickable");
-  // Ajustar posición si el hotspot está en la zona del video lateral
-  const adjustedY = (hs.y < 1.4) ? hs.y + 0.5 : hs.y; // desplazar hacia arriba si está bajo
+  hsVR.setAttribute("width", "0.45");
+  hsVR.setAttribute("height", "0.45");
+  hsVR.setAttribute("material", "src: #info-img; transparent: true; opacity: 0.95");
+  hsVR.setAttribute("class", "clickable");
+  const adjustedY = hs.y < 1.4 ? hs.y + 0.5 : hs.y;
   hsVR.setAttribute("position", `${hs.x} ${adjustedY} ${hs.z}`);
-  hsVR.setAttribute("look-at","[camera]");
-  hsVR.setAttribute("animation__pulse","property: scale; dir: alternate; dur: 1000; loop: true; to: 1.2 1.2 1.2");
+  hsVR.setAttribute("look-at", "[camera]");
+  hsVR.setAttribute("animation__pulse", "property: scale; dir: alternate; dur: 1200; loop: true; to: 1.3 1.3 1.3");
 
-  // Texto dentro del hotspot
   const text = document.createElement("a-text");
   text.setAttribute("value", hs.titulo);
-  text.setAttribute("align","center");
-  text.setAttribute("color","#fff");
-  text.setAttribute("position","0 0 0.01");
-  text.setAttribute("width","0.3");
+  text.setAttribute("align", "center");
+  text.setAttribute("color", "#fff");
+  text.setAttribute("position", "0 -0.35 0.01");
+  text.setAttribute("width", "1");
   hsVR.appendChild(text);
 
-  hsVR.addEventListener("click", ()=>{
+  hsVR.addEventListener("click", () => {
     infoTitleVR.setAttribute("value", hs.titulo);
     infoDescVR.setAttribute("value", hs.descripcion);
-    infoPanelVR.setAttribute("visible","true");
+    infoPanelVR.setAttribute("visible", "true");
   });
   hotspotContainerVR.appendChild(hsVR);
 });
 
 // Cerrar info normal
-closeInfo.addEventListener("click", ()=>{
+closeInfo.addEventListener("click", () => {
   infoPanel.classList.remove("show");
-  setTimeout(()=>infoPanel.classList.add("hidden"),300);
+  setTimeout(() => infoPanel.classList.add("hidden"), 300);
 });
 
 // Galería pantalla normal
 const camaraIcon = document.getElementById("camara-icon");
+const camaraIconVR = document.getElementById("camara-icon-vr");
 const galleryOverlay = document.getElementById("gallery-overlay");
 const galleryImage = document.getElementById("gallery-image");
 const prevGallery = document.getElementById("prev-gallery");
 const nextGallery = document.getElementById("next-gallery");
 const closeGallery = document.getElementById("close-gallery");
 
-const galleryImages = ["images/imagen1.jpeg","images/imagen2.jpeg"];
+const galleryImages = ["images/imagen1.jpeg", "images/imagen2.jpeg"];
 let currentGalleryIndex = 0;
 
-function showGallery(index){
+function showGallery(index) {
   galleryImage.style.transform = "scale(0.9)";
-  setTimeout(()=>{
+  setTimeout(() => {
     galleryImage.src = galleryImages[index];
     galleryImage.style.transform = "scale(1)";
-  },150);
+  }, 150);
 }
 
-camaraIcon.addEventListener("click", ()=>{
+function openGallery() {
   currentGalleryIndex = 0;
   showGallery(currentGalleryIndex);
   galleryOverlay.classList.add("visible");
   galleryOverlay.classList.remove("hidden");
-});
+}
 
-prevGallery.addEventListener("click", ()=>{
-  currentGalleryIndex = (currentGalleryIndex-1+galleryImages.length)%galleryImages.length;
+camaraIcon.addEventListener("click", openGallery);
+camaraIconVR.addEventListener("click", openGallery);
+
+prevGallery.addEventListener("click", () => {
+  currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
-nextGallery.addEventListener("click", ()=>{
-  currentGalleryIndex = (currentGalleryIndex+1)%galleryImages.length;
+nextGallery.addEventListener("click", () => {
+  currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
   showGallery(currentGalleryIndex);
 });
 
-closeGallery.addEventListener("click", ()=>{
+closeGallery.addEventListener("click", () => {
   galleryOverlay.classList.remove("visible");
-  setTimeout(()=>galleryOverlay.classList.add("hidden"),300);
+  setTimeout(() => galleryOverlay.classList.add("hidden"), 300);
 });
 
 // Salir VR
 const exitVRBtn = document.getElementById("exit-vr-btn");
-exitVRBtn.addEventListener("click", ()=>{
+exitVRBtn.addEventListener("click", () => {
   const sceneEl = document.querySelector("a-scene");
   sceneEl.exitVR();
 });

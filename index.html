@@ -14,7 +14,8 @@
 
   <!-- Video principal 360° -->
   <div class="video-area">
-    <a-scene embedded vr-mode-ui="enabled: true">
+    <!-- Solo botón VR visible -->
+    <a-scene embedded vr-mode-ui="enabled: true; enterVRButton: true">
       <a-assets>
         <video id="video-main" muted loop crossorigin="anonymous"></video>
         <video id="video-lateral" muted loop crossorigin="anonymous"></video>
@@ -23,7 +24,7 @@
       </a-assets>
 
       <!-- Esfera 360° -->
-      <a-videosphere id="sphere" src="#video-main"></a-videosphere>
+      <a-videosphere id="sphere" src="#video-main" rotation="0 0 0"></a-videosphere>
 
       <!-- Hotspots flotantes animados -->
       <a-entity id="hotspot-container"></a-entity>
@@ -34,7 +35,7 @@
         <a-text id="info-desc-vr" value="Descripción..." align="center" position="0 -0.05 0" width="1.2" color="#ffffff"></a-text>
       </a-plane>
 
-      <!-- Video lateral corregido y clickable -->
+      <!-- Video lateral clickable -->
       <a-video id="video-lateral-vr" src="#video-lateral" width="1.2" height="0.675" position="0 1.6 -2" class="clickable"></a-video>
 
       <!-- Botón salir VR -->
@@ -42,14 +43,20 @@
         <a-text value="Salir de VR" align="center" color="#000" position="0 0 0.03"></a-text>
       </a-box>
 
-      <!-- Cámara VR con punteros para mandos -->
-      <a-entity camera look-controls position="0 1.6 0"></a-entity>
+      <!-- Ícono de cámara dentro del VR -->
+      <a-image src="#camara-img" id="camara-icon-vr" position="0 1.4 -1.8" scale="0.4 0.4 0.4" class="clickable"></a-image>
+
+      <!-- Cámara VR con controles de vista -->
+      <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
+
+      <!-- Cursor / láser visible desde el inicio -->
+      <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
       <a-entity laser-controls="hand: left" raycaster="objects:.clickable"></a-entity>
       <a-entity laser-controls="hand: right" raycaster="objects:.clickable"></a-entity>
 
     </a-scene>
 
-    <!-- Icono de cámara flotante para pantalla normal -->
+    <!-- Icono de cámara flotante (pantalla normal) -->
     <img src="img/Camara.png" id="camara-icon" alt="Cámara">
   </div>
 
