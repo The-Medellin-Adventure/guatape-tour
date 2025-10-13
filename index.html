@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guatapé Tour VR Ultra Premium</title>
+  <title>Guatapé Travel</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script type="module" src="index.js" defer></script>
@@ -34,10 +34,10 @@
     </a-plane>
 
     <!-- VIDEO LATERAL -->
-    <a-video id="video-lateral-vr" src="#video-lateral" width="1.2" height="0.675" position="3 -1.3 -3" class="clickable"></a-video>
+    <a-video id="video-lateral-vr" src="#video-lateral" width="1.2" height="1.675" position="3 0 -3" class="clickable"></a-video>
 
     <!-- BOTÓN SALIR VR -->
-    <a-box id="exit-vr-btn" class="clickable" position="0 2 -1.2" depth="0.05" height="0.2" width="0.5" color="#ffcc00">
+    <a-box id="exit-vr-btn" class="clickable" position="0 2 -1.2" depth="0.05" height="0.2" width="1.5" color="#ffcc00">
       <a-text value="Salir VR" align="center" color="#000" position="0 0 0.03"></a-text>
     </a-box>
 
@@ -45,7 +45,7 @@
     <a-image src="#camara-img" id="camara-icon-vr" position="0 1.4 -1.8" scale="0.4 0.4 0.4" class="clickable"></a-image>
 
     <!-- CÁMARA Y CONTROLES -->
-    <a-entity camera look-controls wasd-controls position="1.5 3 0"></a-entity>
+    <a-entity camera look-controls wasd-controls position="1.5  0"></a-entity>
     <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
     <a-entity laser-controls="hand: left" raycaster="objects:.clickable"></a-entity>
     <a-entity laser-controls="hand: right" raycaster="objects:.clickable"></a-entity>

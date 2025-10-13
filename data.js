@@ -11,8 +11,8 @@ const tourData = {
         {
           id: "hs1",
           x: -3,
-          y: -1.5,
-          z: -3,
+          y: -1,
+          z: -2,
           titulo: "Piedra del Peñol",
           descripcion:
             "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé."
@@ -20,7 +20,7 @@ const tourData = {
         {
           id: "hs2",
           x: 2,
-          y: 1.2,
+          y: 1,
           z: -2,
           titulo: "Embalse de Guatapé",
           descripcion:
