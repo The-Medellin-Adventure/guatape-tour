@@ -1,218 +1,163 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Tour 360 - VR Completo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guatapé Travel - VR</title>
 
-    <!-- A-Frame -->
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
-    <!-- Swiper para carrusel -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="index.js" defer></script>
 
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+    }
 
-      .logo-card {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        z-index: 10;
-      }
+    /* 🔹 Forzar botón VR visible */
+    a-enter-vr-button {
+      display: block !important;
+      position: fixed !important;
+      bottom: 20px !important;
+      right: 20px !important;
+      z-index: 9999 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
 
-      .logo-card img {
-        width: 40px;
-        height: 40px;
-      }
+    a-enter-ar-button {
+      display: none !important;
+    }
 
-      /* Carrusel */
-      .swiper {
-        width: 300px;
-        height: 200px;
-        background: rgba(0, 0, 0, 0.85);
-        border-radius: 10px;
-      }
+    /* 🔹 Estilos extra del menú VR */
+    .scene-button {
+      background: #0a1e2b;
+      color: #ffcc00;
+      border: 2px solid #ffcc00;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-      .swiper-slide {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-      }
+    .scene-button:hover {
+      background: #ffcc00;
+      color: #000;
+    }
+  </style>
+</head>
 
-      .swiper-slide img {
-        width: 100%;
-        border-radius: 8px;
-      }
+<body>
+  <div class="tour-container">
 
-      #closeCarousel {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        background: red;
-        border: none;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-      }
+    <a-scene id="scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" renderer="antialias: true; colorManagement: true">
 
-      #videoContainer {
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-        width: 320px;
-        height: 180px;
-        z-index: 10;
-        border-radius: 10px;
-        overflow: hidden;
-      }
+      <!-- ✅ Activos -->
+      <a-assets>
+        <!-- 🎥 Videos -->
+        <video id="video1" src="videos/video1.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+        <video id="video2" src="videos/video2.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+        <video id="video3" src="videos/video3.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
 
-      #videoContainer video {
-        width: 100%;
-        height: 100%;
-      }
+        <!-- 🖼 Imágenes -->
+        <img id="camara-img" src="img/Camara.png" />
+        <img id="info-img" src="img/info.png" />
+        <img id="play-img" src="img/play.jpg" />
+        <img id="pause-img" src="img/pause.png" />
+        <img id="cerrar-img" src="img/cerra.jpg" />
+        <img id="next-img" src="img/next.jpg" />
+        <img id="close-img" src="img/close.png" />
+        <img id="logo-img" src="img/logo.png" />
+      </a-assets>
 
-      /* Menú de escenas */
-      #sceneMenu {
-        position: absolute;
-        top: 50%;
-        left: 10px;
-        transform: translateY(-50%);
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        padding: 10px;
-        border-radius: 10px;
-        z-index: 10;
-      }
+      <!-- ✅ Video principal 360 -->
+      <a-videosphere id="sphere" src="#video1" rotation="0 0 0"></a-videosphere>
 
-      #sceneMenu button {
-        display: block;
-        width: 100%;
-        margin: 5px 0;
-        background: #0066cc;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 8px;
-        cursor: pointer;
-      }
+      <!-- ✅ Contenedor de hotspots -->
+      <a-entity id="hotspot-container"></a-entity>
 
-      #sceneMenu button:hover {
-        background: #0099ff;
-      }
-    </style>
-  </head>
+      <!-- ✅ Tarjeta info -->
+      <a-plane id="info-panel-vr" visible="false" width="1.6" height="0.7" color="#0a1e2b" opacity="0.95" position="0 1.6 -1.5" look-at="[camera]">
+        <a-text id="info-title-vr" value="Título" align="center" position="0 0.20 0.01" color="#ffcc00" width="1.5"></a-text>
+        <a-text id="info-desc-vr" value="Descripción..." align="center" position="0 -0.05 0.01" color="#ffffff" width="1.45"></a-text>
+        <a-image id="info-close" src="#close-img" position="0.72 0.27 0.01" width="0.12" height="0.12" class="clickable"></a-image>
+      </a-plane>
 
-  <body>
-    <!-- Tarjeta de logo -->
-    <div class="logo-card">
-      <img src="img/logo.png" alt="Logo" />
-      <span>The Medellin Adventure</span>
-    </div>
+      <!-- ✅ Logo VR -->
+      <a-plane id="logo-panel" width="1" height="0.32" position="0 2.45 -1.9" color="#071826" opacity="0.95" look-at="[camera]">
+        <a-image src="#logo-img" position="-0.38 0 0.01" width="0.26" height="0.26"></a-image>
+        <a-text value="Guatapé Travel" align="left" color="#ffcc00" position="-0.02 0.08 0.01" width="0.9"></a-text>
+        <a-text value="The Medellín Adventure" align="left" color="#fff" position="-0.02 -0.06 0.01" width="0.9"></a-text>
+      </a-plane>
 
-    <!-- Menú lateral de escenas -->
-    <div id="sceneMenu">
-      <button onclick="changeScene('img/plaza_botero_360.jpg')">Plaza Botero</button>
-      <button onclick="changeScene('img/pueblito_paisa_360.jpg')">Pueblito Paisa</button>
-      <button onclick="changeScene('img/metro_360.jpg')">Metro de Medellín</button>
-    </div>
+      <!-- ✅ Botón salir VR -->
+      <a-box id="exit-vr-btn" class="clickable" position="0 2 -1.2" depth="0.05" height="0.22" width="1.5" color="#ffcc00">
+        <a-text value="Salir VR" align="center" color="#000" position="0 0 0.03"></a-text>
+      </a-box>
 
-    <!-- Carrusel -->
-    <div
-      id="carouselContainer"
-      style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:20;"
-    >
-      <button id="closeCarousel">X</button>
-      <div class="swiper">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide"><img src="img/botero1.jpg" /><p>Escultura 1</p></div>
-          <div class="swiper-slide"><img src="img/botero2.jpg" /><p>Escultura 2</p></div>
-        </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-      </div>
-    </div>
+      <!-- ✅ Menú de cambio de escenas (visible dentro del mundo VR) -->
+      <a-plane id="menu-vr" position="-1.5 1.4 -2" width="1.4" height="1" color="#0a1e2b" opacity="0.9" look-at="[camera]">
+        <a-text value="Escenas:" color="#ffcc00" position="-0.6 0.35 0.02" width="1.5"></a-text>
 
-    <!-- Video lateral -->
-    <div id="videoContainer">
-      <video id="infoVideo" src="video1.mp4" autoplay muted loop></video>
-    </div>
+        <a-plane id="btn-scene1" position="0 0.15 0.02" width="1.2" height="0.25" color="#071826" class="clickable">
+          <a-text value="Escena 1 - Guatapé" align="center" width="1.1" color="#fff"></a-text>
+        </a-plane>
 
-    <!-- Escena A-Frame -->
-    <a-scene vr-mode-ui="enabled: true" embedded>
-      <!-- Cámara con cursor -->
-      <a-entity id="rig" position="0 1.6 0">
-        <a-camera>
-          <a-cursor color="#00FFAA" fuse="true" fuse-timeout="1000"></a-cursor>
-        </a-camera>
-      </a-entity>
+        <a-plane id="btn-scene2" position="0 -0.15 0.02" width="1.2" height="0.25" color="#071826" class="clickable">
+          <a-text value="Escena 2 - Piedra del Peñol" align="center" width="1.1" color="#fff"></a-text>
+        </a-plane>
 
-      <!-- Fondo esférico -->
-      <a-sky id="sky" src="img/plaza_botero_360.jpg" rotation="0 -90 0"></a-sky>
+        <a-plane id="btn-scene3" position="0 -0.45 0.02" width="1.2" height="0.25" color="#071826" class="clickable">
+          <a-text value="Escena 3 - Malecón" align="center" width="1.1" color="#fff"></a-text>
+        </a-plane>
+      </a-plane>
 
-      <!-- Hotspot tipo cámara -->
-      <a-image
-        id="hotspot-camera"
-        src="img/Camara.png"
-        position="2 1.5 -3"
-        scale="0.5 0.5 0.5"
-        class="clickable"
-      ></a-image>
-
-      <!-- Luz ambiental -->
-      <a-entity light="type: ambient; color: #888"></a-entity>
+      <!-- ✅ Cámara -->
+      <a-entity camera look-controls position="0 1.6 0"></a-entity>
+      <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
+      <a-entity laser-controls="hand: left" raycaster="objects:.clickable"></a-entity>
+      <a-entity laser-controls="hand: right" raycaster="objects:.clickable"></a-entity>
     </a-scene>
+  </div>
 
-    <script>
-      // --- Cambio de escena ---
-      function changeScene(imageSrc) {
-        document.getElementById("sky").setAttribute("src", imageSrc);
-      }
+  <script>
+    // --- 🎬 Control de cambio de escenas ---
+    const videos = {
+      scene1: document.querySelector("#video1"),
+      scene2: document.querySelector("#video2"),
+      scene3: document.querySelector("#video3"),
+    };
 
-      // --- Hotspot de carrusel ---
-      const hotspot = document.getElementById("hotspot-camera");
-      const carouselContainer = document.getElementById("carouselContainer");
-      const closeCarousel = document.getElementById("closeCarousel");
+    const sphere = document.querySelector("#sphere");
 
-      hotspot.addEventListener("click", () => {
-        carouselContainer.style.display = "block";
-        new Swiper(".swiper", {
-          loop: true,
-          pagination: { el: ".swiper-pagination" },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-        });
+    function switchScene(video) {
+      // Pausa todos los videos
+      Object.values(videos).forEach(v => v.pause());
+      // Cambia fuente del video esférico
+      sphere.setAttribute("src", "#" + video.id);
+      // Reproduce el video actual
+      video.play();
+    }
+
+    // Asignar eventos
+    document.querySelector("#btn-scene1").addEventListener("click", () => switchScene(videos.scene1));
+    document.querySelector("#btn-scene2").addEventListener("click", () => switchScene(videos.scene2));
+    document.querySelector("#btn-scene3").addEventListener("click", () => switchScene(videos.scene3));
+
+    // --- 🎧 Salir de VR ---
+    document.querySelector("#exit-vr-btn").addEventListener("click", () => {
+      document.querySelector("a-scene").exitVR();
+    });
+
+    // --- 🔊 Reproducción automática del primer video ---
+    window.addEventListener("load", () => {
+      videos.scene1.play().catch(() => {
+        console.log("El video esperará interacción del usuario.");
       });
-
-      closeCarousel.addEventListener("click", () => {
-        carouselContainer.style.display = "none";
-      });
-
-      // --- Punteros activos en VR ---
-      const scene = document.querySelector("a-scene");
-      scene.addEventListener("enter-vr", () => {
-        console.log("Entrando a modo VR...");
-        document.querySelector("a-cursor").setAttribute("visible", "true");
-      });
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
