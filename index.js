@@ -21,6 +21,17 @@ window.onload = () => {
   const sceneMenu = document.getElementById("scene-menu");
   const exitVrBtn = document.getElementById("exit-vr-btn");
 
+  // 🔹 Overlay de fundido (creado dinámicamente)
+  const fadeOverlay = document.createElement("a-plane");
+  fadeOverlay.setAttribute("id", "fade-overlay");
+  fadeOverlay.setAttribute("color", "#000");
+  fadeOverlay.setAttribute("width", "100");
+  fadeOverlay.setAttribute("height", "100");
+  fadeOverlay.setAttribute("position", "0 0 -1");
+  fadeOverlay.setAttribute("material", "opacity: 0; transparent: true");
+  fadeOverlay.setAttribute("visible", "true");
+  sceneEl.appendChild(fadeOverlay);
+
   let currentSceneIndex = 0;
   let menuVisible = false;
   let currentGallery = [];
@@ -34,6 +45,23 @@ window.onload = () => {
     window.removeEventListener("click", enablePlaybackOnce);
   }
   window.addEventListener("click", enablePlaybackOnce);
+
+  // 🔹 Animar fundido de entrada/salida
+  function fadeIn(callback) {
+    fadeOverlay.setAttribute(
+      "animation",
+      "property: material.opacity; from: 1; to: 0; dur: 500; easing: easeOutQuad"
+    );
+    setTimeout(() => callback && callback(), 500);
+  }
+
+  function fadeOut(callback) {
+    fadeOverlay.setAttribute(
+      "animation",
+      "property: material.opacity; from: 0; to: 1; dur: 500; easing: easeInQuad"
+    );
+    setTimeout(() => callback && callback(), 500);
+  }
 
   // 🔹 Cargar escena
   function loadScene(index) {
@@ -54,17 +82,23 @@ window.onload = () => {
 
     currentSceneIndex = index;
 
-    // 🔹 Asignar nuevas fuentes
-    videoMain.setAttribute("src", data.archivo);
-    videoLateral.setAttribute("src", data.lateralVideo);
-    videoLateralVR.setAttribute("src", data.lateralVideo);
-    sphere.setAttribute("src", "#video-main");
+    // 🔹 Fundido de salida antes de cambiar
+    fadeOut(() => {
+      // Asignar nuevas fuentes
+      videoMain.setAttribute("src", data.archivo);
+      videoLateral.setAttribute("src", data.lateralVideo);
+      videoLateralVR.setAttribute("src", data.lateralVideo);
+      sphere.setAttribute("src", "#video-main");
 
-    createHotspots(data.hotspots);
-    console.log("🎬 Escena cargada:", data.titulo);
+      createHotspots(data.hotspots);
+
+      // 🔹 Fundido de entrada luego de cargar
+      fadeIn();
+      console.log("🎬 Escena cargada:", data.titulo);
+    });
   }
 
-  // 🔹 Crear hotspots (fijos, sin movimiento)
+  // 🔹 Crear hotspots (fijos)
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
 
@@ -93,7 +127,6 @@ window.onload = () => {
       label.setAttribute("width", "1.2");
       icon.appendChild(label);
 
-      // clic
       icon.addEventListener("click", () => {
         if (hs.tipo === "info") {
           showInfoPanel(hs);
@@ -151,7 +184,7 @@ window.onload = () => {
     immersiveGallery.setAttribute("visible", "false")
   );
 
-  // 🔹 Crear menú de escenas (azul profesional)
+  // 🔹 Crear menú de escenas
   function createSceneMenu() {
     sceneMenu.innerHTML = "";
 
@@ -204,7 +237,6 @@ window.onload = () => {
         )
       );
       btn.addEventListener("click", () => {
-        // 🛑 Pausar videos actuales antes de cambiar
         [videoMain, videoLateral, videoLateralVR].forEach((v) => {
           try {
             v.pause();
@@ -219,7 +251,7 @@ window.onload = () => {
     });
   }
 
-  // 🔹 Animación suave de apertura/cierre del menú
+  // 🔹 Animación de apertura/cierre del menú
   function toggleMenu(force) {
     menuVisible = typeof force === "boolean" ? force : !menuVisible;
     if (menuVisible) {
@@ -250,5 +282,5 @@ window.onload = () => {
   createSceneMenu();
   loadScene(0);
 
-  console.log("✅ Tour 360° listo con videos controlados y hotspots fijos.");
+  console.log("✅ Tour 360° profesional con fade suave entre escenas.");
 };
