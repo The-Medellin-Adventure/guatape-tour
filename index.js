@@ -26,8 +26,6 @@ window.onload = () => {
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
 
-  const exitVrBtn = document.getElementById("exit-vr-btn");
-
   const camaraIconVR = document.getElementById("camara-icon");
 
   // ---------- ESTADO ----------
@@ -36,7 +34,7 @@ window.onload = () => {
   let galleryList = [];
   let currentGalleryIndex = 0;
 
-  // ---------- INICIO REPRODUCCIÓN VIDEO ----------
+  // ---------- REPRODUCCIÓN INICIAL VIDEO ----------
   const startPlayback = () => {
     if (videoMain) videoMain.play().catch(() => {});
     if (videoLateral) videoLateral.play().catch(() => {});
@@ -47,7 +45,6 @@ window.onload = () => {
   // ---------- FUNCIONES HOTSPOTS ----------
   function createHotspotsForScene(escena) {
     hotspotContainerVR.innerHTML = "";
-
     if (!escena || !escena.hotspots) return;
 
     escena.hotspots.forEach(hs => {
@@ -120,13 +117,18 @@ window.onload = () => {
 
     currentSceneIndex = index;
 
+    // Video principal y lateral según la escena
     videoMain.src = sceneData.archivo;
     videoLateral.src = sceneData.lateralVideo;
     videoLateralNormal.src = sceneData.lateralVideo;
 
+    videoMain.load();
+    videoLateral.load();
+    videoMain.play().catch(() => {});
+    videoLateral.play().catch(() => {});
+
     createHotspotsForScene(sceneData);
 
-    // Cerrar UIs abiertas
     immersiveGallery.classList.remove("visible");
     infoPanelVR.setAttribute("visible", "false");
     lastOpenedHotspotId = null;
@@ -185,7 +187,6 @@ window.onload = () => {
     infoPanelVR.setAttribute("visible", "false");
     lastOpenedHotspotId = null;
   });
-
   closeGalleryBtn.addEventListener("click", () => {
     immersiveGallery.classList.remove("visible");
     lastOpenedHotspotId = null;
@@ -197,6 +198,7 @@ window.onload = () => {
   btnCerrar.addEventListener("click", () => { if (videoLateral) { videoLateral.pause(); videoLateral.currentTime=0; } });
 
   // ---------- BOTÓN SALIR VR ----------
+  const exitVrBtn = document.getElementById("exit-vr-btn");
   if (exitVrBtn) exitVrBtn.addEventListener("click", () => {
     try { if (sceneEl && sceneEl.exitVR) sceneEl.exitVR(); } catch(e){ console.warn("No VR session") }
   });
@@ -236,10 +238,7 @@ window.onload = () => {
   proyectoEl.appendChild(plane);
   sceneEl.appendChild(proyectoEl);
 
-  // Ocultar automáticamente tras 5s
-  setTimeout(() => {
-    proyectoEl.setAttribute("visible", "false");
-  }, 5000);
+  setTimeout(() => { proyectoEl.setAttribute("visible", "false"); }, 5000);
 
   // ---------- CARGAR PRIMERA ESCENA ----------
   loadScene(0);
