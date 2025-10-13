@@ -39,8 +39,16 @@ window.onload = () => {
     const data = tourData.escenas[index];
     if (!data) return;
 
+    // 🛑 Detener reproducción de cualquier video anterior
+    [videoMain, videoLateral, videoLateralVR].forEach((v) => {
+      v.pause();
+      v.removeAttribute("src");
+      v.load();
+    });
+
     currentSceneIndex = index;
 
+    // 🔹 Asignar nuevas fuentes
     videoMain.setAttribute("src", data.archivo);
     videoLateral.setAttribute("src", data.lateralVideo);
     videoLateralVR.setAttribute("src", data.lateralVideo);
@@ -50,10 +58,11 @@ window.onload = () => {
     console.log("🎬 Escena cargada:", data.titulo);
   }
 
-  // 🔹 Crear hotspots de info y cámara
+  // 🔹 Crear hotspots con efecto visual suave
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
-    hotspots.forEach((hs) => {
+
+    hotspots.forEach((hs, i) => {
       const icon = document.createElement("a-image");
       icon.setAttribute(
         "src",
@@ -67,6 +76,16 @@ window.onload = () => {
       icon.setAttribute(
         "animation__pulse",
         "property: scale; dir: alternate; dur: 1200; loop: true; to: 1.25 1.25 1.25"
+      );
+
+      // ✨ Efecto de aparición suave
+      icon.setAttribute(
+        "animation__fadein",
+        `property: opacity; from: 0; to: 1; dur: 1000; delay: ${200 * i}`
+      );
+      icon.setAttribute(
+        "animation__float",
+        "property: position; dir: alternate; dur: 3000; easing: easeInOutSine; loop: true; to: 0 0.05 0"
       );
 
       // título debajo
@@ -222,5 +241,5 @@ window.onload = () => {
   createSceneMenu();
   loadScene(0);
 
-  console.log("✅ Tour 360° profesional listo con hotspots y menú animado.");
+  console.log("✅ Tour 360° profesional con control de videos y hotspots animados listo.");
 };
