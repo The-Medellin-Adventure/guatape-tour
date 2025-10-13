@@ -1,31 +1,38 @@
 import tourData from "./data.js";
 
-const escena = tourData.escenas[0];
+AFRAME.scenes[0].addEventListener("loaded", () => {
+  const escena = tourData.escenas[0];
 
-// Video principal y lateral
-const videoMain = document.getElementById("video-main");
-const videoLateral = document.getElementById("video-lateral");
-document.getElementById("video-lateral-normal").src = escena.lateralVideo;
-videoMain.src = escena.archivo;
-videoLateral.src = escena.lateralVideo;
+  // Video principal y lateral
+  const videoMain = document.getElementById("video-main");
+  const videoLateral = document.getElementById("video-lateral");
+  const lateralNormal = document.getElementById("video-lateral-normal");
+  if (!videoMain || !videoLateral || !lateralNormal) {
+    console.warn("⚠️ Elementos de video no encontrados, revisa IDs en index.html");
+    return;
+  }
 
-// 🔹 Reproducir videos con retraso programado
-window.addEventListener("load", () => {
+  lateralNormal.src = escena.lateralVideo;
+  videoMain.src = escena.archivo;
+  videoLateral.src = escena.lateralVideo;
+
+  // 🔹 Reproducir videos con retraso programado
   setTimeout(() => {
     videoMain.play().catch(() => console.log("Interacción requerida para video principal"));
-  }, 3000); // 3 segundos después de ingresar
+  }, 3000);
 
   setTimeout(() => {
     videoLateral.muted = false;
     videoLateral.play().catch(() => console.log("Interacción requerida para video lateral"));
-  }, 5000); // 5 segundos después de ingresar
-});
+  }, 5000);
 
-// Reproducir video lateral VR al tocarlo
-const videoLateralVR = document.getElementById("video-lateral-vr");
-videoLateralVR.addEventListener("click", () => {
-  videoLateral.play().catch(() => console.log("Interacción requerida para video lateral VR"));
-});
+  // Reproducir video lateral VR al tocarlo
+  const videoLateralVR = document.getElementById("video-lateral-vr");
+  if (videoLateralVR) {
+    videoLateralVR.addEventListener("click", () => {
+      videoLateral.play().catch(() => console.log("Interacción requerida para video lateral VR"));
+    });
+  }
 
 // Hotspots pantalla normal
 const hotspotList = document.getElementById("hotspot-list");
