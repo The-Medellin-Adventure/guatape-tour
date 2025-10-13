@@ -1,105 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Medellin Adventure VR</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guatapé Travel - VR</title>
 
-  <!-- 🔗 Librería A-Frame -->
+  <!-- A-Frame (CDN) -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
-  <!-- 🔗 Swiper para el carrusel -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <!-- Tu CSS (mantén style.css existente) -->
+  <link rel="stylesheet" href="style.css">
 
-  <!-- 🎨 Estilos -->
+  <!-- index.js (module) -->
+  <script type="module" src="index.js" defer></script>
+
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #000;
-    }
-
-    /* 🔹 Logo superior */
-    #logo {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      width: 140px;
-      z-index: 1001;
-    }
-
-    /* 🔹 Controles de video lateral */
-    .video-controls {
-      position: fixed;
-      bottom: 25px;
-      left: 25px;
-      z-index: 1001;
-      display: flex;
-      gap: 10px;
-    }
-
-    .video-controls img {
-      width: 45px;
-      height: 45px;
-      cursor: pointer;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.3);
-      transition: transform 0.2s;
-    }
-
-    .video-controls img:hover {
-      transform: scale(1.1);
-    }
-
-    /* 🔹 Carrusel inmersivo */
-    #gallery-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1002;
-      flex-direction: column;
-    }
-
-    #gallery-overlay.visible { display: flex; }
-
-    .swiper {
-      width: 90%;
-      height: 80%;
-    }
-
-    .swiper-slide {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1.2rem;
-    }
-
-    .swiper-slide img {
-      max-height: 70vh;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-
-    #close-gallery {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      cursor: pointer;
-      z-index: 1003;
-    }
-
-    /* 🔹 Menú flotante de escenas */
+    /* Asegura visibilidad del botón nativo Enter VR */
     a-enter-vr-button {
       display: block !important;
       position: fixed !important;
@@ -108,99 +24,106 @@
       z-index: 9999 !important;
     }
 
-    /* 🔹 Tarjetas de información */
-    #info-panel-vr a-plane {
-      border-radius: 0.2em;
-    }
+    /* Un pequeño ajuste para que el exit-vr-box sea siempre visible */
+    #exit-vr-btn { cursor: pointer; }
   </style>
 </head>
-
 <body>
-  <!-- 🔹 Logo -->
-  <img id="logo" src="img/logo.png" alt="The Medellin Adventure" />
+  <div class="tour-container">
 
-  <!-- 🔹 Controles del video lateral -->
-  <div class="video-controls">
-    <img id="btn-play" src="img/play.jpg" alt="Play" />
-    <img id="btn-pause" src="img/pause.png" alt="Pause" />
-    <img id="btn-cerrar" src="img/cerrar.jpg" alt="Cerrar" />
-  </div>
+    <a-scene id="scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" renderer="antialias: true; colorManagement: true">
+      <a-assets>
+        <!-- Videos (tus URLs remotas) -->
+        <video id="video-main" crossorigin="anonymous" playsinline webkit-playsinline></video>
+        <video id="video-lateral" crossorigin="anonymous" playsinline webkit-playsinline></video>
 
-  <!-- 🔹 Carrusel inmersivo -->
-  <div id="gallery-overlay">
-    <img id="close-gallery" src="img/close.png" alt="Cerrar" />
-    <div class="swiper">
-      <div class="swiper-wrapper" id="gallery-wrapper">
-        <div class="swiper-slide">
-          <img src="images/imagen1.jpeg" alt="Imagen 1" />
-          <p>Descripción 1</p>
-        </div>
-        <div class="swiper-slide">
-          <img src="images/imagen2.jpeg" alt="Imagen 2" />
-          <p>Descripción 2</p>
-        </div>
+        <!-- Imágenes / iconos (asegúrate de tenerlas en /img/) -->
+        <img id="camara-img" src="img/Camara.png" />
+        <img id="info-img" src="img/info.png" />
+        <img id="play-img" src="img/play.jpg" />
+        <img id="pause-img" src="img/pause.png" />
+        <img id="cerrar-img" src="img/cerra.jpg" />
+        <img id="next-img" src="img/next.jpg" />
+        <img id="close-img" src="img/close.png" />
+        <img id="logo-img" src="img/logo.png" />
+
+        <!-- ejemplos de imágenes de galería (si las necesitas pre-cargadas) -->
+        <img id="g1" src="images/imagen1.jpeg" />
+        <img id="g2" src="images/imagen2.jpeg" />
+        <img id="g3" src="images/imagen3.jpeg" />
+      </a-assets>
+
+      <!-- video 360 principal -->
+      <a-videosphere id="sphere" src="#video-main" rotation="0 0 0"></a-videosphere>
+
+      <!-- contenedor de hotspots -->
+      <a-entity id="hotspot-container"></a-entity>
+
+      <!-- TARJETA INFO (Marzipano style) -->
+      <a-plane id="info-panel-vr" visible="false" width="1.6" height="0.7" color="#0a1e2b" opacity="0.95" position="0 1.6 -1.5" look-at="[camera]">
+        <a-text id="info-title-vr" value="Título" align="center" position="0 0.20 0.01" color="#ffcc00" width="1.5"></a-text>
+        <a-text id="info-desc-vr" value="Descripción..." align="center" position="0 -0.05 0.01" color="#ffffff" width="1.45"></a-text>
+        <a-image id="info-close" src="#close-img" position="0.72 0.27 0.01" width="0.12" height="0.12" class="clickable"></a-image>
+      </a-plane>
+
+      <!-- VIDEO LATERAL -->
+      <a-video id="video-lateral-vr" src="#video-lateral" width="1.2" height="1.68" position="3 0 -3" class="clickable"></a-video>
+
+      <!-- BOTONES VIDEO LATERAL (VR) -->
+      <a-image id="btn-play" src="#play-img" position="2.5 1.6 -2.8" width="0.28" height="0.28" class="clickable"></a-image>
+      <a-image id="btn-pause" src="#pause-img" position="2.85 1.6 -2.8" width="0.28" height="0.28" class="clickable"></a-image>
+      <a-image id="btn-close-video" src="#cerrar-img" position="3.2 1.6 -2.8" width="0.28" height="0.28" class="clickable"></a-image>
+
+      <!-- ICONO CAMARA (abre carrusel inmersivo) -->
+      <a-image id="camara-icon-vr" src="#camara-img" position="0 1.4 -1.8" scale="0.45 0.45 0.45" class="clickable"></a-image>
+
+      <!-- VENTANA INMERSIVA (CARRUSEL) -->
+      <a-entity id="immersive-gallery" visible="false" position="0 1.5 -1.4" look-at="[camera]">
+        <a-plane id="gallery-bg" width="2.4" height="1.6" color="#000" opacity="0.96" position="0 0 0"></a-plane>
+        <a-image id="gallery-image" src="#g1" position="0 0 0.01" width="2.1" height="1.2"></a-image>
+        <a-text id="gallery-caption" value="" position="0 -0.78 0.01" width="2.0" align="center" color="#fff"></a-text>
+        <a-image id="gallery-prev" src="#next-img" position="-1.15 0 0.02" width="0.22" height="0.22" class="clickable" scale="-1 1 1"></a-image>
+        <a-image id="gallery-next" src="#next-img" position="1.15 0 0.02" width="0.22" height="0.22" class="clickable"></a-image>
+        <a-image id="gallery-close" src="#close-img" position="1.05 0.68 0.02" width="0.18" height="0.18" class="clickable"></a-image>
+      </a-entity>
+
+      <!-- MENU FLOTANTE (icono) -->
+      <a-image id="menu-icon" src="#next-img" position="-1.6 2 -2.2" width="0.36" height="0.36" class="clickable"></a-image>
+      <!-- panel que contendrá las opciones de escena (invisible al inicio y con scale Y=0 para animación) -->
+      <a-entity id="scene-menu" position="-1.6 1.45 -2.2" visible="false" scale="1 0 1"></a-entity>
+
+      <!-- LOGO SIEMPRE VISIBLE -->
+      <a-plane id="logo-panel" width="1" height="0.32" position="0 2.45 -1.9" color="#071826" opacity="0.95" look-at="[camera]">
+        <a-image src="#logo-img" position="-0.38 0 0.01" width="0.26" height="0.26"></a-image>
+        <a-text value="Guatapé Travel" align="left" color="#ffcc00" position="-0.02 0.08 0.01" width="0.9"></a-text>
+        <a-text value="Proyecto desarrollado por The Medellín Adventure" align="left" color="#fff" position="-0.02 -0.06 0.01" width="0.9"></a-text>
+      </a-plane>
+
+      <!-- BOTÓN SALIR VR DENTRO DE LA ESCENA -->
+      <a-box id="exit-vr-btn" class="clickable" position="0 2 -1.2" depth="0.05" height="0.22" width="1.5" color="#ffcc00">
+        <a-text value="Salir VR" align="center" color="#000" position="0 0 0.03"></a-text>
+      </a-box>
+
+      <!-- CAMERA -->
+      <a-entity camera look-controls position="0 1.6 0"></a-entity>
+      <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
+      <a-entity laser-controls="hand: left" raycaster="objects:.clickable"></a-entity>
+      <a-entity laser-controls="hand: right" raycaster="objects:.clickable"></a-entity>
+    </a-scene>
+
+    <!-- PANEL NORMAL (lado derecho) -->
+    <div class="side-panel">
+      <div class="lateral-video-container">
+        <video id="video-lateral-normal" controls muted></video>
       </div>
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
+      <div id="hotspot-list"></div>
+      <div id="info-panel" class="hidden">
+        <h2 id="hotspot-title">Título</h2>
+        <p id="hotspot-description">Descripción...</p>
+        <button id="close-info">Cerrar</button>
+      </div>
     </div>
+
   </div>
-
-  <!-- 🌎 Escena principal -->
-  <a-scene
-    id="mainScene"
-    vr-mode-ui="enabled: true"
-    loading-screen="enabled: false"
-    renderer="antialias: true; colorManagement: true"
-  >
-    <a-assets>
-      <img id="info-img" src="img/info.png" />
-      <img id="camara-icon" src="img/Camara.png" />
-      <video id="video-main" autoplay loop="true" crossorigin="anonymous"></video>
-      <video id="video-lateral" autoplay loop="true" crossorigin="anonymous"></video>
-      <video id="video-lateral-normal" autoplay loop="true" crossorigin="anonymous"></video>
-    </a-assets>
-
-    <!-- 🔆 Esfera del video -->
-    <a-videosphere src="#video-main" rotation="0 180 0"></a-videosphere>
-
-    <!-- 🔆 Hotspots -->
-    <a-entity id="hotspot-container"></a-entity>
-
-    <!-- 🔆 Panel de información -->
-    <a-entity id="info-panel-vr" visible="false">
-      <a-plane color="#111" opacity="0.85" width="2.6" height="1.6" position="0 1.6 -2"></a-plane>
-      <a-text id="info-title-vr" value="" color="#fff" position="0 2 -1.9" align="center"></a-text>
-      <a-text id="info-desc-vr" value="" color="#fff" wrap-count="45" position="0 1.2 -1.9" align="center"></a-text>
-      <a-plane
-        id="close-info-btn"
-        src="img/close.png"
-        width="0.3"
-        height="0.3"
-        position="1.1 2 -1.8"
-        class="clickable"
-      ></a-plane>
-    </a-entity>
-
-    <!-- 🔆 Icono menú flotante -->
-    <a-plane
-      id="menu-icon"
-      src="img/next.jpg"
-      width="0.5"
-      height="0.5"
-      position="-1 1.5 -2"
-      look-at="[camera]"
-      class="clickable"
-    ></a-plane>
-
-    <!-- 🔆 Contenedor del menú -->
-    <a-entity id="scene-menu" visible="false" position="-1 1 -2"></a-entity>
-
-    <!-- 🎥 Cámara -->
-    <a-entity camera look-controls position="0 1.6 0"></a-entity>
-  </a-scene>
-
-  <!-- JS principal -->
-  <script type="module" src="index.js"></script>
 </body>
 </html>

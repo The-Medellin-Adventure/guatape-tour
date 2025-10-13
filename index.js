@@ -3,7 +3,8 @@ import tourData from "./data.js";
 window.onload = () => {
   console.log("🌎 Documento completamente cargado");
 
-  // ELEMENTOS PRINCIPALES
+  // ELEMENTOS principales
+  const sceneEl = document.querySelector("a-scene");
   const videoMain = document.getElementById("video-main");
   const videoLateral = document.getElementById("video-lateral");
   const videoLateralNormal = document.getElementById("video-lateral-normal");
@@ -25,41 +26,32 @@ window.onload = () => {
   const btnPause = document.getElementById("btn-pause");
   const btnCloseVideo = document.getElementById("btn-close-video");
 
+  const camaraIconVR = document.getElementById("camara-icon-vr");
+
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
 
-  const camaraIconDOM = document.getElementById("camara-icon");
-  const galleryOverlayDOM = document.getElementById("gallery-overlay");
-  const galleryImageDOM = document.getElementById("gallery-image-dom");
-  const prevGalleryDOM = document.getElementById("prev-gallery");
-  const nextGalleryDOM = document.getElementById("next-gallery");
-  const closeGalleryDOM = document.getElementById("close-gallery");
+  const exitVrBtn = document.getElementById("exit-vr-btn");
 
   // estado
   let currentSceneIndex = 0;
+  let galleryList = [];
   let currentGalleryIndex = 0;
-  let galleryList = []; // lista de URLs para la galería inmersiva
   let lastOpenedHotspotId = null;
 
-  // start playback on first user interaction (browser autoplay policies)
+  // start playback on first click (autoplay policies)
   const startPlayback = () => {
-    videoMain.play().catch(() => {});
-    videoLateral.muted = false;
-    videoLateral.play().catch(() => {});
+    if (videoMain) videoMain.play().catch(() => {});
+    if (videoLateral) { videoLateral.muted = false; videoLateral.play().catch(()=>{}); }
     window.removeEventListener("click", startPlayback);
   };
   window.addEventListener("click", startPlayback);
 
-  // FUNCIONES UTILITARIAS
-  const setVideoSources = (escena) => {
-    videoMain.src = escena.archivo;
-    videoLateral.src = escena.lateralVideo;
-    if (videoLateralNormal) videoLateralNormal.src = escena.lateralVideo;
-  };
+  // ---------- Funciones para hotspots, escenas y UI ----------
 
-  // crea hotspots para la escena (reutilizable)
-  const createHotspotsForScene = (escena) => {
-    hotspotContainerVR.innerHTML = ""; // limpia
+  function createHotspotsForScene(escena) {
+    hotspotContainerVR.innerHTML = "";
+    if (!escena || !escena.hotspots) return;
 
     escena.hotspots.forEach((hs) => {
       const el = document.createElement("a-plane");
@@ -79,32 +71,26 @@ window.onload = () => {
       label.setAttribute("width", "1");
       el.appendChild(label);
 
-      // comportamiento según tipo
+      // comportamiento por tipo
       if (hs.tipo === "camera") {
-        // store images array in dataset for later
-        el.dataset.tipo = "camera";
-        el.dataset.imagenes = JSON.stringify(hs.imagenes || []);
-        el.dataset.caption = hs.caption || hs.titulo;
-
-        el.addEventListener("click", (evt) => {
-          // toggle: si mismo hotspot y ya abierto => cerrar
+        el.addEventListener("click", () => {
+          // toggle: si es el mismo y ya abierto -> cerrar
           if (lastOpenedHotspotId === hs.id && immersiveGallery.getAttribute("visible") === "true") {
             immersiveGallery.setAttribute("visible", "false");
             lastOpenedHotspotId = null;
             return;
           }
-
-          // abrir galería inmersiva con las imágenes del hotspot
-          galleryList = hs.imagenes ? hs.imagenes.slice() : [];
-          if (galleryList.length === 0) return;
+          // abrir carrusel inmersivo
+          galleryList = (hs.imagenes && hs.imagenes.length) ? hs.imagenes.slice() : [];
+          if (!galleryList.length) return;
           currentGalleryIndex = 0;
           galleryImage.setAttribute("src", galleryList[currentGalleryIndex]);
           galleryCaption.setAttribute("value", hs.caption || "");
           immersiveGallery.setAttribute("visible", "true");
           lastOpenedHotspotId = hs.id;
         });
-      } else { // info
-        el.dataset.tipo = "info";
+      } else {
+        // tipo info
         el.addEventListener("click", () => {
           const visible = infoPanelVR.getAttribute("visible") === "true";
           const currentTitle = infoTitleVR.getAttribute("value");
@@ -122,25 +108,78 @@ window.onload = () => {
 
       hotspotContainerVR.appendChild(el);
     });
-  };
+  }
 
-  // carga una escena por índice
-  const loadScene = (index) => {
-    if (!tourData.escenas[index]) return;
+  function loadScene(index) {
+    const sceneData = tourData.escenas[index];
+    if (!sceneData) return;
     currentSceneIndex = index;
-    const escena = tourData.escenas[index];
-    setVideoSources(escena);
-    createHotspotsForScene(escena);
-    // cerrar UI inmersivo o info al cambiar escena
+
+    // actualizar videos
+    if (videoMain) videoMain.src = sceneData.archivo;
+    if (videoLateral) videoLateral.src = sceneData.lateralVideo;
+    if (videoLateralNormal) videoLateralNormal.src = sceneData.lateralVideo;
+
+    // crear hotspots
+    createHotspotsForScene(sceneData);
+
+    // cerrar UIs abiertas
     immersiveGallery.setAttribute("visible", "false");
     infoPanelVR.setAttribute("visible", "false");
     lastOpenedHotspotId = null;
-  };
+  }
 
-  // inicializar primera escena
-  loadScene(0);
+  // ---------- Inicial: crear menu de escenas y cargar primera escena ----------
+  function createSceneMenuButtons() {
+    sceneMenu.innerHTML = "";
+    tourData.escenas.forEach((escena, i) => {
+      const btn = document.createElement("a-plane");
+      btn.setAttribute("width", "1.6");
+      btn.setAttribute("height", "0.32");
+      btn.setAttribute("color", "#ffcc00");
+      btn.setAttribute("position", `0 ${-0.38 * i} 0.01`);
+      btn.setAttribute("class", "clickable");
+      btn.setAttribute("look-at", "[camera]");
+      btn.setAttribute("scale", "1 0 1"); // start closed
 
-  // ---------- EVENTOS GALERÍA INMERSIVA ----------
+      const text = document.createElement("a-text");
+      text.setAttribute("value", escena.titulo);
+      text.setAttribute("align", "center");
+      text.setAttribute("color", "#000");
+      text.setAttribute("width", "1.5");
+      btn.appendChild(text);
+
+      btn.addEventListener("click", () => {
+        loadScene(i);
+        // cerrar menu con animación
+        Array.from(sceneMenu.children).forEach((c, idx) => {
+          setTimeout(() => c.setAttribute("scale", "1 0 1"), idx * 40);
+        });
+        setTimeout(() => sceneMenu.setAttribute("visible", "false"), 200 + tourData.escenas.length * 40);
+      });
+
+      sceneMenu.appendChild(btn);
+    });
+  }
+
+  // crear y togglear menuIcon
+  createSceneMenuButtons();
+  menuIcon.addEventListener("click", () => {
+    const visible = sceneMenu.getAttribute("visible") === "true";
+    if (!visible) {
+      sceneMenu.setAttribute("visible", "true");
+      Array.from(sceneMenu.children).forEach((btn, i) => {
+        setTimeout(() => btn.setAttribute("scale", "1 1 1"), i * 80);
+      });
+    } else {
+      Array.from(sceneMenu.children).forEach((btn, i) => {
+        setTimeout(() => btn.setAttribute("scale", "1 0 1"), i * 50);
+      });
+      setTimeout(() => sceneMenu.setAttribute("visible", "false"), sceneMenu.children.length * 50 + 80);
+    }
+  });
+
+  // ---------- Gallery handlers (immersive) ----------
   galleryPrev.addEventListener("click", () => {
     if (!galleryList.length) return;
     currentGalleryIndex = (currentGalleryIndex - 1 + galleryList.length) % galleryList.length;
@@ -156,112 +195,62 @@ window.onload = () => {
     lastOpenedHotspotId = null;
   });
 
-  // cerrar info panel (botón dentro)
+  // cerrar info panel con su icono
   infoClose.addEventListener("click", () => {
     infoPanelVR.setAttribute("visible", "false");
     lastOpenedHotspotId = null;
   });
 
-  // ---------- BOTONES VIDEO LATERAL ----------
-  if (btnPlay) btnPlay.addEventListener("click", () => videoLateral.play());
-  if (btnPause) btnPause.addEventListener("click", () => videoLateral.pause());
+  // ---------- Video lateral controls ----------
+  if (btnPlay) btnPlay.addEventListener("click", () => { if (videoLateral) videoLateral.play(); });
+  if (btnPause) btnPause.addEventListener("click", () => { if (videoLateral) videoLateral.pause(); });
   if (btnCloseVideo) btnCloseVideo.addEventListener("click", () => {
-    videoLateral.pause();
-    videoLateral.currentTime = 0;
+    if (videoLateral) { videoLateral.pause(); videoLateral.currentTime = 0; }
   });
 
-  // ---------- MENU FLOTANTE (panel emergente) ----------
-  // creamos botones de escena dentro de sceneMenu con scale Y=0 inicialmente
-  const createSceneMenuButtons = () => {
-    sceneMenu.innerHTML = "";
-    tourData.escenas.forEach((escena, i) => {
-      const btn = document.createElement("a-plane");
-      btn.setAttribute("width", "1.6");
-      btn.setAttribute("height", "0.32");
-      btn.setAttribute("color", "#ffcc00");
-      btn.setAttribute("position", `0 ${-0.38 * i} 0.01`);
-      btn.setAttribute("class", "clickable");
-      btn.setAttribute("look-at", "[camera]");
-      btn.setAttribute("scale", "1 0 1"); // cerrado
-
-      const text = document.createElement("a-text");
-      text.setAttribute("value", escena.titulo);
-      text.setAttribute("align", "center");
-      text.setAttribute("color", "#000");
-      text.setAttribute("width", "1.5");
-      btn.appendChild(text);
-
-      btn.addEventListener("click", () => {
-        loadScene(i);
-        // cerrar menu inmediatamente
-        sceneMenu.children.forEach((c, idx) => c.setAttribute("scale", "1 0 1"));
-        setTimeout(() => sceneMenu.setAttribute("visible", "false"), 200 + tourData.escenas.length * 40);
-      });
-
-      sceneMenu.appendChild(btn);
-    });
-  };
-  createSceneMenuButtons();
-
-  // toggle con animación por escala Y
-  menuIcon.addEventListener("click", () => {
-    const visible = sceneMenu.getAttribute("visible") === "true";
-    if (!visible) {
-      sceneMenu.setAttribute("visible", "true");
-      Array.from(sceneMenu.children).forEach((btn, i) => {
-        setTimeout(() => btn.setAttribute("scale", "1 1 1"), i * 80);
-      });
-    } else {
-      Array.from(sceneMenu.children).forEach((btn, i) => {
-        setTimeout(() => btn.setAttribute("scale", "1 0 1"), i * 40);
-      });
-      setTimeout(() => sceneMenu.setAttribute("visible", "false"), sceneMenu.children.length * 40 + 100);
-    }
-  });
-
-  // ---------- DOM gallery (non-VR) ----------
-  // para usuarios en navegador no-VR: abrir overlay desde el icono DOM (si existe)
-  if (camaraIconDOM) {
-    camaraIconDOM.addEventListener("click", () => {
-      // abrir overlay DOM con imágenes de la escena actual (si hay alguna camera hotspot)
+  // ---------- Camara icon DOM toggle (también funciona desde el DOM si quieres) ----------
+  if (camaraIconVR) {
+    camaraIconVR.addEventListener("click", () => {
+      // toggling immersive gallery when clicking camera icon with no specific hotspot:
+      if (immersiveGallery.getAttribute("visible") === "true") {
+        immersiveGallery.setAttribute("visible", "false");
+        lastOpenedHotspotId = null;
+        return;
+      }
+      // try to open first camera hotspot images for current scene
       const escena = tourData.escenas[currentSceneIndex];
-      const camHs = escena.hotspots.find(h => h.tipo === "camera");
-      if (!camHs || !camHs.imagenes || !camHs.imagenes.length) return;
-      galleryOverlayDOM.classList.add("visible");
-      galleryOverlayDOM.classList.remove("hidden");
-      galleryImageDOM.src = camHs.imagenes[0];
+      const cam = escena.hotspots && escena.hotspots.find(h => h.tipo === "camera");
+      if (!cam || !cam.imagenes || !cam.imagenes.length) return;
+      galleryList = cam.imagenes.slice();
+      currentGalleryIndex = 0;
+      galleryImage.setAttribute("src", galleryList[0]);
+      galleryCaption.setAttribute("value", cam.caption || "");
+      immersiveGallery.setAttribute("visible", "true");
+      lastOpenedHotspotId = cam.id;
     });
   }
-  if (prevGalleryDOM) prevGalleryDOM.addEventListener("click", () => {
-    // navegación DOM simple (solo muestra sample previous/next)
-    // for demo keep simple
-  });
-  if (nextGalleryDOM) nextGalleryDOM.addEventListener("click", () => { /* implement as needed */ });
-  if (closeGalleryDOM) closeGalleryDOM.addEventListener("click", () => {
-    galleryOverlayDOM.classList.remove("visible");
-    setTimeout(() => galleryOverlayDOM.classList.add("hidden"), 250);
-  });
 
-  // ---------- exit VR ----------
-  const exitVRBtn = document.getElementById("exit-vr-btn");
-  if (exitVRBtn) {
-    try {
-      exitVRBtn.addEventListener("click", () => {
-        const sceneEl = document.querySelector("a-scene");
-        if (sceneEl) sceneEl.exitVR();
-      });
-    } catch (e) {
-      console.warn("⚠️ Error controlado de A-Frame:", e.message);
-    }
+  // ---------- Exit VR button (in-scene) ----------
+  if (exitVrBtn) {
+    exitVrBtn.addEventListener("click", () => {
+      try {
+        if (sceneEl && sceneEl.exitVR) sceneEl.exitVR();
+      } catch (e) {
+        console.warn("Error exitVR:", e);
+      }
+    });
   }
 
-  // captura errores a-frame sin romper la app
+  // ---------- Inicial load ----------
+  loadScene(0);
+
+  // ---------- Captura error A-Frame (no bloquear) ----------
   window.addEventListener("error", (e) => {
     if (e.filename && e.filename.includes("vr-mode-ui.js")) {
-      console.warn("⚠️ Ignorado error interno de A-Frame:", e.message);
+      console.warn("Ignorado error A-Frame:", e.message);
       e.preventDefault();
     }
   });
 
-  console.log("✅ Tour VR completamente inicializado");
+  console.log("✅ Tour VR inicializado (botón VR nativo restaurado).");
 };
