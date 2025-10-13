@@ -158,3 +158,8 @@ body {
   color: #000;
   font-weight: bold;
 }
+
+/* Animación de desplegado del menú */
+#scene-menu a-plane {
+  transition: transform 0.3s, scale 0.3s;
+}
