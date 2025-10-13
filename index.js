@@ -29,7 +29,6 @@ window.onload = () => {
 
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
-
   const exitVrBtn = document.getElementById("exit-vr-btn");
 
   let currentSceneIndex = 0;
@@ -37,7 +36,7 @@ window.onload = () => {
   let currentGalleryIndex = 0;
   let lastOpenedHotspotId = null;
 
-  // 🔹 Reproduce los videos al primer clic (necesario para navegadores)
+  /* 🎬 Reproducir videos al primer clic (requerido por navegadores móviles) */
   const startPlayback = () => {
     if (videoMain) videoMain.play().catch(() => {});
     if (videoLateral) videoLateral.play().catch(() => {});
@@ -45,7 +44,7 @@ window.onload = () => {
   };
   window.addEventListener("click", startPlayback);
 
-  // 🔹 Cargar videos por escena
+  /* 🎥 Cargar videos y assets por escena */
   function setVideoSourcesForScene(sceneData) {
     if (!sceneData) return;
     if (videoMain) {
@@ -63,7 +62,7 @@ window.onload = () => {
     if (sphere && videoMain) sphere.setAttribute("src", "#video-main");
   }
 
-  // 🔹 Crear hotspots para cada escena
+  /* 📍 Crear hotspots (info o galería) */
   function createHotspotsForScene(escena) {
     hotspotContainerVR.innerHTML = "";
     if (!escena || !escena.hotspots) return;
@@ -89,6 +88,7 @@ window.onload = () => {
       text.setAttribute("width", "1");
       el.appendChild(text);
 
+      // 🔸 Hotspot tipo cámara (galería)
       if (hs.tipo === "camera") {
         el.addEventListener("click", () => {
           if (lastOpenedHotspotId === hs.id && immersiveGallery.getAttribute("visible") === "true") {
@@ -104,7 +104,9 @@ window.onload = () => {
           immersiveGallery.setAttribute("visible", "true");
           lastOpenedHotspotId = hs.id;
         });
-      } else {
+      }
+      // 🔸 Hotspot tipo información
+      else {
         el.addEventListener("click", () => {
           const visible = infoPanelVR.getAttribute("visible") === "true";
           const currentTitle = infoTitleVR.getAttribute("value");
@@ -127,7 +129,7 @@ window.onload = () => {
     });
   }
 
-  // 🔹 Cargar escena
+  /* 🔄 Cambiar de escena */
   function loadScene(index) {
     const sceneData = tourData.escenas[index];
     if (!sceneData) return;
@@ -140,9 +142,18 @@ window.onload = () => {
     console.log("🎬 Escena cargada:", sceneData.titulo);
   }
 
-  // 🔹 Crear menú de escenas VR
+  /* 🧭 Crear menú de escenas */
   function createSceneMenuButtons() {
+    const sceneMenu = document.getElementById("scene-menu");
+    if (!sceneMenu) {
+      console.warn("⏳ Menú no encontrado, reintentando...");
+      setTimeout(createSceneMenuButtons, 500);
+      return;
+    }
+
     sceneMenu.innerHTML = "";
+    console.log("🧭 Creando menú de escenas...");
+
     tourData.escenas.forEach((esc, i) => {
       const btn = document.createElement("a-plane");
       btn.setAttribute("width", "1.6");
@@ -151,7 +162,7 @@ window.onload = () => {
       btn.setAttribute("position", `0 ${-0.38 * i} 0.01`);
       btn.setAttribute("class", "clickable");
       btn.setAttribute("look-at", "[camera]");
-      btn.setAttribute("scale", "1 0 1");
+      btn.setAttribute("scale", "1 1 1");
 
       const text = document.createElement("a-text");
       text.setAttribute("value", esc.titulo);
@@ -162,35 +173,27 @@ window.onload = () => {
 
       btn.addEventListener("click", () => {
         loadScene(i);
-        Array.from(sceneMenu.children).forEach((c, idx) => {
-          setTimeout(() => c.setAttribute("scale", "1 0 1"), idx * 40);
-        });
-        setTimeout(() => sceneMenu.setAttribute("visible", "false"), 300);
+        sceneMenu.setAttribute("visible", "false");
+        console.log("📍 Cambiado a:", esc.titulo);
       });
 
       sceneMenu.appendChild(btn);
     });
+
+    sceneMenu.setAttribute("visible", "true");
   }
 
-  createSceneMenuButtons();
+  // Esperar a que A-Frame cargue completamente antes de crear el menú
+  setTimeout(createSceneMenuButtons, 1500);
 
-  // 🔹 Mostrar / ocultar menú al hacer clic en el icono
+  /* 🟡 Mostrar / ocultar menú al hacer clic en el icono */
   menuIcon.addEventListener("click", () => {
     const visible = sceneMenu.getAttribute("visible") === "true";
-    if (!visible) {
-      sceneMenu.setAttribute("visible", "true");
-      Array.from(sceneMenu.children).forEach((btn, i) => {
-        setTimeout(() => btn.setAttribute("scale", "1 1 1"), i * 80);
-      });
-    } else {
-      Array.from(sceneMenu.children).forEach((btn, i) => {
-        setTimeout(() => btn.setAttribute("scale", "1 0 1"), i * 50);
-      });
-      setTimeout(() => sceneMenu.setAttribute("visible", "false"), sceneMenu.children.length * 50 + 80);
-    }
+    sceneMenu.setAttribute("visible", !visible);
+    console.log(visible ? "👁️ Cerrando menú" : "📋 Mostrando menú");
   });
 
-  // 🔹 Botones de control de video lateral
+  /* ▶️ Controles de video lateral */
   if (btnPlayVR) btnPlayVR.addEventListener("click", () => videoLateral.play().catch(() => {}));
   if (btnPauseVR) btnPauseVR.addEventListener("click", () => videoLateral.pause());
   if (btnCloseVideoVR)
@@ -199,7 +202,7 @@ window.onload = () => {
       videoLateral.currentTime = 0;
     });
 
-  // 🔹 Botón salir de VR
+  /* 🚪 Botón salir de VR */
   if (exitVrBtn)
     exitVrBtn.addEventListener("click", () => {
       try {
@@ -209,7 +212,7 @@ window.onload = () => {
       }
     });
 
-  // 🔹 Eventos VR
+  /* 🕶️ Eventos de entrada y salida VR */
   sceneEl.addEventListener("enter-vr", () => {
     const laserL = document.getElementById("laser-left");
     const laserR = document.getElementById("laser-right");
@@ -219,7 +222,6 @@ window.onload = () => {
     if (cursor) cursor.setAttribute("raycaster", "objects: .clickable");
 
     console.log("🕶️ Entrando a VR... mostrando menú automáticamente");
-    // 💡 Recomendación: abrir el menú automáticamente al entrar a VR
     setTimeout(() => {
       if (menuIcon) menuIcon.emit("click");
     }, 1000);
@@ -233,7 +235,7 @@ window.onload = () => {
     console.log("👋 Saliste del modo VR");
   });
 
-  // 🔹 Carga inicial
+  /* 🚀 Carga inicial */
   loadScene(0);
   console.log("✅ Tour listo, primera escena cargada.");
 };
