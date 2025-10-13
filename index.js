@@ -254,3 +254,34 @@ window.onload = () => {
 
   console.log("✅ Tour VR inicializado (botón VR nativo restaurado).");
 };
+
+// 🔹 Activar automáticamente los punteros láser al entrar en VR
+const scene = document.querySelector('a-scene');
+
+scene.addEventListener('enter-vr', () => {
+  const laserL = document.getElementById('laser-left');
+  const laserR = document.getElementById('laser-right');
+  const cursor = document.getElementById('cursor');
+
+  if (laserL) {
+    laserL.setAttribute('visible', 'true');
+    laserL.setAttribute('raycaster', 'objects: .clickable');
+  }
+  if (laserR) {
+    laserR.setAttribute('visible', 'true');
+    laserR.setAttribute('raycaster', 'objects: .clickable');
+  }
+  if (cursor) {
+    cursor.setAttribute('raycaster', 'objects: .clickable');
+  }
+
+  console.log('🎯 Láseres activados automáticamente al entrar en VR');
+});
+
+scene.addEventListener('exit-vr', () => {
+  const laserL = document.getElementById('laser-left');
+  const laserR = document.getElementById('laser-right');
+  if (laserL) laserL.setAttribute('visible', 'false');
+  if (laserR) laserR.setAttribute('visible', 'false');
+  console.log('🚪 Saliste del modo VR');
+});
