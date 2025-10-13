@@ -7,11 +7,11 @@ const tourData = {
         "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
       lateralVideo:
         "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
-      hotspots: [
+  hotspots: [
         {
           id: "hs1",
-          x: 0,
-          y: 1.5,
+          x: -3,
+          y: -1.5,
           z: -3,
           titulo: "Piedra del Peñol",
           descripcion:
