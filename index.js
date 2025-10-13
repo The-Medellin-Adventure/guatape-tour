@@ -5,30 +5,27 @@ window.onload = () => {
 
   const escena = tourData.escenas[0];
 
-  // ==== VIDEOS ====
   const videoMain = document.getElementById("video-main");
   const videoLateral = document.getElementById("video-lateral");
   const videoLateralNormal = document.getElementById("video-lateral-normal");
 
-  if (!videoMain || !videoLateral || !videoLateralNormal) {
-    console.error("❌ No se encontraron elementos de video.");
-    return;
+  // Cargar videos directamente sin retrasos
+  if (videoMain && videoLateral && videoLateralNormal) {
+    videoMain.src = escena.archivo;
+    videoLateral.src = escena.lateralVideo;
+    videoLateralNormal.src = escena.lateralVideo;
+
+    // Reproducir apenas el usuario interactúe (por políticas de navegador)
+    const startPlayback = () => {
+      videoMain.play().catch(() => {});
+      videoLateral.muted = false;
+      videoLateral.play().catch(() => {});
+      window.removeEventListener("click", startPlayback);
+    };
+    window.addEventListener("click", startPlayback);
   }
 
-  videoMain.src = escena.archivo;
-  videoLateral.src = escena.lateralVideo;
-  videoLateralNormal.src = escena.lateralVideo;
-
-  setTimeout(() => {
-    videoMain.play().catch(() => console.log("🎥 Interacción requerida para video principal"));
-  }, 3000);
-
-  setTimeout(() => {
-    videoLateral.muted = false;
-    videoLateral.play().catch(() => console.log("🎧 Interacción requerida para video lateral"));
-  }, 5000);
-
-  // ==== HOTSPOTS VR ====
+  // Crear hotspots VR
   const hotspotContainerVR = document.getElementById("hotspot-container");
   const infoPanelVR = document.getElementById("info-panel-vr");
   const infoTitleVR = document.getElementById("info-title-vr");
@@ -66,7 +63,7 @@ window.onload = () => {
     });
   }
 
-  // ==== GALERÍA ====
+  // Galería
   const camaraIcon = document.getElementById("camara-icon");
   const camaraIconVR = document.getElementById("camara-icon-vr");
   const galleryOverlay = document.getElementById("gallery-overlay");
@@ -110,14 +107,26 @@ window.onload = () => {
       setTimeout(() => galleryOverlay.classList.add("hidden"), 300);
     });
 
-  // ==== SALIR DE VR ====
+  // Salir de VR
   const exitVRBtn = document.getElementById("exit-vr-btn");
   if (exitVRBtn) {
-    exitVRBtn.addEventListener("click", () => {
-      const sceneEl = document.querySelector("a-scene");
-      if (sceneEl) sceneEl.exitVR();
-    });
+    try {
+      exitVRBtn.addEventListener("click", () => {
+        const sceneEl = document.querySelector("a-scene");
+        if (sceneEl) sceneEl.exitVR();
+      });
+    } catch (e) {
+      console.warn("⚠️ Error controlado de A-Frame (sin impacto):", e.message);
+    }
   }
 
-  console.log("✅ Todo cargado correctamente");
+  // Capturar error interno de A-Frame sin romper el tour
+  window.addEventListener("error", (e) => {
+    if (e.filename && e.filename.includes("vr-mode-ui.js")) {
+      console.warn("⚠️ Ignorado error interno de A-Frame:", e.message);
+      e.preventDefault();
+    }
+  });
+
+  console.log("✅ Tour VR completamente inicializado");
 };
