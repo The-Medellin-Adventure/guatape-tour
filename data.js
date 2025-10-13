@@ -8,6 +8,7 @@ const tourData = {
       hotspots: [
         {
           id: "hs1",
+          tipo: "info",
           x: -3,
           y: -1,
           z: -2,
@@ -16,11 +17,18 @@ const tourData = {
         },
         {
           id: "hs2",
+          tipo: "camera",
           x: 2,
           y: 1,
           z: -2,
-          titulo: "Embalse de Guatapé",
-          descripcion: "Un lago artificial rodeado de montañas, ideal para paseos en lancha y actividades acuáticas."
+          titulo: "Plaza - Galería",
+          descripcion: "Imágenes del lugar.",
+          imagenes: [
+            "images/imagen1.jpeg",
+            "images/imagen2.jpeg",
+            "images/imagen3.jpeg"
+          ],
+          caption: "Galería — Plaza Principal"
         }
       ]
     },
@@ -32,19 +40,27 @@ const tourData = {
       hotspots: [
         {
           id: "hs3",
+          tipo: "camera",
           x: 1,
           y: 0.5,
           z: -2,
-          titulo: "Iglesia de Guatapé",
-          descripcion: "Una iglesia colorida y emblemática en el centro del pueblo."
+          titulo: "Calle - Galería",
+          descripcion: "Fotos de la calle",
+          imagenes: [
+            "images/imagen2.jpeg",
+            "images/imagen3.jpeg",
+            "images/imagen1.jpeg"
+          ],
+          caption: "Galería — Calle del Recuerdo"
         },
         {
           id: "hs4",
+          tipo: "info",
           x: -2,
           y: 1,
           z: -1,
           titulo: "Plaza Principal",
-          descripcion: "Lugar ideal para disfrutar de comidas típicas y ver el movimiento del pueblo."
+          descripcion: "Lugar ideal para disfrutar de comidas típicas."
         }
       ]
     },
@@ -56,6 +72,7 @@ const tourData = {
       hotspots: [
         {
           id: "hs5",
+          tipo: "info",
           x: 0,
           y: 1.5,
           z: -3,
@@ -64,11 +81,17 @@ const tourData = {
         },
         {
           id: "hs6",
+          tipo: "camera",
           x: 2,
           y: -1,
           z: -2,
-          titulo: "Sendero Natural",
-          descripcion: "Pequeño sendero que permite recorrer la montaña y tomar fotos increíbles."
+          titulo: "Picnic - Galería",
+          descripcion: "Imágenes del mirador y picnic",
+          imagenes: [
+            "images/imagen3.jpeg",
+            "images/imagen1.jpeg"
+          ],
+          caption: "Galería — Mirador"
         }
       ]
     }
@@ -76,5 +99,3 @@ const tourData = {
 };
 
 export default tourData;
-
-
