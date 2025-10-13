@@ -221,24 +221,19 @@
         ></a-text>
       </a-plane>
 
+      <!-- 🔘 Botón salir VR -->
+      <a-box id="exit-vr-btn" class="clickable" position="0 2.25 -2" depth="0.05" height="0.18" width="0.9" color="#ffd34d">
+        <a-text value="Salir VR" align="center" color="#000" position="0 0 0.03" width="1.5"></a-text>
+      </a-box>
+
       <!-- 🎮 Cámara -->
       <a-entity id="cameraRig" position="0 1.6 0">
         <a-entity camera look-controls></a-entity>
       </a-entity>
 
       <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
-      <a-entity
-        id="laser-left"
-        laser-controls="hand: left"
-        raycaster="objects: .clickable"
-        visible="false"
-      ></a-entity>
-      <a-entity
-        id="laser-right"
-        laser-controls="hand: right"
-        raycaster="objects: .clickable"
-        visible="false"
-      ></a-entity>
+      <a-entity id="laser-left" laser-controls="hand: left" raycaster="objects: .clickable" visible="false"></a-entity>
+      <a-entity id="laser-right" laser-controls="hand: right" raycaster="objects: .clickable" visible="false"></a-entity>
     </a-scene>
   </body>
 </html>
