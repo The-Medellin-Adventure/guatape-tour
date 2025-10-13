@@ -1,10 +1,22 @@
 import tourData from "./data.js";
 
-window.onload = () => {
-  console.log("🌎 Documento completamente cargado");
+/*
+  index.js - lógica principal
+  - carga escenas (videos 360)
+  - crea hotspots (info / camera)
+  - maneja gallery inmersiva (A-Frame) y overlay DOM (no-VR)
+  - menú flotante de escenas dentro de la escena (A-Frame)
+  - activa lasers automáticamente al enter-vr
+  - enlaza controles DOM <-> VR entities
+*/
 
-  // ELEMENTOS principales
+window.onload = () => {
+  console.log("🔵 App inicializada");
+
+  // ELEMENTOS DOM / A-FRAME
   const sceneEl = document.querySelector("a-scene");
+  const sphere = document.getElementById("sphere");
+
   const videoMain = document.getElementById("video-main");
   const videoLateral = document.getElementById("video-lateral");
   const videoLateralNormal = document.getElementById("video-lateral-normal");
@@ -13,79 +25,104 @@ window.onload = () => {
   const infoPanelVR = document.getElementById("info-panel-vr");
   const infoTitleVR = document.getElementById("info-title-vr");
   const infoDescVR = document.getElementById("info-desc-vr");
-  const infoClose = document.getElementById("info-close");
+  const infoCloseVR = document.getElementById("info-close-vr");
 
   const immersiveGallery = document.getElementById("immersive-gallery");
   const galleryImage = document.getElementById("gallery-image");
   const galleryCaption = document.getElementById("gallery-caption");
   const galleryPrev = document.getElementById("gallery-prev");
   const galleryNext = document.getElementById("gallery-next");
-  const galleryClose = document.getElementById("gallery-close");
+  const galleryCloseVR = document.getElementById("gallery-close-vr");
 
-  const btnPlay = document.getElementById("btn-play");
-  const btnPause = document.getElementById("btn-pause");
-  const btnCloseVideo = document.getElementById("btn-close-video");
+  const btnPlayDOM = document.getElementById("btn-play");
+  const btnPauseDOM = document.getElementById("btn-pause");
+  const btnCloseDOM = document.getElementById("btn-cerrar");
+
+  const btnPlayVR = document.getElementById("btn-play-vr");
+  const btnPauseVR = document.getElementById("btn-pause-vr");
+  const btnCloseVideoVR = document.getElementById("btn-close-video-vr");
 
   const camaraIconVR = document.getElementById("camara-icon-vr");
-
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
 
   const exitVrBtn = document.getElementById("exit-vr-btn");
 
-  // estado
+  // DOM overlay gallery
+  const galleryOverlay = document.getElementById("gallery-overlay");
+  const galleryImageDOM = document.getElementById("gallery-image");
+  const prevGallery = document.getElementById("prev-gallery");
+  const nextGallery = document.getElementById("next-gallery");
+  const closeGallery = document.getElementById("close-gallery");
+
+  // Estado
   let currentSceneIndex = 0;
   let galleryList = [];
   let currentGalleryIndex = 0;
   let lastOpenedHotspotId = null;
 
-  // start playback on first click (autoplay policies)
+  // ------------------------------------------------------------
+  // START PLAYBACK (autoplay policies) - reproducir tras primer click
   const startPlayback = () => {
-    if (videoMain) videoMain.play().catch(() => {});
+    if (videoMain) videoMain.play().catch(()=>{});
     if (videoLateral) { videoLateral.muted = false; videoLateral.play().catch(()=>{}); }
     window.removeEventListener("click", startPlayback);
   };
   window.addEventListener("click", startPlayback);
 
-  // ---------- Funciones para hotspots, escenas y UI ----------
+  // ------------------------------------------------------------
+  // Utilidades
+  function setVideoSourcesForScene(sceneData) {
+    if (!sceneData) return;
+    if (videoMain) videoMain.src = sceneData.archivo;
+    if (videoLateral) videoLateral.src = sceneData.lateralVideo;
+    if (videoLateralNormal) videoLateralNormal.src = sceneData.lateralVideo;
+    // actualizar a-videosphere src (usando id del elemento video)
+    if (sphere && videoMain) {
+      // aseguramos que a-videosphere apunte a #video-main
+      sphere.setAttribute("src", "#video-main");
+    }
+  }
 
+  // crea hotspots en la escena (info / camera)
   function createHotspotsForScene(escena) {
     hotspotContainerVR.innerHTML = "";
     if (!escena || !escena.hotspots) return;
 
-    escena.hotspots.forEach((hs) => {
+    escena.hotspots.forEach(hs => {
       const el = document.createElement("a-plane");
       el.setAttribute("width", "0.45");
       el.setAttribute("height", "0.45");
       el.setAttribute("material", "src: #info-img; transparent: true; opacity: 0.95");
-      el.setAttribute("class", "clickable");
+      el.setAttribute("class", "clickable hotspot");
       el.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
       el.setAttribute("look-at", "[camera]");
       el.setAttribute("animation__pulse", "property: scale; dir: alternate; dur: 1200; loop: true; to: 1.3 1.3 1.3");
 
-      const label = document.createElement("a-text");
-      label.setAttribute("value", hs.titulo);
-      label.setAttribute("align", "center");
-      label.setAttribute("color", "#fff");
-      label.setAttribute("position", "0 -0.35 0.01");
-      label.setAttribute("width", "1");
-      el.appendChild(label);
+      const text = document.createElement("a-text");
+      text.setAttribute("value", hs.titulo);
+      text.setAttribute("align", "center");
+      text.setAttribute("color", "#fff");
+      text.setAttribute("position", "0 -0.35 0.01");
+      text.setAttribute("width", "1");
+      el.appendChild(text);
 
-      // comportamiento por tipo
+      // comportamiento
       if (hs.tipo === "camera") {
         el.addEventListener("click", () => {
-          // toggle: si es el mismo y ya abierto -> cerrar
+          // toggle: si mismo hotspot y abierto -> cerrar
           if (lastOpenedHotspotId === hs.id && immersiveGallery.getAttribute("visible") === "true") {
             immersiveGallery.setAttribute("visible", "false");
             lastOpenedHotspotId = null;
             return;
           }
-          // abrir carrusel inmersivo
-          galleryList = (hs.imagenes && hs.imagenes.length) ? hs.imagenes.slice() : [];
+          // abrir galería inmersiva con imágenes
+          galleryList = hs.imagenes ? hs.imagenes.slice() : [];
           if (!galleryList.length) return;
           currentGalleryIndex = 0;
+          // Actualizar a-entity gallery-image a la URL actual
           galleryImage.setAttribute("src", galleryList[currentGalleryIndex]);
-          galleryCaption.setAttribute("value", hs.caption || "");
+          galleryCaption.setAttribute("value", hs.caption || hs.titulo || "");
           immersiveGallery.setAttribute("visible", "true");
           lastOpenedHotspotId = hs.id;
         });
@@ -98,8 +135,13 @@ window.onload = () => {
             infoPanelVR.setAttribute("visible", "false");
             lastOpenedHotspotId = null;
           } else {
+            // position the panel next to hotspot
             infoTitleVR.setAttribute("value", hs.titulo);
             infoDescVR.setAttribute("value", hs.descripcion);
+            // move info panel near hs (offset on X depending on hs.x sign)
+            const offsetX = hs.x >= 0 ? hs.x - 0.9 : hs.x + 0.9;
+            const panelPos = `${offsetX} ${hs.y} ${hs.z}`;
+            infoPanelVR.setAttribute("position", panelPos);
             infoPanelVR.setAttribute("visible", "true");
             lastOpenedHotspotId = hs.id;
           }
@@ -110,29 +152,25 @@ window.onload = () => {
     });
   }
 
+  // ------------------------------------------------------------
+  // Load a scene by index
   function loadScene(index) {
     const sceneData = tourData.escenas[index];
     if (!sceneData) return;
     currentSceneIndex = index;
-
-    // actualizar videos
-    if (videoMain) videoMain.src = sceneData.archivo;
-    if (videoLateral) videoLateral.src = sceneData.lateralVideo;
-    if (videoLateralNormal) videoLateralNormal.src = sceneData.lateralVideo;
-
-    // crear hotspots
+    setVideoSourcesForScene(sceneData);
     createHotspotsForScene(sceneData);
-
     // cerrar UIs abiertas
     immersiveGallery.setAttribute("visible", "false");
     infoPanelVR.setAttribute("visible", "false");
     lastOpenedHotspotId = null;
   }
 
-  // ---------- Inicial: crear menu de escenas y cargar primera escena ----------
+  // ------------------------------------------------------------
+  // Crear menú de escenas dentro de la escena (A-Frame)
   function createSceneMenuButtons() {
     sceneMenu.innerHTML = "";
-    tourData.escenas.forEach((escena, i) => {
+    tourData.escenas.forEach((esc, i) => {
       const btn = document.createElement("a-plane");
       btn.setAttribute("width", "1.6");
       btn.setAttribute("height", "0.32");
@@ -140,10 +178,10 @@ window.onload = () => {
       btn.setAttribute("position", `0 ${-0.38 * i} 0.01`);
       btn.setAttribute("class", "clickable");
       btn.setAttribute("look-at", "[camera]");
-      btn.setAttribute("scale", "1 0 1"); // start closed
+      btn.setAttribute("scale", "1 0 1");
 
       const text = document.createElement("a-text");
-      text.setAttribute("value", escena.titulo);
+      text.setAttribute("value", esc.titulo);
       text.setAttribute("align", "center");
       text.setAttribute("color", "#000");
       text.setAttribute("width", "1.5");
@@ -162,24 +200,25 @@ window.onload = () => {
     });
   }
 
-  // crear y togglear menuIcon
+  // Toggle menu icon behaviour
   createSceneMenuButtons();
   menuIcon.addEventListener("click", () => {
     const visible = sceneMenu.getAttribute("visible") === "true";
     if (!visible) {
       sceneMenu.setAttribute("visible", "true");
       Array.from(sceneMenu.children).forEach((btn, i) => {
-        setTimeout(() => btn.setAttribute("scale", "1 1 1"), i * 80);
+        setTimeout(()=>btn.setAttribute("scale","1 1 1"), i * 80);
       });
     } else {
       Array.from(sceneMenu.children).forEach((btn, i) => {
-        setTimeout(() => btn.setAttribute("scale", "1 0 1"), i * 50);
+        setTimeout(()=>btn.setAttribute("scale","1 0 1"), i * 50);
       });
-      setTimeout(() => sceneMenu.setAttribute("visible", "false"), sceneMenu.children.length * 50 + 80);
+      setTimeout(()=>sceneMenu.setAttribute("visible","false"), sceneMenu.children.length * 50 + 80);
     }
   });
 
-  // ---------- Gallery handlers (immersive) ----------
+  // ------------------------------------------------------------
+  // Gallery (immersive) handlers
   galleryPrev.addEventListener("click", () => {
     if (!galleryList.length) return;
     currentGalleryIndex = (currentGalleryIndex - 1 + galleryList.length) % galleryList.length;
@@ -190,98 +229,86 @@ window.onload = () => {
     currentGalleryIndex = (currentGalleryIndex + 1) % galleryList.length;
     galleryImage.setAttribute("src", galleryList[currentGalleryIndex]);
   });
-  galleryClose.addEventListener("click", () => {
+  galleryCloseVR.addEventListener("click", () => {
     immersiveGallery.setAttribute("visible", "false");
     lastOpenedHotspotId = null;
   });
 
-  // cerrar info panel con su icono
-  infoClose.addEventListener("click", () => {
-    infoPanelVR.setAttribute("visible", "false");
+  // DOM overlay gallery (non-VR) handlers
+  let domGalleryList = ["images/imagen1.jpeg","images/imagen2.jpeg"];
+  let domGalleryIndex = 0;
+  function showDomGallery(i) {
+    galleryImageDOM.src = domGalleryList[i];
+  }
+  if (prevGallery) prevGallery.addEventListener("click", () => { domGalleryIndex = (domGalleryIndex -1 + domGalleryList.length)%domGalleryList.length; showDomGallery(domGalleryIndex);});
+  if (nextGallery) nextGallery.addEventListener("click", () => { domGalleryIndex = (domGalleryIndex +1)%domGalleryList.length; showDomGallery(domGalleryIndex);});
+  if (closeGallery) closeGallery.addEventListener("click", () => { galleryOverlay.classList.remove("visible"); setTimeout(()=>galleryOverlay.classList.add("hidden"),250); });
+
+  // open DOM gallery from camara icon (non-VR)
+  if (camaraIconVR) camaraIconVR.addEventListener("click", () => {
+    // if in VR, handled by a-frame hotspots; here for non-VR open DOM overlay using first camera hotspot images
+    if (sceneEl.is('vr-mode')) {
+      // ignore - VR handled by immersive gallery
+      return;
+    }
+    const escena = tourData.escenas[currentSceneIndex];
+    const cam = escena.hotspots && escena.hotspots.find(h=>h.tipo==='camera');
+    if (!cam || !cam.imagenes || !cam.imagenes.length) return;
+    domGalleryList = cam.imagenes.slice();
+    domGalleryIndex = 0;
+    showDomGallery(domGalleryIndex);
+    galleryOverlay.classList.remove("hidden");
+    galleryOverlay.classList.add("visible");
+  });
+
+  // ------------------------------------------------------------
+  // Info panel close (VR)
+  infoCloseVR.addEventListener("click", () => {
+    infoPanelVR.setAttribute("visible","false");
     lastOpenedHotspotId = null;
   });
 
-  // ---------- Video lateral controls ----------
-  if (btnPlay) btnPlay.addEventListener("click", () => { if (videoLateral) videoLateral.play(); });
-  if (btnPause) btnPause.addEventListener("click", () => { if (videoLateral) videoLateral.pause(); });
-  if (btnCloseVideo) btnCloseVideo.addEventListener("click", () => {
-    if (videoLateral) { videoLateral.pause(); videoLateral.currentTime = 0; }
+  // ------------------------------------------------------------
+  // Video lateral controls (DOM + VR binding)
+  // DOM handlers
+  if (btnPlayDOM) btnPlayDOM.addEventListener("click", () => { if (videoLateral) videoLateral.play().catch(()=>{}); });
+  if (btnPauseDOM) btnPauseDOM.addEventListener("click", () => { if (videoLateral) videoLateral.pause(); });
+  if (btnCloseDOM) btnCloseDOM.addEventListener("click", () => { if (videoLateral) { videoLateral.pause(); videoLateral.currentTime = 0; } });
+
+  // VR entity handlers (mirror)
+  if (btnPlayVR) btnPlayVR.addEventListener("click", () => { if (videoLateral) videoLateral.play().catch(()=>{}); });
+  if (btnPauseVR) btnPauseVR.addEventListener("click", () => { if (videoLateral) videoLateral.pause(); });
+  if (btnCloseVideoVR) btnCloseVideoVR.addEventListener("click", () => { if (videoLateral) { videoLateral.pause(); videoLateral.currentTime = 0; } });
+
+  // ------------------------------------------------------------
+  // Exit VR button
+  if (exitVrBtn) exitVrBtn.addEventListener("click", () => { try { if (sceneEl && sceneEl.exitVR) sceneEl.exitVR(); } catch(e){ console.warn(e); } });
+
+  // ------------------------------------------------------------
+  // Activate lasers and cursor when entering VR (prevents having to suspend/resume)
+  sceneEl.addEventListener("enter-vr", () => {
+    const laserL = document.getElementById("laser-left");
+    const laserR = document.getElementById("laser-right");
+    const cursor = document.getElementById("cursor");
+    if (laserL) { laserL.setAttribute("visible","true"); laserL.setAttribute("raycaster","objects: .clickable"); }
+    if (laserR) { laserR.setAttribute("visible","true"); laserR.setAttribute("raycaster","objects: .clickable"); }
+    if (cursor) { cursor.setAttribute("raycaster","objects: .clickable"); }
+    // fire a custom event if some other logic wants it
+    window.dispatchEvent(new Event("app-enter-vr"));
+    console.log("► enter-vr: lasers y cursor activados");
   });
 
-  // ---------- Camara icon DOM toggle (también funciona desde el DOM si quieres) ----------
-  if (camaraIconVR) {
-    camaraIconVR.addEventListener("click", () => {
-      // toggling immersive gallery when clicking camera icon with no specific hotspot:
-      if (immersiveGallery.getAttribute("visible") === "true") {
-        immersiveGallery.setAttribute("visible", "false");
-        lastOpenedHotspotId = null;
-        return;
-      }
-      // try to open first camera hotspot images for current scene
-      const escena = tourData.escenas[currentSceneIndex];
-      const cam = escena.hotspots && escena.hotspots.find(h => h.tipo === "camera");
-      if (!cam || !cam.imagenes || !cam.imagenes.length) return;
-      galleryList = cam.imagenes.slice();
-      currentGalleryIndex = 0;
-      galleryImage.setAttribute("src", galleryList[0]);
-      galleryCaption.setAttribute("value", cam.caption || "");
-      immersiveGallery.setAttribute("visible", "true");
-      lastOpenedHotspotId = cam.id;
-    });
-  }
+  sceneEl.addEventListener("exit-vr", () => {
+    const laserL = document.getElementById("laser-left");
+    const laserR = document.getElementById("laser-right");
+    if (laserL) laserL.setAttribute("visible","false");
+    if (laserR) laserR.setAttribute("visible","false");
+    console.log("► exit-vr: lasers ocultos");
+  });
 
-  // ---------- Exit VR button (in-scene) ----------
-  if (exitVrBtn) {
-    exitVrBtn.addEventListener("click", () => {
-      try {
-        if (sceneEl && sceneEl.exitVR) sceneEl.exitVR();
-      } catch (e) {
-        console.warn("Error exitVR:", e);
-      }
-    });
-  }
-
-  // ---------- Inicial load ----------
+  // ------------------------------------------------------------
+  // Inicializar: cargar primera escena (index 0)
   loadScene(0);
 
-  // ---------- Captura error A-Frame (no bloquear) ----------
-  window.addEventListener("error", (e) => {
-    if (e.filename && e.filename.includes("vr-mode-ui.js")) {
-      console.warn("Ignorado error A-Frame:", e.message);
-      e.preventDefault();
-    }
-  });
-
-  console.log("✅ Tour VR inicializado (botón VR nativo restaurado).");
+  console.log("✅ Tour VR inicializado correctamente");
 };
-
-// 🔹 Activar automáticamente los punteros láser al entrar en VR
-const scene = document.querySelector('a-scene');
-
-scene.addEventListener('enter-vr', () => {
-  const laserL = document.getElementById('laser-left');
-  const laserR = document.getElementById('laser-right');
-  const cursor = document.getElementById('cursor');
-
-  if (laserL) {
-    laserL.setAttribute('visible', 'true');
-    laserL.setAttribute('raycaster', 'objects: .clickable');
-  }
-  if (laserR) {
-    laserR.setAttribute('visible', 'true');
-    laserR.setAttribute('raycaster', 'objects: .clickable');
-  }
-  if (cursor) {
-    cursor.setAttribute('raycaster', 'objects: .clickable');
-  }
-
-  console.log('🎯 Láseres activados automáticamente al entrar en VR');
-});
-
-scene.addEventListener('exit-vr', () => {
-  const laserL = document.getElementById('laser-left');
-  const laserR = document.getElementById('laser-right');
-  if (laserL) laserL.setAttribute('visible', 'false');
-  if (laserR) laserR.setAttribute('visible', 'false');
-  console.log('🚪 Saliste del modo VR');
-});

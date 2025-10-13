@@ -69,5 +69,19 @@ a-image.clickable:hover, a-plane.clickable:hover, a-box.clickable:hover {
 }
 #gallery-image { box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
 
+#logo {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  width: 140px;
+  z-index: 1001;
+}
+
 /* ---------- MENU ANIMATION ---------- */
-#scene-menu { transition: transform 0.
+#scene-menu { transition: transform 0.28s ease; }
+#scene-menu a-plane { transition: all 0.3s ease, scale 0.25s ease; }
+
+/* small responsive tweaks */
+@media (max-width: 900px) {
+  .side-panel { width: 30%; }
+}
