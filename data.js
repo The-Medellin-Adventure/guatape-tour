@@ -2,7 +2,7 @@ const tourData = {
   escenas: [
     {
       id: "escena1",
-      titulo: "Guatapé - Escena principal",
+      titulo: "Guatapé – Escena principal",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
       hotspots: [
@@ -13,7 +13,8 @@ const tourData = {
           y: -1,
           z: -2,
           titulo: "Piedra del Peñol",
-          descripcion: "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé."
+          descripcion:
+            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé."
         },
         {
           id: "hs2",
@@ -32,9 +33,10 @@ const tourData = {
         }
       ]
     },
+
     {
       id: "escena2",
-      titulo: "Guatapé - Calle del Recuerdo",
+      titulo: "Guatapé – Calle del Recuerdo",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape2.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video2.mp4",
       hotspots: [
@@ -45,7 +47,7 @@ const tourData = {
           y: 0.5,
           z: -2,
           titulo: "Calle - Galería",
-          descripcion: "Fotos de la calle",
+          descripcion: "Fotos de la Calle del Recuerdo.",
           imagenes: [
             "images/imagen2.jpeg",
             "images/imagen3.jpeg",
@@ -60,13 +62,14 @@ const tourData = {
           y: 1,
           z: -1,
           titulo: "Plaza Principal",
-          descripcion: "Lugar ideal para disfrutar de comidas típicas."
+          descripcion: "Lugar ideal para disfrutar de comidas típicas y el ambiente local."
         }
       ]
     },
+
     {
       id: "escena3",
-      titulo: "Guatapé - Mirador Panorámico",
+      titulo: "Guatapé – Mirador Panorámico",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape3.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video3.mp4",
       hotspots: [
@@ -77,7 +80,8 @@ const tourData = {
           y: 1.5,
           z: -3,
           titulo: "Mirador de la Piedra",
-          descripcion: "Vistas panorámicas de todo el embalse y el pueblo desde lo alto."
+          descripcion:
+            "Vistas panorámicas de todo el embalse y el pueblo desde lo alto del mirador."
         },
         {
           id: "hs6",
@@ -86,7 +90,7 @@ const tourData = {
           y: -1,
           z: -2,
           titulo: "Picnic - Galería",
-          descripcion: "Imágenes del mirador y picnic",
+          descripcion: "Imágenes del mirador y la zona de picnic.",
           imagenes: [
             "images/imagen3.jpeg",
             "images/imagen1.jpeg"
