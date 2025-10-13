@@ -1,9 +1,11 @@
 /* ---------- GENERAL ---------- */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #071826;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background: linear-gradient(180deg, #022633 0%, #071826 100%);
   color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .tour-container {
   display: flex;
@@ -11,19 +13,22 @@ body {
   margin: 10px auto;
   gap: 12px;
   position: relative;
+  align-items: flex-start;
 }
 
 /* ---------- SIDE PANEL ---------- */
 .side-panel {
-  width: 20%;
+  width: 26%;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 8px;
 }
 .lateral-video-container video {
   width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  background: #000;
 }
 
 /* ---------- OVERLAY (DOM) ---------- */
@@ -42,33 +47,30 @@ body {
   transition: opacity 0.25s ease;
   z-index: 9999;
 }
-.overlay.visible {
-  opacity:1;
-  pointer-events:auto;
-}
+.overlay.visible { opacity:1; pointer-events:auto; }
 .overlay img { max-width: 85%; max-height: 80%; border-radius:10px; box-shadow: 0 12px 30px rgba(0,0,0,0.7); }
 
 /* ---------- A-FRAME ELEMENT HOVER EFFECTS ---------- */
 a-image.clickable, a-plane.clickable, a-box.clickable {
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.18s ease, opacity 0.18s ease;
 }
 a-image.clickable:hover, a-plane.clickable:hover, a-box.clickable:hover {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 /* ---------- INFO PANEL VR ---------- */
 #info-panel-vr {
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,211,77,0.12);
 }
 
 /* ---------- IMMERSIVE GALLERY STYLING ---------- */
-#immersive-gallery a-plane#gallery-bg {
-  border-radius: 10px;
-}
+#immersive-gallery a-plane#gallery-bg { border-radius: 12px; }
 #gallery-image { box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
 
+/* Logo DOM overlay (mobile fallback) */
 #logo {
   position: fixed;
   top: 15px;
@@ -77,11 +79,14 @@ a-image.clickable:hover, a-plane.clickable:hover, a-box.clickable:hover {
   z-index: 1001;
 }
 
-/* ---------- MENU ANIMATION ---------- */
+/* MENU */
 #scene-menu { transition: transform 0.28s ease; }
 #scene-menu a-plane { transition: all 0.3s ease, scale 0.25s ease; }
 
+/* Hotspot subtle style */
+.hotspot { border-radius: 50%; }
+
 /* small responsive tweaks */
 @media (max-width: 900px) {
-  .side-panel { width: 30%; }
+  .side-panel { width: 34%; }
 }
