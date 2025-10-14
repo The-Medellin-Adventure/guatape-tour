@@ -9,8 +9,8 @@ id: "escena1",
         {
           id: "hs1",
           tipo: "info",
-          x: -3,
-          y: -1,
+          x: -2,
+          y: 11,
           z: -2,
           titulo: "Piedra del Peñol",
           descripcion:
