@@ -20,6 +20,8 @@ window.onload = () => {
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
   const exitVrBtn = document.getElementById("exit-vr-btn");
+  const btnPlay = document.getElementById("btn-play-vr");
+  const btnPause = document.getElementById("btn-pause-vr");
 
   // 🔹 Overlay de fundido
   const fadeOverlay = document.createElement("a-plane");
@@ -37,11 +39,15 @@ window.onload = () => {
   let currentGallery = [];
   let currentGalleryIndex = 0;
 
-  // 🔹 Activar reproducción tras clic inicial
+  // ✅ Habilitar reproducción al primer clic (para evitar bloqueo del navegador)
   function enablePlaybackOnce() {
-    videoMain.play().catch(() => {});
-    videoLateral.play().catch(() => {});
-    videoLateralVR.play().catch(() => {});
+    [videoMain, videoLateral, videoLateralVR].forEach((v) => {
+      try {
+        v.muted = true;
+        v.play().catch(() => {});
+      } catch {}
+    });
+    console.log("▶️ Reproducción habilitada manualmente.");
     window.removeEventListener("click", enablePlaybackOnce);
   }
   window.addEventListener("click", enablePlaybackOnce);
@@ -68,7 +74,7 @@ window.onload = () => {
     const data = tourData.escenas[index];
     if (!data) return;
 
-    // 🛑 Detener completamente videos anteriores
+    // 🛑 Detener videos anteriores
     [videoMain, videoLateral, videoLateralVR].forEach((v) => {
       try {
         v.pause();
@@ -109,7 +115,7 @@ window.onload = () => {
     });
   }
 
-  // 🔹 Hotspots
+  // 🔹 Crear hotspots
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
 
@@ -151,7 +157,6 @@ window.onload = () => {
     infoPanelVR.setAttribute("position", `${offsetX} ${hs.y} ${hs.z}`);
     infoPanelVR.setAttribute("visible", "true");
   }
-
   infoCloseVR.addEventListener("click", () =>
     infoPanelVR.setAttribute("visible", "false")
   );
@@ -264,24 +269,24 @@ window.onload = () => {
   });
 
   // ✅ Botones de control del video lateral VR
-  const btnPlay = document.getElementById("btn-play-vr");
-  const btnPause = document.getElementById("btn-pause-vr");
-
   btnPlay.addEventListener("click", () => {
-    videoLateralVR.play();
+    videoLateralVR.play()
+      .then(() => console.log("🎥 Video lateral reproducido"))
+      .catch((e) => console.warn("No se pudo reproducir:", e));
   });
 
   btnPause.addEventListener("click", () => {
     videoLateralVR.pause();
+    console.log("⏸️ Video lateral pausado");
   });
 
   // 🔹 Iniciar tour
   createSceneMenu();
   loadScene(0);
 
-  console.log("✅ Tour 360° actualizado con controles y transiciones mejoradas.");
+  console.log("✅ Tour 360° con video lateral y láser mejorado.");
 
-  // ✅ Activar láser después de 2 segundos
+  // ✅ Activar láser rápido al entrar a VR (0.5 s)
   sceneEl.addEventListener("enter-vr", () => {
     const lasers = document.querySelectorAll("[laser-controls]");
     setTimeout(() => {
@@ -289,6 +294,6 @@ window.onload = () => {
         l.setAttribute("visible", true);
         l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
       });
-    }, 2000);
+    }, 500);
   });
 };
