@@ -10,7 +10,7 @@ id: "escena1",
           id: "hs1",
           tipo: "info",
           x: -2,
-          y: 11,
+          y: 1,
           z: -2,
           titulo: "Piedra del Peñol",
           descripcion:
