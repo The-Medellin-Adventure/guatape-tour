@@ -36,7 +36,7 @@ id: "escena1",
 
     {
 id: "escena2",
-      titulo: "Guatapé – Malecón - Embalse",
+      titulo: "Guatape – Malecon - Embalse",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape2.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video2.mp4",
       hotspots: [
@@ -69,7 +69,7 @@ id: "escena2",
 
     {
 id: "escena3",
-      titulo: "Guatapé – Pueblo de Zócalos",
+      titulo: "Guatape – Pueblo de Zocalos",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape3.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video3.mp4",
       hotspots: [
