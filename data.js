@@ -1,8 +1,8 @@
 const tourData = {
   escenas: [
     {
-      id: "escena1",
-      titulo: "Guatapé – Escena principal",
+id: "escena1",
+      titulo: "La Piedra del Peñol",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
       hotspots: [
@@ -35,8 +35,8 @@ const tourData = {
     },
 
     {
-      id: "escena2",
-      titulo: "Guatapé – Calle del Recuerdo",
+id: "escena2",
+      titulo: "Guatapé – Malecón - Embalse",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape2.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video2.mp4",
       hotspots: [
@@ -68,8 +68,41 @@ const tourData = {
     },
 
     {
-      id: "escena3",
-      titulo: "Guatapé – Mirador Panorámico",
+id: "escena3",
+      titulo: "Guatapé – Pueblo de Zócalos",
+      archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape3.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video3.mp4",
+      hotspots: [
+        {
+          id: "hs5",
+          tipo: "info",
+          x: 0,
+          y: 1.5,
+          z: -3,
+          titulo: "Mirador de la Piedra",
+          descripcion:
+            "Vistas panorámicas de todo el embalse y el pueblo desde lo alto del mirador."
+        },
+        {
+          id: "hs6",
+          tipo: "camera",
+          x: 2,
+          y: -1,
+          z: -2,
+          titulo: "Picnic - Galería",
+          descripcion: "Imágenes del mirador y la zona de picnic.",
+          imagenes: [
+            "images/imagen3.jpeg",
+            "images/imagen1.jpeg"
+          ],
+          caption: "Galería — Mirador"
+        }
+      ]
+    },
+
+   {
+id: "escena4",
+      titulo: "Calle se las sombrillas",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape3.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video3.mp4",
       hotspots: [
