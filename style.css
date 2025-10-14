@@ -7,6 +7,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ---------- SIDE PANEL (para modo no-VR) ---------- */
 .tour-container {
   display: flex;
   max-width: 1400px;
@@ -16,7 +18,6 @@ body {
   align-items: flex-start;
 }
 
-/* ---------- SIDE PANEL ---------- */
 .side-panel {
   width: 26%;
   display: flex;
@@ -24,11 +25,23 @@ body {
   gap: 12px;
   padding: 8px;
 }
-.lateral-video-container video {
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-  background: #000;
+
+/* ---------- LATERAL VIDEO CARD ---------- */
+#video-card a-plane {
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+#video-lateral-vr {
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+}
+#btn-play-vr,
+#btn-pause-vr {
+  transition: transform 0.2s ease;
+}
+#btn-play-vr:hover,
+#btn-pause-vr:hover {
+  transform: scale(1.15);
 }
 
 /* ---------- OVERLAY (DOM) ---------- */
@@ -50,7 +63,7 @@ body {
 .overlay.visible { opacity:1; pointer-events:auto; }
 .overlay img { max-width: 85%; max-height: 80%; border-radius:10px; box-shadow: 0 12px 30px rgba(0,0,0,0.7); }
 
-/* ---------- A-FRAME ELEMENT HOVER EFFECTS ---------- */
+/* ---------- A-FRAME ELEMENTS ---------- */
 a-image.clickable, a-plane.clickable, a-box.clickable {
   cursor: pointer;
   transition: transform 0.18s ease, opacity 0.18s ease;
@@ -66,27 +79,28 @@ a-image.clickable:hover, a-plane.clickable:hover, a-box.clickable:hover {
   border: 1px solid rgba(255,211,77,0.12);
 }
 
-/* ---------- IMMERSIVE GALLERY STYLING ---------- */
+/* ---------- IMMERSIVE GALLERY ---------- */
 #immersive-gallery a-plane#gallery-bg { border-radius: 12px; }
 #gallery-image { box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
 
-/* Logo DOM overlay (mobile fallback) */
-#logo {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  width: 140px;
-  z-index: 1001;
+/* ---------- MENU ---------- */
+#scene-menu {
+  transition: transform 0.28s ease;
+}
+#scene-menu a-plane {
+  transition: all 0.3s ease, scale 0.25s ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-/* MENU */
-#scene-menu { transition: transform 0.28s ease; }
-#scene-menu a-plane { transition: all 0.3s ease, scale 0.25s ease; }
+/* ---------- HOTSPOTS ---------- */
+a-image[src="#info-img"], a-image[src="#camara-img"] {
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  opacity: 0.9;
+}
 
-/* Hotspot subtle style */
-.hotspot { border-radius: 50%; }
-
-/* small responsive tweaks */
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 900px) {
   .side-panel { width: 34%; }
 }
