@@ -198,7 +198,7 @@ window.onload = () => {
   // --- Controles del video lateral ---
   btnPlay.addEventListener("click", () => {
     videoLateral.play().catch(() => {});
-    console.log(▶️ Play lateral");
+    console.log("▶️ Play lateral");
   });
   btnPause.addEventListener("click", () => {
     videoLateral.pause();
