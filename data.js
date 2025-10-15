@@ -2,7 +2,7 @@ const tourData = {
   escenas: [
     {
 id: "escena1",
-      titulo: "La Piedra del Peñol",
+      titulo: "La Piedra",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
       hotspots: [
@@ -12,9 +12,9 @@ id: "escena1",
           x: -2,
           y: 1,
           z: -2,
-          titulo: "Piedra del Peñol",
+          titulo: "Piedra del Penol",
           descripcion:
-            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé."
+            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé. Imponente y majestuosa, La Piedra del Peñol es uno de los monumentos naturales más impresionantes de Colombia."
         },
         {
           id: "hs2",
@@ -22,14 +22,16 @@ id: "escena1",
           x: 2,
           y: 1,
           z: -2,
-          titulo: "Plaza - Galería",
+          titulo: "Galeria de imagenes",
           descripcion: "Imágenes del lugar.",
           imagenes: [
             "images/imagen1.jpeg",
-            "images/imagen2.jpeg",
-            "images/imagen3.jpeg"
+            "images/guat1.jpeg",
+            "images/guat1(2).jpeg",
+            "images/guat1(3).jpeg",
+            "images/guat1(1).jpeg"
           ],
-          caption: "Galería — Plaza Principal"
+          caption: "Imagenes"
         }
       ]
     },
@@ -46,14 +48,16 @@ id: "escena2",
           x: 1,
           y: 0.5,
           z: -2,
-          titulo: "Calle - Galería",
-          descripcion: "Fotos de la Calle del Recuerdo.",
+          titulo: "Galeria de imagenes",
+          descripcion: "Fotos por el malecon y embalse",
           imagenes: [
-            "images/imagen2.jpeg",
-            "images/imagen3.jpeg",
-            "images/imagen1.jpeg"
+            "images/guat2.jpeg",
+            "images/guat2(2).jpeg",
+            "images/guat2(1).jpeg",
+            "images/guat2(1).jpg",
+            "images/guat2(2).jpg"
           ],
-          caption: "Galería — Calle del Recuerdo"
+          caption: "Galería de imagenes"
         },
         {
           id: "hs4",
@@ -61,8 +65,9 @@ id: "escena2",
           x: -2,
           y: 1,
           z: -1,
-          titulo: "Plaza Principal",
-          descripcion: "Lugar ideal para disfrutar de comidas típicas y el ambiente local."
+          titulo: "Paseo en barco",
+          descripcion: "El encanto del malecón de Guatapé, punto ideal para relajarte y disfrutar la vista del embalse.
+Emprende un paseo en barco y vive una experiencia inolvidable entre montañas, islas y paisajes únicos."
         }
       ]
     },
@@ -79,9 +84,9 @@ id: "escena3",
           x: 0,
           y: 1.5,
           z: -3,
-          titulo: "Mirador de la Piedra",
+          titulo: "Guatape – Pueblo de Zocalos",
           descripcion:
-            "Vistas panorámicas de todo el embalse y el pueblo desde lo alto del mirador."
+            "Conocido como el pueblo más colorido de Colombia, Guatapé encanta con sus zócalos llenos de arte, calles vibrantes y un ambiente alegre que refleja la calidez de su gente."
         },
         {
           id: "hs6",
@@ -92,17 +97,19 @@ id: "escena3",
           titulo: "Picnic - Galería",
           descripcion: "Imágenes del mirador y la zona de picnic.",
           imagenes: [
-            "images/imagen3.jpeg",
-            "images/imagen1.jpeg"
+            "images/guat3.jpg",
+            "images/guat3(1).jpeg",
+            "images/guat(6).jpeg",
+            "images/guat3(2).jpeg"
           ],
-          caption: "Galería — Mirador"
+          caption: "Galeria de imagenes"
         }
       ]
     },
 
    {
 id: "escena4",
-      titulo: "Calle se las sombrillas",
+      titulo: "Calle de las Sombrillas",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape4.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video4.mp4",
       hotspots: [
@@ -112,9 +119,9 @@ id: "escena4",
           x: 0,
           y: 1.5,
           z: -3,
-          titulo: "Mirador de la Piedra",
+          titulo: "Calle de las Sombrillas y Plaza de los Zocalos",
           descripcion:
-            "Vistas panorámicas de todo el embalse y el pueblo desde lo alto del mirador."
+            "Un rincón lleno de color y magia. Las sombrillas suspendidas decoran el cielo, guiando el camino hacia la Plaza de los Zócalos, donde el arte y la tradición dan vida al corazón de Guatapé.."
         },
         {
           id: "hs6",
@@ -122,11 +129,15 @@ id: "escena4",
           x: 2,
           y: -1,
           z: -2,
-          titulo: "Picnic - Galería",
-          descripcion: "Imágenes del mirador y la zona de picnic.",
+          titulo: "Calle de las Sombrillas y Plaza de los Zócalos",
+          descripcion: "Imagenes",
           imagenes: [
-            "images/imagen3.jpeg",
-            "images/imagen1.jpeg"
+            "images/guata4(1).jpg",
+            "images/guata4(2).jpg",
+            "images/guata4(3).jpg",
+            "images/guata4(4).jpg",
+            "images/guata4(5).jpg",
+            "images/guata4(1).jpg"
           ],
           caption: "Galería — Mirador"
         }
