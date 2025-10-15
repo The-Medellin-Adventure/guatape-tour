@@ -16,13 +16,11 @@ window.onload = () => {
   const exitVrBtn = document.getElementById("exit-vr-btn");
   const videoCard = document.getElementById("video-card");
 
-  // Botones del video lateral
   const btnPlay = document.getElementById("btn-play-vr");
   const btnPause = document.getElementById("btn-pause-vr");
   const btnCerrar = document.getElementById("btn-cerrar-vr");
-  const reopenIcon = document.getElementById("video-reopen-icon"); // 🔹 reabrir video lateral
+  const reopenIcon = document.getElementById("video-reopen-icon");
 
-  // Overlay de fundido
   const fadeOverlay = document.createElement("a-plane");
   fadeOverlay.setAttribute("id", "fade-overlay");
   fadeOverlay.setAttribute("color", "#000");
@@ -37,7 +35,7 @@ window.onload = () => {
   let menuVisible = false;
   let playbackEnabled = false;
 
-  // --- Inicializar reproducción manual (con sonido) ---
+  // --- Habilitar audio al primer click ---
   function enablePlaybackOnce() {
     if (playbackEnabled) return;
     [videoMain, videoLateral].forEach((v) => {
@@ -47,11 +45,9 @@ window.onload = () => {
     });
     playbackEnabled = true;
     window.removeEventListener("click", enablePlaybackOnce);
-    console.log("🔊 Reproducción habilitada con audio.");
   }
   window.addEventListener("click", enablePlaybackOnce);
 
-  // --- Fundido suave ---
   const fadeIn = (cb) => {
     fadeOverlay.setAttribute("animation", "property: material.opacity; from:1; to:0; dur:600");
     setTimeout(() => cb && cb(), 600);
@@ -61,17 +57,13 @@ window.onload = () => {
     setTimeout(() => cb && cb(), 600);
   };
 
-  // --- Detener todos los videos ---
   function stopAllVideos() {
     [videoMain, videoLateral].forEach((v) => {
-      try {
-        v.pause();
-        v.currentTime = 0;
-      } catch (e) {}
+      try { v.pause(); v.currentTime = 0; } catch(e){}
     });
   }
 
-  // --- Hotspots ---
+  // --- Crear hotspots ---
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
     hotspots.forEach((hs, i) => {
@@ -82,12 +74,9 @@ window.onload = () => {
       icon.setAttribute("height", "0.28");
       icon.classList.add("clickable");
       icon.setAttribute("look-at", "[camera]");
-      icon.setAttribute(
-        "animation__fadein",
-        `property: opacity; from: 0; to: 1; dur: 800; delay: ${120 * i}`
-      );
+      icon.setAttribute("animation__fadein", `property: opacity; from: 0; to: 1; dur: 800; delay: ${120*i}`);
 
-      // Nombre debajo del icono
+      // Etiqueta del hotspot
       const label = document.createElement("a-text");
       label.setAttribute("value", hs.titulo);
       label.setAttribute("align", "center");
@@ -96,15 +85,14 @@ window.onload = () => {
       label.setAttribute("width", "1.2");
       icon.appendChild(label);
 
-      // Acciones
       if (hs.tipo === "info") icon.addEventListener("click", () => showInfoPanel(hs));
-      if (hs.tipo === "camera") icon.addEventListener("click", () => showGallery(hs));
+      if (hs.tipo === "camera") icon.addEventListener("click", () => showGalleryVR(hs));
 
       hotspotContainer.appendChild(icon);
     });
   }
 
-  // --- Info panel debajo del icono ---
+  // --- Panel info debajo del icono ---
   function showInfoPanel(hs) {
     infoTitleVR.setAttribute("value", hs.titulo);
     infoDescVR.setAttribute("value", hs.descripcion);
@@ -113,111 +101,110 @@ window.onload = () => {
   }
   infoCloseVR.addEventListener("click", () => infoPanelVR.setAttribute("visible", false));
 
-  // --- Carrusel de imágenes ---
-  function showGallery(hs) {
-    let overlay = document.createElement("div");
-    overlay.className = "overlay visible";
-    overlay.innerHTML = `
-      <img src="${hs.imagenes[0]}" id="gallery-img">
-      <img src="img/close.png" id="gallery-close" style="position:absolute; top:20px; right:20px; width:50px; cursor:pointer;">
-      <div id="gallery-nav" style="position:absolute; bottom:20px; width:100%; display:flex; justify-content:center; gap:20px;">
-        <button id="prev-btn">◀</button>
-        <button id="next-btn">▶</button>
-      </div>
-    `;
-    document.body.appendChild(overlay);
+  // --- Carrusel VR tipo tarjeta ---
+  function showGalleryVR(hs) {
+    // Crear tarjeta
+    const gallery = document.createElement("a-plane");
+    gallery.setAttribute("id","gallery-plane");
+    gallery.setAttribute("width","2");
+    gallery.setAttribute("height","1.2");
+    gallery.setAttribute("position","0 1.5 -3");
+    gallery.setAttribute("material","color: #000; opacity: 0.9; transparent: true");
+    hotspotContainer.appendChild(gallery);
 
-    let current = 0;
-    const imgEl = document.getElementById("gallery-img");
-    const prevBtn = document.getElementById("prev-btn");
-    const nextBtn = document.getElementById("next-btn");
-    const closeBtn = document.getElementById("gallery-close");
+    let index = 0;
 
-    prevBtn.onclick = () => {
-      current = (current - 1 + hs.imagenes.length) % hs.imagenes.length;
-      imgEl.src = hs.imagenes[current];
-    };
-    nextBtn.onclick = () => {
-      current = (current + 1) % hs.imagenes.length;
-      imgEl.src = hs.imagenes[current];
-    };
-    closeBtn.onclick = () => document.body.removeChild(overlay);
+    const imgEl = document.createElement("a-image");
+    imgEl.setAttribute("src", hs.imagenes[index].src);
+    imgEl.setAttribute("width","1.8");
+    imgEl.setAttribute("height","1");
+    imgEl.setAttribute("position","0 0 0.01");
+    gallery.appendChild(imgEl);
+
+    // Botones ◀ ▶
+    const prevBtn = document.createElement("a-plane");
+    prevBtn.setAttribute("width","0.2"); prevBtn.setAttribute("height","0.2");
+    prevBtn.setAttribute("color","#ffd34d"); prevBtn.setAttribute("position","-1 0 0.02"); prevBtn.classList.add("clickable");
+    gallery.appendChild(prevBtn);
+
+    const nextBtn = document.createElement("a-plane");
+    nextBtn.setAttribute("width","0.2"); nextBtn.setAttribute("height","0.2");
+    nextBtn.setAttribute("color","#ffd34d"); nextBtn.setAttribute("position","1 0 0.02"); nextBtn.classList.add("clickable");
+    gallery.appendChild(nextBtn);
+
+    // Botón cerrar
+    const closeBtn = document.createElement("a-image");
+    closeBtn.setAttribute("src","#close-img");
+    closeBtn.setAttribute("width","0.2"); closeBtn.setAttribute("height","0.2");
+    closeBtn.setAttribute("position","0 0.6 0.02"); closeBtn.classList.add("clickable");
+    gallery.appendChild(closeBtn);
+
+    prevBtn.addEventListener("click", () => {
+      index = (index - 1 + hs.imagenes.length) % hs.imagenes.length;
+      imgEl.setAttribute("src", hs.imagenes[index].src);
+    });
+    nextBtn.addEventListener("click", () => {
+      index = (index + 1) % hs.imagenes.length;
+      imgEl.setAttribute("src", hs.imagenes[index].src);
+    });
+    closeBtn.addEventListener("click", () => hotspotContainer.removeChild(gallery));
   }
 
   // --- Cargar escena ---
   function loadScene(index) {
     const data = tourData.escenas[index];
-    if (!data) return;
+    if(!data) return;
 
     currentSceneIndex = index;
-    fadeOut(() => {
+    fadeOut(()=>{
       stopAllVideos();
-
-      // Asignar videos
       videoMain.src = data.archivo;
       videoLateral.src = data.lateralVideo;
-      videoLateralVR.setAttribute("src", "#video-lateral");
-
-      videoMain.load();
-      videoLateral.load();
-
-      // Reproducir solo el principal con audio
-      videoMain.muted = false;
-      videoMain.volume = 1.0;
+      videoLateralVR.setAttribute("src","#video-lateral");
+      videoMain.load(); videoLateral.load();
+      videoMain.muted = false; videoMain.volume = 1.0;
       videoLateral.muted = true;
-
-      videoMain.play().catch(() => {});
-      videoLateral.pause();
-
-      sphere.setAttribute("src", "#video-main");
+      videoMain.play().catch(()=>{}); videoLateral.pause();
+      sphere.setAttribute("src","#video-main");
       createHotspots(data.hotspots);
       fadeIn();
 
-      console.log("🎬 Escena cargada:", data.titulo);
-
-      // Auto-avance
-      videoMain.onended = () => {
-        if (currentSceneIndex < tourData.escenas.length - 1) loadScene(currentSceneIndex + 1);
+      videoMain.onended = ()=>{
+        if(currentSceneIndex < tourData.escenas.length-1) loadScene(currentSceneIndex+1);
       };
     });
   }
 
-  // --- Menú de escenas ---
+  // --- Menú escenas ---
   function createSceneMenu() {
     sceneMenu.innerHTML = "";
     const bg = document.createElement("a-plane");
-    bg.setAttribute("color", "#022633");
-    bg.setAttribute("width", "1.6");
-    bg.setAttribute("height", `${tourData.escenas.length * 0.45 + 0.5}`);
-    bg.setAttribute("position", "0 0 0");
-    bg.setAttribute("opacity", "1");
+    bg.setAttribute("color","#022633");
+    bg.setAttribute("width","1.6");
+    bg.setAttribute("height", `${tourData.escenas.length*0.45+0.5}`);
+    bg.setAttribute("position","0 0 0"); bg.setAttribute("opacity","1");
     sceneMenu.appendChild(bg);
 
     const header = document.createElement("a-text");
-    header.setAttribute("value", "GUATAPE Travel");
-    header.setAttribute("align", "center");
-    header.setAttribute("color", "#ffd34d");
-    header.setAttribute("position", "0 0.5 0.01");
-    header.setAttribute("width", "1.8");
+    header.setAttribute("value","GUATAPE Travel");
+    header.setAttribute("align","center"); header.setAttribute("color","#ffd34d");
+    header.setAttribute("position","0 0.5 0.01"); header.setAttribute("width","1.8");
     sceneMenu.appendChild(header);
 
-    tourData.escenas.forEach((esc, i) => {
+    tourData.escenas.forEach((esc,i)=>{
       const btn = document.createElement("a-plane");
-      btn.setAttribute("width", "1.4");
-      btn.setAttribute("height", "0.3");
-      btn.setAttribute("color", i === currentSceneIndex ? "#ffd34d" : "#ffffff");
-      btn.setAttribute("position", `0 ${-0.4 * (i + 1)} 0.01`);
+      btn.setAttribute("width","1.4"); btn.setAttribute("height","0.3");
+      btn.setAttribute("color",i===currentSceneIndex?"#ffd34d":"#ffffff");
+      btn.setAttribute("position",`0 ${-0.4*(i+1)} 0.01`);
       btn.classList.add("clickable");
 
       const txt = document.createElement("a-text");
-      txt.setAttribute("value", esc.titulo);
-      txt.setAttribute("align", "center");
-      txt.setAttribute("color", "#073047");
-      txt.setAttribute("width", "1.3");
-      txt.setAttribute("position", "0 0 0.02");
+      txt.setAttribute("value",esc.titulo); txt.setAttribute("align","center");
+      txt.setAttribute("color","#073047"); txt.setAttribute("width","1.3");
+      txt.setAttribute("position","0 0 0.02");
       btn.appendChild(txt);
 
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", ()=>{
         loadScene(i);
         toggleMenu(false);
       });
@@ -227,75 +214,45 @@ window.onload = () => {
   }
 
   function toggleMenu(force) {
-    menuVisible = typeof force === "boolean" ? force : !menuVisible;
-    sceneMenu.setAttribute("visible", menuVisible);
+    menuVisible = typeof force==="boolean"?force:!menuVisible;
+    sceneMenu.setAttribute("visible",menuVisible);
   }
-  menuIcon.addEventListener("click", () => toggleMenu());
-  exitVrBtn.addEventListener("click", () => sceneEl.exitVR && sceneEl.exitVR());
+  menuIcon.addEventListener("click",()=>toggleMenu());
+  exitVrBtn.addEventListener("click",()=>sceneEl.exitVR && sceneEl.exitVR());
 
-  // --- Controles del video lateral ---
-  btnPlay.addEventListener("click", () => {
-    videoLateral.muted = false;
-    videoLateral.volume = 1.0;
-    videoLateral.play().catch(() => {});
-    console.log("▶️ Play lateral con audio");
+  // --- Controles video lateral ---
+  btnPlay.addEventListener("click", ()=>{
+    videoLateral.muted=false; videoLateral.volume=1.0; videoLateral.play().catch(()=>{});
   });
-
-  btnPause.addEventListener("click", () => {
-    videoLateral.pause();
-    console.log("⏸️ Pause lateral");
+  btnPause.addEventListener("click", ()=>videoLateral.pause());
+  btnCerrar.addEventListener("click", ()=>{
+    videoLateral.pause(); videoLateral.currentTime=0; videoLateral.muted=true; videoCard.setAttribute("visible",false);
+    if(reopenIcon) reopenIcon.setAttribute("visible",true);
   });
-
-  btnCerrar.addEventListener("click", () => {
-    videoLateral.pause();
-    videoLateral.currentTime = 0;
-    videoLateral.muted = true;
-    videoCard.setAttribute("visible", false);
-    if (reopenIcon) reopenIcon.setAttribute("visible", true);
-    console.log("❌ Cerrar lateral (muteado)");
-  });
-
-  if (reopenIcon) {
-    reopenIcon.addEventListener("click", () => {
-      videoCard.setAttribute("visible", true);
-      reopenIcon.setAttribute("visible", false);
-      videoLateral.currentTime = 0;
-      videoLateral.muted = false;
-      videoLateral.volume = 1.0;
-      videoLateral.play().catch(() => {});
-      console.log("🎬 Video lateral reabierto con audio");
+  if(reopenIcon){
+    reopenIcon.addEventListener("click", ()=>{
+      videoCard.setAttribute("visible",true); reopenIcon.setAttribute("visible",false);
+      videoLateral.currentTime=0; videoLateral.muted=false; videoLateral.volume=1.0; videoLateral.play().catch(()=>{});
     });
   }
 
   // --- Cursor y láser ---
-  sceneEl.addEventListener("enter-vr", () => {
-    setTimeout(() => {
+  sceneEl.addEventListener("enter-vr",()=>{
+    setTimeout(()=>{
       const lasers = document.querySelectorAll("[laser-controls]");
-      lasers.forEach((l) => {
-        l.setAttribute("visible", true);
-        l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
-      });
-      console.log("🔆 Láser activado correctamente.");
-    }, 800);
+      lasers.forEach((l)=>{ l.setAttribute("visible",true); l.setAttribute("raycaster","objects: .clickable; lineColor: #ffd34d"); });
+    },800);
   });
 
-  // --- Botón VR nativo en vista normal ---
-  function addNativeVRButton() {
+  // --- Botón VR nativo ---
+  function addNativeVRButton(){
     const btn = document.createElement("button");
-    btn.innerText = "Entrar a VR";
-    btn.style.position = "fixed";
-    btn.style.right = "20px";
-    btn.style.top = "50%";
-    btn.style.transform = "translateY(-50%)";
-    btn.style.padding = "12px 20px";
-    btn.style.zIndex = "1000";
-    btn.style.fontSize = "16px";
-    btn.style.background = "#ffd34d";
-    btn.style.border = "none";
-    btn.style.borderRadius = "8px";
-    btn.style.cursor = "pointer";
-
-    btn.onclick = () => sceneEl.enterVR && sceneEl.enterVR();
+    btn.innerText="Entrar a VR";
+    btn.style.position="fixed"; btn.style.right="20px"; btn.style.top="50%";
+    btn.style.transform="translateY(-50%)"; btn.style.padding="12px 20px";
+    btn.style.zIndex="1000"; btn.style.fontSize="16px"; btn.style.background="#ffd34d";
+    btn.style.border="none"; btn.style.borderRadius="8px"; btn.style.cursor="pointer";
+    btn.onclick = ()=>sceneEl.enterVR && sceneEl.enterVR();
     document.body.appendChild(btn);
   }
 

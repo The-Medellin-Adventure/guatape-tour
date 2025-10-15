@@ -51,7 +51,7 @@ const tourData = {
         {
           id: "hs4",
           tipo: "info",
-          x: -2, y: 1, z: -1,
+           x: -2, y: 1, z: -2,
           titulo: "Paseo en barco",
           descripcion: "El encanto del malecon de Guatape, punto ideal para relajarte..."
         }
@@ -67,7 +67,7 @@ const tourData = {
         {
           id: "hs5",
           tipo: "info",
-          x: 0, y: 1.5, z: -3,
+           x: -2, y: 1, z: -2,
           titulo: "Guatape – Pueblo de Zocalos",
           descripcion: "Conocido como el pueblo más colorido de Colombia..."
         },
@@ -95,7 +95,7 @@ const tourData = {
         {
           id: "hs7",
           tipo: "info",
-          x: 0, y: 1.5, z: -3,
+           x: -2, y: 1, z: -2,
           titulo: "Calle de las Sombrillas",
           descripcion: "Un rincón lleno de color y magia..."
         },
