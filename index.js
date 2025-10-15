@@ -20,6 +20,7 @@ window.onload = () => {
   const btnPlay = document.getElementById("btn-play-vr");
   const btnPause = document.getElementById("btn-pause-vr");
   const btnCerrar = document.getElementById("btn-cerrar-vr");
+  const reopenIcon = document.getElementById("video-reopen-icon"); // 🔹 nuevo icono para reabrir
 
   // Overlay de fundido
   const fadeOverlay = document.createElement("a-plane");
@@ -36,15 +37,17 @@ window.onload = () => {
   let menuVisible = false;
   let playbackEnabled = false;
 
-  // --- Inicializar reproducción manual ---
+  // --- Inicializar reproducción manual (con sonido) ---
   function enablePlaybackOnce() {
     if (playbackEnabled) return;
     [videoMain, videoLateral].forEach((v) => {
-      v.muted = true;
+      v.muted = false;
+      v.volume = 1.0;
       v.play().catch(() => {});
     });
     playbackEnabled = true;
     window.removeEventListener("click", enablePlaybackOnce);
+    console.log("🔊 Reproducción habilitada con audio.");
   }
   window.addEventListener("click", enablePlaybackOnce);
 
@@ -85,8 +88,9 @@ window.onload = () => {
       videoMain.load();
       videoLateral.load();
 
-      // Reproducir solo el principal
+      // Reproducir solo el principal con audio
       videoMain.muted = false;
+      videoMain.volume = 1.0;
       videoLateral.muted = true;
 
       videoMain.play().catch(() => {});
@@ -195,21 +199,40 @@ window.onload = () => {
   menuIcon.addEventListener("click", () => toggleMenu());
   exitVrBtn.addEventListener("click", () => sceneEl.exitVR && sceneEl.exitVR());
 
-  // --- Controles del video lateral ---
+  // --- Controles del video lateral (con audio y reabrir) ---
   btnPlay.addEventListener("click", () => {
+    videoLateral.muted = false;
+    videoLateral.volume = 1.0;
     videoLateral.play().catch(() => {});
-    console.log("▶️ Play lateral");
+    console.log("▶️ Play lateral con audio");
   });
+
   btnPause.addEventListener("click", () => {
     videoLateral.pause();
     console.log("⏸️ Pause lateral");
   });
+
   btnCerrar.addEventListener("click", () => {
     videoLateral.pause();
     videoLateral.currentTime = 0;
+    videoLateral.muted = true;
     videoCard.setAttribute("visible", false);
-    console.log("❌ Cerrar lateral");
+    if (reopenIcon) reopenIcon.setAttribute("visible", true);
+    console.log("❌ Cerrar lateral (muteado)");
   });
+
+  // --- Reabrir video lateral ---
+  if (reopenIcon) {
+    reopenIcon.addEventListener("click", () => {
+      videoCard.setAttribute("visible", true);
+      reopenIcon.setAttribute("visible", false);
+      videoLateral.currentTime = 0;
+      videoLateral.muted = false;
+      videoLateral.volume = 1.0;
+      videoLateral.play().catch(() => {});
+      console.log("🎬 Video lateral reabierto con audio");
+    });
+  }
 
   // --- Cursor y láser ---
   sceneEl.addEventListener("enter-vr", () => {
