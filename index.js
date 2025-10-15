@@ -14,12 +14,12 @@ window.onload = () => {
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
   const exitVrBtn = document.getElementById("exit-vr-btn");
+  const videoCard = document.getElementById("video-card");
 
-  // Controles del video lateral
+  // Botones del video lateral
   const btnPlay = document.getElementById("btn-play-vr");
   const btnPause = document.getElementById("btn-pause-vr");
   const btnCerrar = document.getElementById("btn-cerrar-vr");
-  const videoCard = document.getElementById("video-card");
 
   // Overlay de fundido
   const fadeOverlay = document.createElement("a-plane");
@@ -34,115 +34,80 @@ window.onload = () => {
 
   let currentSceneIndex = 0;
   let menuVisible = false;
-  let playbackEnabled = false; // marca si enablePlaybackOnce ya corrió
+  let playbackEnabled = false;
 
-  // Habilitar reproducción al primer clic (para evitar bloqueo del navegador)
+  // --- Inicializar reproducción manual ---
   function enablePlaybackOnce() {
-    try {
-      [videoMain, videoLateral, videoLateralVR].forEach((v) => {
-        v.muted = (v === videoMain) ? false : true; // solo main con audio
-        v.load && v.load();
-        v.play && v.play().catch(() => {});
-      });
-    } catch (e) {
-      console.warn("Error en enablePlaybackOnce:", e);
-    }
+    if (playbackEnabled) return;
+    [videoMain, videoLateral].forEach((v) => {
+      v.muted = true;
+      v.play().catch(() => {});
+    });
     playbackEnabled = true;
     window.removeEventListener("click", enablePlaybackOnce);
-    console.log("▶️ Reproducción habilitada manualmente.");
   }
   window.addEventListener("click", enablePlaybackOnce);
 
-  // Fundido suave
-  function fadeIn(callback) {
-    fadeOverlay.setAttribute(
-      "animation",
-      "property: material.opacity; from: 1; to: 0; dur: 500; easing: easeOutQuad"
-    );
-    setTimeout(() => callback && callback(), 500);
-  }
+  // --- Fundido suave ---
+  const fadeIn = (cb) => {
+    fadeOverlay.setAttribute("animation", "property: material.opacity; from:1; to:0; dur:600");
+    setTimeout(() => cb && cb(), 600);
+  };
+  const fadeOut = (cb) => {
+    fadeOverlay.setAttribute("animation", "property: material.opacity; from:0; to:1; dur:600");
+    setTimeout(() => cb && cb(), 600);
+  };
 
-  function fadeOut(callback) {
-    fadeOverlay.setAttribute(
-      "animation",
-      "property: material.opacity; from: 0; to: 1; dur: 500; easing: easeInQuad"
-    );
-    setTimeout(() => callback && callback(), 500);
-  }
-
-  // Detener todos los videos
+  // --- Detener todos los videos ---
   function stopAllVideos() {
-    [videoMain, videoLateral, videoLateralVR].forEach((v) => {
+    [videoMain, videoLateral].forEach((v) => {
       try {
         v.pause();
         v.currentTime = 0;
-        if (v.getAttribute && v.getAttribute("src")) {
-          v.removeAttribute("src");
-        } else if (v.src) {
-          v.src = "";
-        }
-        v.load && v.load();
-      } catch (e) {
-        console.warn("Error al detener video:", e);
-      }
+      } catch (e) {}
     });
   }
 
-  // Cargar escena
+  // --- Cargar escena ---
   function loadScene(index) {
     const data = tourData.escenas[index];
     if (!data) return;
 
-    stopAllVideos();
     currentSceneIndex = index;
-
     fadeOut(() => {
-      try {
-        videoMain.setAttribute("src", data.archivo);
-        videoLateral.setAttribute("src", data.lateralVideo);
-        videoLateralVR.setAttribute("src", data.lateralVideo);
-      } catch (e) {
-        videoMain.src = data.archivo;
-        videoLateral.src = data.lateralVideo;
-        videoLateralVR.src = data.lateralVideo;
-      }
+      stopAllVideos();
+
+      // Asignar videos
+      videoMain.src = data.archivo;
+      videoLateral.src = data.lateralVideo;
+      videoLateralVR.setAttribute("src", "#video-lateral");
+
+      videoMain.load();
+      videoLateral.load();
+
+      // Reproducir solo el principal
+      videoMain.muted = false;
+      videoLateral.muted = true;
+
+      videoMain.play().catch(() => {});
+      videoLateral.pause();
 
       sphere.setAttribute("src", "#video-main");
       createHotspots(data.hotspots);
-
-      const tryPlayMain = () => {
-        try {
-          videoMain.muted = false;
-          videoMain.load && videoMain.load();
-          videoMain.play && videoMain.play().catch((e) => {
-            console.warn("No se pudo reproducir automáticamente videoMain:", e);
-          });
-        } catch (e) {
-          console.warn("Error al intentar play main:", e);
-        }
-      };
-      videoMain.addEventListener("loadeddata", tryPlayMain, { once: true });
-
       fadeIn();
-      console.log("✅ Escena cargada:", data.titulo);
 
+      console.log("🎬 Escena cargada:", data.titulo);
+
+      // Auto-avance
       videoMain.onended = () => {
-        if (currentSceneIndex < tourData.escenas.length - 1) {
-          loadScene(currentSceneIndex + 1);
-        } else {
-          console.log("🏁 Última escena finalizada.");
-        }
+        if (currentSceneIndex < tourData.escenas.length - 1) loadScene(currentSceneIndex + 1);
       };
-
-      videoLateral.onended = () => videoLateral.pause();
-      videoLateralVR.onended = () => videoLateralVR.pause();
     });
   }
 
-  // Hotspots
+  // --- Hotspots ---
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
-
     hotspots.forEach((hs, i) => {
       const icon = document.createElement("a-image");
       icon.setAttribute("src", hs.tipo === "info" ? "#info-img" : "#camara-img");
@@ -153,9 +118,8 @@ window.onload = () => {
       icon.setAttribute("look-at", "[camera]");
       icon.setAttribute(
         "animation__fadein",
-        `property: opacity; from: 0; to: 1; dur: 800; delay: ${150 * i}`
+        `property: opacity; from: 0; to: 1; dur: 800; delay: ${120 * i}`
       );
-
       const label = document.createElement("a-text");
       label.setAttribute("value", hs.titulo);
       label.setAttribute("align", "center");
@@ -164,31 +128,25 @@ window.onload = () => {
       label.setAttribute("width", "1.2");
       icon.appendChild(label);
 
-      icon.addEventListener("click", () => {
-        if (hs.tipo === "info") showInfoPanel(hs);
-      });
+      if (hs.tipo === "info") {
+        icon.addEventListener("click", () => showInfoPanel(hs));
+      }
 
       hotspotContainer.appendChild(icon);
     });
   }
 
-  // Panel informativo
   function showInfoPanel(hs) {
     infoTitleVR.setAttribute("value", hs.titulo);
     infoDescVR.setAttribute("value", hs.descripcion);
-    const offsetX = hs.x >= 0 ? hs.x - 0.9 : hs.x + 0.9;
-    infoPanelVR.setAttribute("position", `${offsetX} ${hs.y} ${hs.z}`);
-    infoPanelVR.setAttribute("visible", "true");
+    infoPanelVR.setAttribute("position", `${hs.x} ${hs.y} ${hs.z}`);
+    infoPanelVR.setAttribute("visible", true);
   }
+  infoCloseVR.addEventListener("click", () => infoPanelVR.setAttribute("visible", false));
 
-  infoCloseVR.addEventListener("click", () =>
-    infoPanelVR.setAttribute("visible", "false")
-  );
-
-  // Menú de escenas
+  // --- Menú de escenas ---
   function createSceneMenu() {
     sceneMenu.innerHTML = "";
-
     const bg = document.createElement("a-plane");
     bg.setAttribute("color", "#022633");
     bg.setAttribute("width", "1.6");
@@ -210,7 +168,6 @@ window.onload = () => {
       btn.setAttribute("width", "1.4");
       btn.setAttribute("height", "0.3");
       btn.setAttribute("color", i === currentSceneIndex ? "#ffd34d" : "#ffffff");
-      btn.setAttribute("opacity", "1");
       btn.setAttribute("position", `0 ${-0.4 * (i + 1)} 0.01`);
       btn.classList.add("clickable");
 
@@ -222,12 +179,7 @@ window.onload = () => {
       txt.setAttribute("position", "0 0 0.02");
       btn.appendChild(txt);
 
-      btn.addEventListener("mouseenter", () => btn.setAttribute("color", "#ffd34d"));
-      btn.addEventListener("mouseleave", () =>
-        btn.setAttribute("color", i === currentSceneIndex ? "#ffd34d" : "#ffffff")
-      );
       btn.addEventListener("click", () => {
-        stopAllVideos();
         loadScene(i);
         toggleMenu(false);
       });
@@ -238,82 +190,41 @@ window.onload = () => {
 
   function toggleMenu(force) {
     menuVisible = typeof force === "boolean" ? force : !menuVisible;
-    if (menuVisible) {
-      sceneMenu.setAttribute("visible", "true");
-      sceneMenu.setAttribute(
-        "animation",
-        "property: scale; to: 1 1 1; dur: 300; easing: easeOutQuad"
-      );
-      sceneMenu.setAttribute("scale", "0.1 0.1 0.1");
-    } else {
-      sceneMenu.setAttribute(
-        "animation",
-        "property: scale; to: 0.1 0.1 0.1; dur: 250; easing: easeInQuad"
-      );
-      setTimeout(() => sceneMenu.setAttribute("visible", "false"), 250);
-    }
+    sceneMenu.setAttribute("visible", menuVisible);
   }
-
   menuIcon.addEventListener("click", () => toggleMenu());
-  exitVrBtn.addEventListener("click", () => {
-    if (sceneEl && sceneEl.exitVR) sceneEl.exitVR();
-  });
+  exitVrBtn.addEventListener("click", () => sceneEl.exitVR && sceneEl.exitVR());
 
-  // Controles del video lateral VR
+  // --- Controles del video lateral ---
   btnPlay.addEventListener("click", () => {
-    try {
-      videoLateralVR.muted = true;
-      videoLateralVR.play().catch((e) => console.warn("No se pudo reproducir lateral:", e));
-      console.log("▶️ Video lateral reproducido (VR).");
-    } catch (e) {
-      console.warn("Error play lateral:", e);
-    }
+    videoLateral.play().catch(() => {});
+    console.log(▶️ Play lateral");
   });
-
   btnPause.addEventListener("click", () => {
-    try {
-      videoLateralVR.pause();
-      console.log("⏸️ Video lateral pausado (VR).");
-    } catch (e) {
-      console.warn("Error pause lateral:", e);
-    }
+    videoLateral.pause();
+    console.log("⏸️ Pause lateral");
   });
-
   btnCerrar.addEventListener("click", () => {
-    try {
-      videoLateralVR.pause();
-      videoLateralVR.currentTime = 0;
-      videoCard.setAttribute("visible", "false");
-      console.log("❌ Tarjeta de video lateral cerrada.");
-    } catch (e) {
-      console.warn("Error cerrar tarjeta lateral:", e);
-    }
+    videoLateral.pause();
+    videoLateral.currentTime = 0;
+    videoCard.setAttribute("visible", false);
+    console.log("❌ Cerrar lateral");
   });
 
-  // Iniciar tour
-  createSceneMenu();
-  loadScene(0);
-
-  console.log("🌐 Tour 360° iniciado correctamente.");
-
-  // Activar láser
+  // --- Cursor y láser ---
   sceneEl.addEventListener("enter-vr", () => {
-    const lasers = document.querySelectorAll("[laser-controls]");
-    lasers.forEach((l) => l.setAttribute("visible", false));
     setTimeout(() => {
+      const lasers = document.querySelectorAll("[laser-controls]");
       lasers.forEach((l) => {
         l.setAttribute("visible", true);
         l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
       });
-      console.log("🔆 Láseres activados al entrar VR.");
-    }, 300);
+      console.log("🔆 Láser activado correctamente.");
+    }, 800);
   });
 
-  if (sceneEl.is("vr-mode")) {
-    const lasers = document.querySelectorAll("[laser-controls]");
-    lasers.forEach((l) => {
-      l.setAttribute("visible", true);
-      l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
-    });
-  }
+  // --- Iniciar ---
+  createSceneMenu();
+  loadScene(0);
+  console.log("🌎 Tour VR iniciado.");
 };
