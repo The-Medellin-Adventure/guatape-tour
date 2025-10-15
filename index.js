@@ -58,7 +58,7 @@ window.onload = () => {
     }
     playbackEnabled = true;
     window.removeEventListener("click", enablePlaybackOnce);
-    console.log(▶️ Reproducción habilitada manualmente.");
+    console.log("▶️ Reproducción habilitada manualmente.");
   }
   window.addEventListener("click", enablePlaybackOnce);
 
