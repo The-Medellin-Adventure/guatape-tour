@@ -10,14 +10,14 @@ const tourData = {
           id: "hs1",
           tipo: "info",
           x: -2, y: 1, z: -2,
-          titulo: "Piedra del Peñol",
-          descripcion: "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé..."
+          titulo: "La Piedra",
+          descripcion: "Un monolito de 220 metros con una vista espectacular del embalse de Guatape..."
         },
         {
           id: "hs2",
           tipo: "camera",
           x: 2, y: 1, z: -2,
-          titulo: "Galería de imágenes",
+          titulo: "Galeria de imagenes",
           imagenes: [
             "images/imagen1.jpeg",
             "images/guat1.jpeg",
@@ -39,7 +39,7 @@ const tourData = {
           id: "hs3",
           tipo: "camera",
           x: 1, y: 0.5, z: -2,
-          titulo: "Galería de imágenes",
+          titulo: "Galeria de imagenes",
           imagenes: [
             "images/guat2.jpeg",
             "images/guat2(2).jpeg",
@@ -69,13 +69,13 @@ const tourData = {
           tipo: "info",
            x: -2, y: 1, z: -2,
           titulo: "Guatape – Pueblo de Zocalos",
-          descripcion: "Conocido como el pueblo más colorido de Colombia..."
+          descripcion: "Conocido como el pueblo mas colorido de Colombia."
         },
         {
           id: "hs6",
           tipo: "camera",
           x: 2, y: -1, z: -2,
-          titulo: "Galería",
+          titulo: "Galeria",
           imagenes: [
             "images/guat3.jpg",
             "images/guat3(1).jpeg",
@@ -97,13 +97,13 @@ const tourData = {
           tipo: "info",
            x: -2, y: 1, z: -2,
           titulo: "Calle de las Sombrillas",
-          descripcion: "Un rincón lleno de color y magia..."
+          descripcion: "Un rincon lleno de color y magia."
         },
         {
           id: "hs8",
           tipo: "camera",
           x: 2, y: -1, z: -2,
-          titulo: "Galería de Sombrillas",
+          titulo: "Galeria de imagenes",
           imagenes: [
             "images/guata4(1).jpg",
             "images/guata4(2).jpg",
