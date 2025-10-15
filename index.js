@@ -14,13 +14,7 @@ window.onload = () => {
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
   const exitVrBtn = document.getElementById("exit-vr-btn");
-  const videoCard = document.getElementById("video-card");
-  const btnPlay = document.getElementById("btn-play-vr");
-  const btnPause = document.getElementById("btn-pause-vr");
-  const btnCerrar = document.getElementById("btn-cerrar-vr");
-  const reopenIcon = document.getElementById("video-reopen-icon");
 
-  // --- Filtro: mostrar solo primera escena en vista normal ---
   let isVRMode = false;
   sceneEl.addEventListener("enter-vr", () => (isVRMode = true));
   sceneEl.addEventListener("exit-vr", () => (isVRMode = false));
@@ -39,7 +33,6 @@ window.onload = () => {
   let menuVisible = false;
   let playbackEnabled = false;
 
-  // --- Habilitar audio ---
   function enablePlaybackOnce() {
     if (playbackEnabled) return;
     [videoMain, videoLateral].forEach((v) => {
@@ -109,61 +102,68 @@ window.onload = () => {
 
   // --- Carrusel VR ---
   function showGalleryVR(hs) {
+    // Panel principal al lado derecho del icono
     const gallery = document.createElement("a-plane");
-    gallery.setAttribute("width", "2.5");
-    gallery.setAttribute("height", "1.5");
-    gallery.setAttribute("position", "0 1.5 -3");
-    gallery.setAttribute("material", "color: #000; opacity: 0.9; transparent: true; shader: flat;");
+    gallery.setAttribute("width", "2.8");
+    gallery.setAttribute("height", "1.6");
+    gallery.setAttribute("position", `${hs.x + 1.8} ${hs.y} ${hs.z}`);
+    gallery.setAttribute("material", "color: #000; opacity: 0.92; transparent: true; shader: flat;");
     gallery.setAttribute("class", "clickable");
+    gallery.setAttribute("radius", "0.2");
     hotspotContainer.appendChild(gallery);
 
     let index = 0;
     const imgEl = document.createElement("a-image");
-    imgEl.setAttribute("src", hs.imagenes[index].src);
-    imgEl.setAttribute("width", "2.3");
+    imgEl.setAttribute("src", hs.imagenes[index]);
+    imgEl.setAttribute("width", "2.5");
     imgEl.setAttribute("height", "1.3");
     imgEl.setAttribute("position", "0 0 0.01");
     imgEl.setAttribute("shader", "flat");
     gallery.appendChild(imgEl);
 
+    // Botones navegación
     const prevBtn = document.createElement("a-plane");
-    prevBtn.setAttribute("width", "0.3");
-    prevBtn.setAttribute("height", "0.3");
+    prevBtn.setAttribute("width", "0.25");
+    prevBtn.setAttribute("height", "0.25");
     prevBtn.setAttribute("color", "#ffd34d");
-    prevBtn.setAttribute("position", "-1.2 0 0.02");
+    prevBtn.setAttribute("position", "-1.25 0 0.02");
+    prevBtn.setAttribute("opacity", "0.9");
     prevBtn.classList.add("clickable");
     gallery.appendChild(prevBtn);
 
     const nextBtn = document.createElement("a-plane");
-    nextBtn.setAttribute("width", "0.3");
-    nextBtn.setAttribute("height", "0.3");
+    nextBtn.setAttribute("width", "0.25");
+    nextBtn.setAttribute("height", "0.25");
     nextBtn.setAttribute("color", "#ffd34d");
-    nextBtn.setAttribute("position", "1.2 0 0.02");
+    nextBtn.setAttribute("position", "1.25 0 0.02");
+    nextBtn.setAttribute("opacity", "0.9");
     nextBtn.classList.add("clickable");
     gallery.appendChild(nextBtn);
 
+    // Botón de cierre
     const closeBtn = document.createElement("a-image");
     closeBtn.setAttribute("src", "#close-img");
-    closeBtn.setAttribute("width", "0.25");
-    closeBtn.setAttribute("height", "0.25");
+    closeBtn.setAttribute("width", "0.22");
+    closeBtn.setAttribute("height", "0.22");
     closeBtn.setAttribute("position", "0 0.75 0.03");
     closeBtn.classList.add("clickable");
     gallery.appendChild(closeBtn);
 
+    // Eventos
     prevBtn.addEventListener("click", () => {
       index = (index - 1 + hs.imagenes.length) % hs.imagenes.length;
-      imgEl.setAttribute("src", hs.imagenes[index].src);
+      imgEl.setAttribute("src", hs.imagenes[index]);
     });
     nextBtn.addEventListener("click", () => {
       index = (index + 1) % hs.imagenes.length;
-      imgEl.setAttribute("src", hs.imagenes[index].src);
+      imgEl.setAttribute("src", hs.imagenes[index]);
     });
     closeBtn.addEventListener("click", () => hotspotContainer.removeChild(gallery));
   }
 
   // --- Cargar escena ---
   function loadScene(index) {
-    if (!isVRMode && index > 0) return; // solo la primera escena fuera de VR
+    if (!isVRMode && index > 0) return;
 
     const data = tourData.escenas[index];
     if (!data) return;
@@ -241,7 +241,7 @@ window.onload = () => {
   menuIcon.addEventListener("click", () => toggleMenu());
   exitVrBtn.addEventListener("click", () => sceneEl.exitVR && sceneEl.exitVR());
 
-  // --- Botón VR nativo flotante ---
+  // --- Botón VR flotante ---
   function addNativeVRButton() {
     const btn = document.createElement("button");
     btn.innerText = "Entrar a VR";
@@ -265,5 +265,5 @@ window.onload = () => {
   createSceneMenu();
   loadScene(0);
   addNativeVRButton();
-  console.log("✅ Tour VR cargado correctamente");
+  console.log("✅ Tour VR Guatapé Travel cargado correctamente");
 };
