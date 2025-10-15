@@ -11,12 +11,6 @@ window.onload = () => {
   const infoTitleVR = document.getElementById("info-title-vr");
   const infoDescVR = document.getElementById("info-desc-vr");
   const infoCloseVR = document.getElementById("info-close-vr");
-  const immersiveGallery = document.getElementById("immersive-gallery");
-  const galleryImage = document.getElementById("gallery-image");
-  const galleryCaption = document.getElementById("gallery-caption");
-  const galleryPrev = document.getElementById("gallery-prev");
-  const galleryNext = document.getElementById("gallery-next");
-  const galleryClose = document.getElementById("gallery-close");
   const menuIcon = document.getElementById("menu-icon");
   const sceneMenu = document.getElementById("scene-menu");
   const exitVrBtn = document.getElementById("exit-vr-btn");
@@ -40,16 +34,13 @@ window.onload = () => {
 
   let currentSceneIndex = 0;
   let menuVisible = false;
-  let currentGallery = [];
-  let currentGalleryIndex = 0;
   let playbackEnabled = false; // marca si enablePlaybackOnce ya corrió
 
   // Habilitar reproducción al primer clic (para evitar bloqueo del navegador)
   function enablePlaybackOnce() {
-    // Mute lateral por defecto (para que no compita con el audio principal)
     try {
       [videoMain, videoLateral, videoLateralVR].forEach((v) => {
-        v.muted = (v === videoMain) ? false : true; // solo main con audio por defecto
+        v.muted = (v === videoMain) ? false : true; // solo main con audio
         v.load && v.load();
         v.play && v.play().catch(() => {});
       });
@@ -70,6 +61,7 @@ window.onload = () => {
     );
     setTimeout(() => callback && callback(), 500);
   }
+
   function fadeOut(callback) {
     fadeOverlay.setAttribute(
       "animation",
@@ -78,13 +70,12 @@ window.onload = () => {
     setTimeout(() => callback && callback(), 500);
   }
 
-  // Limpia y detiene todos los videos (usado al cambiar escena)
+  // Detener todos los videos
   function stopAllVideos() {
     [videoMain, videoLateral, videoLateralVR].forEach((v) => {
       try {
         v.pause();
         v.currentTime = 0;
-        // Remover src para liberar buffer si existe
         if (v.getAttribute && v.getAttribute("src")) {
           v.removeAttribute("src");
         } else if (v.src) {
@@ -102,66 +93,53 @@ window.onload = () => {
     const data = tourData.escenas[index];
     if (!data) return;
 
-    // limpiar videos anteriores (asegura que no quede audio)
     stopAllVideos();
-
     currentSceneIndex = index;
 
     fadeOut(() => {
-      // Asignar nuevas fuentes (use .src direct para elementos <video> en assets)
       try {
         videoMain.setAttribute("src", data.archivo);
         videoLateral.setAttribute("src", data.lateralVideo);
         videoLateralVR.setAttribute("src", data.lateralVideo);
       } catch (e) {
-        // fallback directo
         videoMain.src = data.archivo;
         videoLateral.src = data.lateralVideo;
         videoLateralVR.src = data.lateralVideo;
       }
 
-      // Asegurar que el videosphere apunte al videoMain asset
       sphere.setAttribute("src", "#video-main");
-
-      // Crear hotspots
       createHotspots(data.hotspots);
 
-      // Si ya se habilitó reproducción por interacción, intentar play del main
       const tryPlayMain = () => {
         try {
-          videoMain.muted = false; // main con audio
+          videoMain.muted = false;
           videoMain.load && videoMain.load();
           videoMain.play && videoMain.play().catch((e) => {
-            // puede fallar en algunos navegadores si no hay interacción
             console.warn("No se pudo reproducir automáticamente videoMain:", e);
           });
         } catch (e) {
           console.warn("Error al intentar play main:", e);
         }
       };
-
-      // reproducir cuando el metadata esté cargado (evita problemas con archivos grandes)
       videoMain.addEventListener("loadeddata", tryPlayMain, { once: true });
 
       fadeIn();
-      console.log("Escena cargada:", data.titulo);
+      console.log("✅ Escena cargada:", data.titulo);
 
-      // Al finalizar video principal → pasar a siguiente escena
       videoMain.onended = () => {
         if (currentSceneIndex < tourData.escenas.length - 1) {
           loadScene(currentSceneIndex + 1);
         } else {
-          console.log("Última escena finalizada.");
+          console.log("🏁 Última escena finalizada.");
         }
       };
 
-      // Detener videos laterales al finalizar (además siempre están muteados por defecto)
       videoLateral.onended = () => videoLateral.pause();
       videoLateralVR.onended = () => videoLateralVR.pause();
     });
   }
 
-  // Crear hotspots
+  // Hotspots
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
 
@@ -188,7 +166,6 @@ window.onload = () => {
 
       icon.addEventListener("click", () => {
         if (hs.tipo === "info") showInfoPanel(hs);
-        else if (hs.tipo === "camera") showGallery(hs);
       });
 
       hotspotContainer.appendChild(icon);
@@ -203,33 +180,9 @@ window.onload = () => {
     infoPanelVR.setAttribute("position", `${offsetX} ${hs.y} ${hs.z}`);
     infoPanelVR.setAttribute("visible", "true");
   }
+
   infoCloseVR.addEventListener("click", () =>
     infoPanelVR.setAttribute("visible", "false")
-  );
-
-  // Galería
-  function showGallery(hs) {
-    currentGallery = hs.imagenes || [];
-    currentGalleryIndex = 0;
-    if (currentGallery.length > 0) {
-      galleryImage.setAttribute("src", currentGallery[0]);
-      galleryCaption.setAttribute("value", hs.caption || hs.titulo || "Galería");
-      immersiveGallery.setAttribute("visible", "true");
-    }
-  }
-  galleryPrev.addEventListener("click", () => {
-    if (!currentGallery.length) return;
-    currentGalleryIndex =
-      (currentGalleryIndex - 1 + currentGallery.length) % currentGallery.length;
-    galleryImage.setAttribute("src", currentGallery[currentGalleryIndex]);
-  });
-  galleryNext.addEventListener("click", () => {
-    if (!currentGallery.length) return;
-    currentGalleryIndex = (currentGalleryIndex + 1) % currentGallery.length;
-    galleryImage.setAttribute("src", currentGallery[currentGalleryIndex]);
-  });
-  galleryClose.addEventListener("click", () =>
-    immersiveGallery.setAttribute("visible", "false")
   );
 
   // Menú de escenas
@@ -306,13 +259,12 @@ window.onload = () => {
     if (sceneEl && sceneEl.exitVR) sceneEl.exitVR();
   });
 
-  // Botones de control del video lateral VR (funcionan y quedan dentro de la tarjeta)
+  // Controles del video lateral VR
   btnPlay.addEventListener("click", () => {
-    // Reproducir el video lateral (muteado por defecto para no competir con audio main)
     try {
-      videoLateralVR.muted = true; // mantén true si no quieres audio lateral
+      videoLateralVR.muted = true;
       videoLateralVR.play().catch((e) => console.warn("No se pudo reproducir lateral:", e));
-      console.log("Video lateral reproducido (VR).");
+      console.log("▶️ Video lateral reproducido (VR).");
     } catch (e) {
       console.warn("Error play lateral:", e);
     }
@@ -321,20 +273,18 @@ window.onload = () => {
   btnPause.addEventListener("click", () => {
     try {
       videoLateralVR.pause();
-      console.log("Video lateral pausado (VR).");
+      console.log("⏸️ Video lateral pausado (VR).");
     } catch (e) {
       console.warn("Error pause lateral:", e);
     }
   });
 
-  // Cerrar tarjeta de video lateral: pausa y resetea el video lateral
   btnCerrar.addEventListener("click", () => {
     try {
       videoLateralVR.pause();
       videoLateralVR.currentTime = 0;
-      // ocultar tarjeta
       videoCard.setAttribute("visible", "false");
-      console.log("Tarjeta de video lateral cerrada.");
+      console.log("❌ Tarjeta de video lateral cerrada.");
     } catch (e) {
       console.warn("Error cerrar tarjeta lateral:", e);
     }
@@ -344,23 +294,21 @@ window.onload = () => {
   createSceneMenu();
   loadScene(0);
 
-  console.log("Tour 360° iniciado y actualizado.");
+  console.log("🌐 Tour 360° iniciado correctamente.");
 
-  // Activar láser al entrar VR (rápido y fiable)
+  // Activar láser
   sceneEl.addEventListener("enter-vr", () => {
-    // Aseguramos visible=true y re-configuramos raycaster (pequeño delay para que controllers estén listos)
     const lasers = document.querySelectorAll("[laser-controls]");
-    lasers.forEach((l) => l.setAttribute("visible", false)); // reset
+    lasers.forEach((l) => l.setAttribute("visible", false));
     setTimeout(() => {
       lasers.forEach((l) => {
         l.setAttribute("visible", true);
         l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
       });
-      console.log("Láseres activados al entrar VR.");
+      console.log("🔆 Láseres activados al entrar VR.");
     }, 300);
   });
 
-  // También activamos láseres si ya estamos en VR al cargar (caso raro)
   if (sceneEl.is("vr-mode")) {
     const lasers = document.querySelectorAll("[laser-controls]");
     lasers.forEach((l) => {
