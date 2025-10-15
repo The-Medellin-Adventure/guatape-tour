@@ -15,6 +15,13 @@ window.onload = () => {
   const sceneMenu = document.getElementById("scene-menu");
   const exitVrBtn = document.getElementById("exit-vr-btn");
 
+const btnPlay = document.getElementById("btn-play-vr");
+  const btnPause = document.getElementById("btn-pause-vr");
+  const btnCerrar = document.getElementById("btn-cerrar-vr");
+  const reopenIcon = document.getElementById("video-reopen-icon");
+
+
+
   let isVRMode = false;
   sceneEl.addEventListener("enter-vr", () => (isVRMode = true));
   sceneEl.addEventListener("exit-vr", () => (isVRMode = false));
