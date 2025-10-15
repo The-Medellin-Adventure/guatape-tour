@@ -104,7 +104,7 @@ id: "escena3",
 id: "escena4",
       titulo: "Calle se las sombrillas",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape4.mp4",
-      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video4.mp4",
       hotspots: [
         {
           id: "hs5",
