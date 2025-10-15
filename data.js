@@ -18,13 +18,12 @@ const tourData = {
           tipo: "camera",
           x: 2, y: 1, z: -2,
           titulo: "Galería de imágenes",
-          descripcion: "Imágenes del lugar",
           imagenes: [
-            {src:"images/imagen1.jpeg", caption:"Vista panorámica"},
-            {src:"images/guat1.jpeg", caption:"Subida a La Piedra"},
-            {src:"images/guat1(2).jpeg", caption:"Escaleras"},
-            {src:"images/guat1(3).jpeg", caption:"Cima"},
-            {src:"images/guat1(1).jpeg", caption:"Vista desde lejos"}
+            "images/imagen1.jpeg",
+            "images/guat1.jpeg",
+            "images/guat1(2).jpeg",
+            "images/guat1(3).jpeg",
+            "images/guat1(1).jpeg"
           ]
         }
       ]
@@ -41,13 +40,12 @@ const tourData = {
           tipo: "camera",
           x: 1, y: 0.5, z: -2,
           titulo: "Galería de imágenes",
-          descripcion: "Fotos por el malecon y embalse",
           imagenes: [
-            {src:"images/guat2.jpeg", caption:"Malecon"},
-            {src:"images/guat2(2).jpeg", caption:"Embarcadero"},
-            {src:"images/guat2(1).jpeg", caption:"Paisaje"},
-            {src:"images/guat2(1).jpg", caption:"Reflejo del embalse"},
-            {src:"images/guat2(2).jpg", caption:"Atardecer"}
+            "images/guat2.jpeg",
+            "images/guat2(2).jpeg",
+            "images/guat2(1).jpeg",
+            "images/guat2(1).jpg",
+            "images/guat2(2).jpg"
           ]
         },
         {
@@ -78,12 +76,11 @@ const tourData = {
           tipo: "camera",
           x: 2, y: -1, z: -2,
           titulo: "Galería",
-          descripcion: "Imágenes del pueblo",
           imagenes: [
-            {src:"images/guat3.jpg", caption:"Calle principal"},
-            {src:"images/guat3(1).jpeg", caption:"Zócalos"},
-            {src:"images/guat(6).jpeg", caption:"Arte callejero"},
-            {src:"images/guat3(2).jpeg", caption:"Plaza"}
+            "images/guat3.jpg",
+            "images/guat3(1).jpeg",
+            "images/guat(6).jpeg",
+            "images/guat3(2).jpeg"
           ]
         }
       ]
@@ -107,13 +104,12 @@ const tourData = {
           tipo: "camera",
           x: 2, y: -1, z: -2,
           titulo: "Galería de Sombrillas",
-          descripcion: "Imagenes de la calle",
           imagenes: [
-            {src:"images/guata4(1).jpg", caption:"Calle central"},
-            {src:"images/guata4(2).jpg", caption:"Sombrillas"},
-            {src:"images/guata4(3).jpg", caption:"Tiendas"},
-            {src:"images/guata4(4).jpg", caption:"Plaza"},
-            {src:"images/guata4(5).jpg", caption:"Atardecer"}
+            "images/guata4(1).jpg",
+            "images/guata4(2).jpg",
+            "images/guata4(3).jpg",
+            "images/guata4(4).jpg",
+            "images/guata4(5).jpg"
           ]
         }
       ]
