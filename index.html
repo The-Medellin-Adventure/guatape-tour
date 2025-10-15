@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Guatapé Travel</title>
+    <title>GuatapÃ© Travel</title>
 
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
@@ -74,15 +74,16 @@
         <img id="logo-img" src="img/logo.png" />
         <img id="left-img" src="img/left.png" />
         <img id="right-img" src="img/right.png" />
+
       </a-assets>
 
-      <!-- 🌎 Esfera principal 360° -->
+      <!-- ðŸŒŽ Esfera principal 360Â° -->
       <a-videosphere id="sphere" src="#video-main" rotation="0 270 0"></a-videosphere>
 
-      <!-- 📌 Hotspots -->
+      <!-- ðŸ“Œ Hotspots -->
       <a-entity id="hotspot-container"></a-entity>
 
-      <!-- 💡 Panel informativo -->
+      <!-- ðŸ’¡ Panel informativo -->
       <a-plane
         id="info-panel-vr"
         visible="false"
@@ -93,12 +94,12 @@
         position="0 1.6 -1.5"
         look-at="[camera]"
       >
-        <a-text id="info-title-vr" value="Título" color="#ffd34d" align="left" position="-0.62 0.22 0.01" width="1.25"></a-text>
-        <a-text id="info-desc-vr" value="Descripción..." color="#fff" align="left" position="-0.62 -0.06 0.01" width="1.25"></a-text>
+        <a-text id="info-title-vr" value="TÃ­tulo" color="#ffd34d" align="left" position="-0.62 0.22 0.01" width="1.25"></a-text>
+        <a-text id="info-desc-vr" value="DescripciÃ³n..." color="#fff" align="left" position="-0.62 -0.06 0.01" width="1.25"></a-text>
         <a-image id="info-close-vr" src="#close-img" width="0.12" height="0.12" position="0.62 0.26 0.01" class="clickable"></a-image>
       </a-plane>
 
-      <!-- 🎞️ Galería -->
+      <!-- ðŸŽžï¸ GalerÃ­a -->
       <a-entity id="immersive-gallery" visible="false" position="0 1.5 -1.8" look-at="[camera]">
         <a-plane id="gallery-bg" width="2.4" height="1.6" color="#000" opacity="0.9"></a-plane>
         <a-image id="gallery-image" src="#g1" width="2.1" height="1.2" position="0 0 0.01"></a-image>
@@ -108,8 +109,9 @@
         <a-image id="gallery-close" src="#close-img" position="1.05 0.68 0.03" width="0.18" height="0.18" class="clickable"></a-image>
       </a-entity>
 
-      <!-- ▶️ Video lateral dentro de tarjeta -->
+      <!-- â–¶ï¸ Video lateral dentro de tarjeta -->
       <a-entity id="video-card" position="3.5 0 -4.5" visible="true" look-at="[camera]">
+        <!-- Fondo elegante -->
         <a-plane 
           width="1.3" 
           height="2.5" 
@@ -119,6 +121,7 @@
           material="shader: flat; transparent: true;">
         </a-plane>
 
+        <!-- Video lateral principal -->
         <a-video 
           id="video-lateral-vr" 
           src="#video-lateral" 
@@ -128,32 +131,62 @@
           class="clickable">
         </a-video>
 
-        <!-- 🎮 Controles alineados -->
-        <a-entity position="0 -0.85 0.04">
-          <a-image id="btn-play-vr" src="#play-img" position="-0.4 0 0" width="0.25" height="0.25" class="clickable" look-at="[camera]"></a-image>
-          <a-image id="btn-pause-vr" src="#pause-img" position="0 0 0" width="0.25" height="0.25" class="clickable" look-at="[camera]"></a-image>
-          <a-image id="btn-cerrar-vr" src="#cerrar-img" position="0.4 0 0" width="0.25" height="0.25" class="clickable" look-at="[camera]"></a-image>
+        <!-- Controles inferiores -->
+        <a-entity position="0 -0.75 0.04">
+          <a-image 
+            id="btn-play-vr" 
+            src="#play-img" 
+            position="-0.3 0 0" 
+            width="0.25" 
+            height="0.25" 
+            class="clickable"
+            look-at="[camera]">
+          </a-image>
+          <a-image 
+            id="btn-pause-vr" 
+            src="#pause-img" 
+            position="0.3 0 0" 
+            width="0.25" 
+            height="0.25" 
+            class="clickable"
+            look-at="[camera]">
+          <a-image 
+            id="btn-cerrar-vr" 
+            src="#cerrar-img" 
+            position="0.3 0 0" 
+            width="0.25" 
+            height="0.25" 
+            class="clickable"
+            look-at="[camera]">
+          </a-image>
         </a-entity>
       </a-entity>
 
-      <!-- 🧭 Menú -->
+      <!-- ðŸ§­ MenÃº -->
       <a-image id="menu-icon" src="#next-img" position="0 1.7 -2.5" width="0.3" height="0.9" class="clickable" look-at="[camera]"></a-image>
       <a-entity id="scene-menu" position="0 1.2 -2.5" visible="false" look-at="[camera]"></a-entity>
 
-      <!-- 📜 Créditos -->
-      <a-text value="Proyecto realizado por The Medellín Adventure — Todos los derechos reservados" align="center" color="#ccc" width="2.8" position="0 -1.3 -2.5" look-at="[camera]"></a-text>
+      <!-- ðŸ“œ CrÃ©ditos discretos -->
+      <a-text
+        value="Proyecto realizado por The MedellÃ­n Adventure â€” Todos los derechos reservados"
+        align="center"
+        color="#ccc"
+        width="2.8"
+        position="0 -1.3 -2.5"
+        look-at="[camera]"
+      ></a-text>
 
-      <!-- 🔘 Salir VR -->
+      <!-- ðŸ”˜ Salir VR -->
       <a-box id="exit-vr-btn" class="clickable" position="0 2.25 -2" depth="0.05" height="0.18" width="0.9" color="#ffd34d">
         <a-text value="Salir VR" align="center" color="#000" position="0 0 0.03" width="1.5"></a-text>
       </a-box>
 
-      <!-- 🎮 Cámara -->
+      <!-- ðŸŽ® CÃ¡mara -->
       <a-entity id="cameraRig" position="0 0 0">
         <a-entity camera look-controls></a-entity>
       </a-entity>
 
-      <!-- 🔦 Cursores -->
+      <!-- ðŸ”¦ Cursores -->
       <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
       <a-entity id="laser-left" laser-controls="hand: left" raycaster="objects: .clickable; lineColor: #ffd34d"></a-entity>
       <a-entity id="laser-right" laser-controls="hand: right" raycaster="objects: .clickable; lineColor: #ffd34d"></a-entity>
