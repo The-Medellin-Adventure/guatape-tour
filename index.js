@@ -160,7 +160,7 @@ window.onload = () => {
     sceneMenu.appendChild(bg);
 
     const header = document.createElement("a-text");
-    header.setAttribute("value", "Escenas disponibles");
+    header.setAttribute("value", "GUATAPE Travel");
     header.setAttribute("align", "center");
     header.setAttribute("color", "#ffd34d");
     header.setAttribute("position", "0 0.5 0.01");
