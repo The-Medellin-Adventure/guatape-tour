@@ -14,7 +14,7 @@ id: "escena1",
           z: -2,
           titulo: "Piedra del Penol",
           descripcion:
-            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé. Imponente y majestuosa, La Piedra del Peñol es uno de los monumentos naturales más impresionantes de Colombia."
+            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé. Imponente y majestuosa, La Piedra del Penol es uno de los monumentos naturales mas impresionantes de Colombia."
         },
         {
           id: "hs2",
@@ -66,8 +66,7 @@ id: "escena2",
           y: 1,
           z: -1,
           titulo: "Paseo en barco",
-          descripcion: "El encanto del malecón de Guatapé, punto ideal para relajarte y disfrutar la vista del embalse.
-Emprende un paseo en barco y vive una experiencia inolvidable entre montañas, islas y paisajes únicos."
+          descripcion: "El encanto del malecon de Guatape, punto ideal para relajarte y disfrutar la vista del embalse. <br>Emprende un paseo en barco y vive una experiencia inolvidable entre montanas, islas y paisajes unicos."
         }
       ]
     },
@@ -86,7 +85,7 @@ id: "escena3",
           z: -3,
           titulo: "Guatape – Pueblo de Zocalos",
           descripcion:
-            "Conocido como el pueblo más colorido de Colombia, Guatapé encanta con sus zócalos llenos de arte, calles vibrantes y un ambiente alegre que refleja la calidez de su gente."
+            "Conocido como el pueblo mas colorido de Colombia, Guatape encanta con sus zocalos llenos de arte, calles vibrantes y un ambiente alegre que refleja la calidez de su gente."
         },
         {
           id: "hs6",
@@ -94,8 +93,8 @@ id: "escena3",
           x: 2,
           y: -1,
           z: -2,
-          titulo: "Picnic - Galería",
-          descripcion: "Imágenes del mirador y la zona de picnic.",
+          titulo: "Galeria",
+          descripcion: "Imagenes",
           imagenes: [
             "images/guat3.jpg",
             "images/guat3(1).jpeg",
@@ -121,7 +120,7 @@ id: "escena4",
           z: -3,
           titulo: "Calle de las Sombrillas y Plaza de los Zocalos",
           descripcion:
-            "Un rincón lleno de color y magia. Las sombrillas suspendidas decoran el cielo, guiando el camino hacia la Plaza de los Zócalos, donde el arte y la tradición dan vida al corazón de Guatapé.."
+            "Un rincon lleno de color y magia. Las sombrillas suspendidas decoran el cielo, guiando el camino hacia la Plaza de los Zocalos, donde el arte y la tradicion dan vida al corazon de Guatape."
         },
         {
           id: "hs6",
@@ -129,7 +128,7 @@ id: "escena4",
           x: 2,
           y: -1,
           z: -2,
-          titulo: "Calle de las Sombrillas y Plaza de los Zócalos",
+          titulo: "Calle de las Sombrillas y Plaza de los Zocalos",
           descripcion: "Imagenes",
           imagenes: [
             "images/guata4(1).jpg",
@@ -139,7 +138,7 @@ id: "escena4",
             "images/guata4(5).jpg",
             "images/guata4(1).jpg"
           ],
-          caption: "Galería — Mirador"
+          caption: "Galería"
         }
       ]
     }
