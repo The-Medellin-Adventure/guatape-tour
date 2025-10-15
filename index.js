@@ -213,7 +213,7 @@ window.onload = () => {
       let altura = 1.6; // valor por defecto
       switch (data.id) {
         case "escena1": altura = 1.6; break;
-        case "escena2": altura = 1; break;
+        case "escena2": altura = 2; break;
         case "escena3": altura = 1.5; break;
         case "escena4": altura = 1.6; break;
       }
