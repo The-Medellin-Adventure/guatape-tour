@@ -115,59 +115,75 @@ window.onload = () => {
   }
   infoCloseVR.addEventListener("click", () => infoPanelVR.setAttribute("visible", false));
 
-  // 🔹 Carrusel VR
-  function showGalleryVR(hs) {
-    const gallery = document.createElement("a-plane");
-    gallery.setAttribute("width", "2.5");
-    gallery.setAttribute("height", "1.5");
-    gallery.setAttribute("position", "0 1.5 -3");
-    gallery.setAttribute("material", "color: #000; opacity: 0.9; transparent: true; shader: flat;");
-    gallery.setAttribute("class", "clickable");
-    hotspotContainer.appendChild(gallery);
+ // 🔹 Carrusel VR al lado del icono
+function showGalleryVR(hs) {
+  const gallery = document.createElement("a-plane");
 
-    let index = 0;
-    const imgEl = document.createElement("a-image");
+  // --- Ubicación y tamaño ---
+  const offsetX = 1.5; // distancia horizontal desde el icono
+  const offsetY = 0.5; // altura respecto al icono
+  const offsetZ = 0;   // profundidad respecto al icono
+
+  gallery.setAttribute("width", "1.8");   // más ancho para las imágenes
+  gallery.setAttribute("height", "2.8");  // más alto para que las fotos no se corten
+  gallery.setAttribute(
+    "position",
+    `${hs.x + offsetX} ${hs.y + offsetY} ${hs.z + offsetZ}`
+  );
+  gallery.setAttribute(
+    "material",
+    "color: #000; opacity: 0.9; transparent: true; shader: flat;"
+  );
+  gallery.setAttribute("class", "clickable");
+  hotspotContainer.appendChild(gallery);
+
+  // --- Imagen ---
+  let index = 0;
+  const imgEl = document.createElement("a-image");
+  imgEl.setAttribute("src", hs.imagenes[index]);
+  imgEl.setAttribute("width", "1.5");
+  imgEl.setAttribute("height", "2.5");
+  imgEl.setAttribute("position", "0 0 0.01");
+  imgEl.setAttribute("shader", "flat");
+  gallery.appendChild(imgEl);
+
+  // --- Botones prev/next ---
+  const prevBtn = document.createElement("a-plane");
+  prevBtn.setAttribute("width", "0.3");
+  prevBtn.setAttribute("height", "0.3");
+  prevBtn.setAttribute("color", "#ffd34d");
+  prevBtn.setAttribute("position", "-1.3 0 0.02");
+  prevBtn.classList.add("clickable");
+  gallery.appendChild(prevBtn);
+
+  const nextBtn = document.createElement("a-plane");
+  nextBtn.setAttribute("width", "0.3");
+  nextBtn.setAttribute("height", "0.3");
+  nextBtn.setAttribute("color", "#ffd34d");
+  nextBtn.setAttribute("position", "1.3 0 0.02");
+  nextBtn.classList.add("clickable");
+  gallery.appendChild(nextBtn);
+
+  // --- Botón cerrar ---
+  const closeBtn = document.createElement("a-image");
+  closeBtn.setAttribute("src", "#close-img");
+  closeBtn.setAttribute("width", "0.25");
+  closeBtn.setAttribute("height", "0.25");
+  closeBtn.setAttribute("position", "0 0.85 0.03"); // ajustado según la nueva altura
+  closeBtn.classList.add("clickable");
+  gallery.appendChild(closeBtn);
+
+  // --- Eventos ---
+  prevBtn.addEventListener("click", () => {
+    index = (index - 1 + hs.imagenes.length) % hs.imagenes.length;
     imgEl.setAttribute("src", hs.imagenes[index]);
-    imgEl.setAttribute("width", "2.3");
-    imgEl.setAttribute("height", "1.3");
-    imgEl.setAttribute("position", "0 0 0.01");
-    imgEl.setAttribute("shader", "flat");
-    gallery.appendChild(imgEl);
-
-    const prevBtn = document.createElement("a-plane");
-    prevBtn.setAttribute("width", "0.3");
-    prevBtn.setAttribute("height", "0.3");
-    prevBtn.setAttribute("color", "#ffd34d");
-    prevBtn.setAttribute("position", "-1.2 0 0.02");
-    prevBtn.classList.add("clickable");
-    gallery.appendChild(prevBtn);
-
-    const nextBtn = document.createElement("a-plane");
-    nextBtn.setAttribute("width", "0.3");
-    nextBtn.setAttribute("height", "0.3");
-    nextBtn.setAttribute("color", "#ffd34d");
-    nextBtn.setAttribute("position", "1.2 0 0.02");
-    nextBtn.classList.add("clickable");
-    gallery.appendChild(nextBtn);
-
-    const closeBtn = document.createElement("a-image");
-    closeBtn.setAttribute("src", "#close-img");
-    closeBtn.setAttribute("width", "0.25");
-    closeBtn.setAttribute("height", "0.25");
-    closeBtn.setAttribute("position", "0 0.75 0.03");
-    closeBtn.classList.add("clickable");
-    gallery.appendChild(closeBtn);
-
-    prevBtn.addEventListener("click", () => {
-      index = (index - 1 + hs.imagenes.length) % hs.imagenes.length;
-      imgEl.setAttribute("src", hs.imagenes[index]);
-    });
-    nextBtn.addEventListener("click", () => {
-      index = (index + 1) % hs.imagenes.length;
-      imgEl.setAttribute("src", hs.imagenes[index]);
-    });
-    closeBtn.addEventListener("click", () => hotspotContainer.removeChild(gallery));
-  }
+  });
+  nextBtn.addEventListener("click", () => {
+    index = (index + 1) % hs.imagenes.length;
+    imgEl.setAttribute("src", hs.imagenes[index]);
+  });
+  closeBtn.addEventListener("click", () => hotspotContainer.removeChild(gallery));
+}
 
   // 🔹 Cargar escena
   function loadScene(index) {
