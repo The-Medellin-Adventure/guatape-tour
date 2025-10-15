@@ -3,6 +3,7 @@ import tourData from "./data.js";
 window.onload = () => {
   const sceneEl = document.getElementById("scene");
   const sphere = document.getElementById("sphere");
+  const cameraEl = document.querySelector("[camera]"); // <-- la cámara principal
   const videoMain = document.getElementById("video-main");
   const videoLateral = document.getElementById("video-lateral");
   const videoLateralVR = document.getElementById("video-lateral-vr");
@@ -115,77 +116,72 @@ window.onload = () => {
   }
   infoCloseVR.addEventListener("click", () => infoPanelVR.setAttribute("visible", false));
 
- // 🔹 Carrusel VR al lado del icono
-function showGalleryVR(hs) {
-  const gallery = document.createElement("a-plane");
+  // 🔹 Carrusel VR al lado del icono
+  function showGalleryVR(hs) {
+    const gallery = document.createElement("a-plane");
 
-  // --- Ubicación y tamaño ---
-  const offsetX = 1.5; // distancia horizontal desde el icono
-  const offsetY = 0.5; // altura respecto al icono
-  const offsetZ = 0;   // profundidad respecto al icono
+    const offsetX = 1.5; 
+    const offsetY = 0.5; 
+    const offsetZ = 0;   
 
-  gallery.setAttribute("width", "1.8");   // más ancho para las imágenes
-  gallery.setAttribute("height", "2.8");  // más alto para que las fotos no se corten
-  gallery.setAttribute(
-    "position",
-    `${hs.x + offsetX} ${hs.y + offsetY} ${hs.z + offsetZ}`
-  );
-  gallery.setAttribute(
-    "material",
-    "color: #000; opacity: 0.9; transparent: true; shader: flat;"
-  );
-  gallery.setAttribute("class", "clickable");
-  hotspotContainer.appendChild(gallery);
+    gallery.setAttribute("width", "1.8");   
+    gallery.setAttribute("height", "2.8");  
+    gallery.setAttribute(
+      "position",
+      `${hs.x + offsetX} ${hs.y + offsetY} ${hs.z + offsetZ}`
+    );
+    gallery.setAttribute(
+      "material",
+      "color: #000; opacity: 0.9; transparent: true; shader: flat;"
+    );
+    gallery.setAttribute("class", "clickable");
+    hotspotContainer.appendChild(gallery);
 
-  // --- Imagen ---
-  let index = 0;
-  const imgEl = document.createElement("a-image");
-  imgEl.setAttribute("src", hs.imagenes[index]);
-  imgEl.setAttribute("width", "1.5");
-  imgEl.setAttribute("height", "2.5");
-  imgEl.setAttribute("position", "0 0 0.01");
-  imgEl.setAttribute("shader", "flat");
-  gallery.appendChild(imgEl);
-
-  // --- Botones prev/next ---
-  const prevBtn = document.createElement("a-plane");
-  prevBtn.setAttribute("width", "0.3");
-  prevBtn.setAttribute("height", "0.3");
-  prevBtn.setAttribute("color", "#ffd34d");
-  prevBtn.setAttribute("position", "-1.3 0 0.02");
-  prevBtn.classList.add("clickable");
-  gallery.appendChild(prevBtn);
-
-  const nextBtn = document.createElement("a-plane");
-  nextBtn.setAttribute("width", "0.3");
-  nextBtn.setAttribute("height", "0.3");
-  nextBtn.setAttribute("color", "#ffd34d");
-  nextBtn.setAttribute("position", "1.3 0 0.02");
-  nextBtn.classList.add("clickable");
-  gallery.appendChild(nextBtn);
-
-  // --- Botón cerrar ---
-  const closeBtn = document.createElement("a-image");
-  closeBtn.setAttribute("src", "#close-img");
-  closeBtn.setAttribute("width", "0.25");
-  closeBtn.setAttribute("height", "0.25");
-  closeBtn.setAttribute("position", "0 0.85 0.03"); // ajustado según la nueva altura
-  closeBtn.classList.add("clickable");
-  gallery.appendChild(closeBtn);
-
-  // --- Eventos ---
-  prevBtn.addEventListener("click", () => {
-    index = (index - 1 + hs.imagenes.length) % hs.imagenes.length;
+    let index = 0;
+    const imgEl = document.createElement("a-image");
     imgEl.setAttribute("src", hs.imagenes[index]);
-  });
-  nextBtn.addEventListener("click", () => {
-    index = (index + 1) % hs.imagenes.length;
-    imgEl.setAttribute("src", hs.imagenes[index]);
-  });
-  closeBtn.addEventListener("click", () => hotspotContainer.removeChild(gallery));
-}
+    imgEl.setAttribute("width", "1.5");
+    imgEl.setAttribute("height", "2.5");
+    imgEl.setAttribute("position", "0 0 0.01");
+    imgEl.setAttribute("shader", "flat");
+    gallery.appendChild(imgEl);
 
-  // 🔹 Cargar escena
+    const prevBtn = document.createElement("a-plane");
+    prevBtn.setAttribute("width", "0.3");
+    prevBtn.setAttribute("height", "0.3");
+    prevBtn.setAttribute("color", "#ffd34d");
+    prevBtn.setAttribute("position", "-1.3 0 0.02");
+    prevBtn.classList.add("clickable");
+    gallery.appendChild(prevBtn);
+
+    const nextBtn = document.createElement("a-plane");
+    nextBtn.setAttribute("width", "0.3");
+    nextBtn.setAttribute("height", "0.3");
+    nextBtn.setAttribute("color", "#ffd34d");
+    nextBtn.setAttribute("position", "1.3 0 0.02");
+    nextBtn.classList.add("clickable");
+    gallery.appendChild(nextBtn);
+
+    const closeBtn = document.createElement("a-image");
+    closeBtn.setAttribute("src", "#close-img");
+    closeBtn.setAttribute("width", "0.25");
+    closeBtn.setAttribute("height", "0.25");
+    closeBtn.setAttribute("position", "0 0.85 0.03"); 
+    closeBtn.classList.add("clickable");
+    gallery.appendChild(closeBtn);
+
+    prevBtn.addEventListener("click", () => {
+      index = (index - 1 + hs.imagenes.length) % hs.imagenes.length;
+      imgEl.setAttribute("src", hs.imagenes[index]);
+    });
+    nextBtn.addEventListener("click", () => {
+      index = (index + 1) % hs.imagenes.length;
+      imgEl.setAttribute("src", hs.imagenes[index]);
+    });
+    closeBtn.addEventListener("click", () => hotspotContainer.removeChild(gallery));
+  }
+
+  // 🔹 Cargar escena con ajuste de cámara
   function loadScene(index) {
     if (!isVRMode && index > 0) return;
 
@@ -204,7 +200,6 @@ function showGalleryVR(hs) {
       videoMain.load();
       videoLateral.load();
 
-      // Reproducción
       videoMain.muted = false;
       videoMain.volume = 1.0;
       videoLateral.muted = false;
@@ -213,6 +208,17 @@ function showGalleryVR(hs) {
 
       sphere.setAttribute("src", "#video-main");
       createHotspots(data.hotspots);
+
+      // 🔹 Ajuste de cámara por escena
+      let altura = 1.6; // valor por defecto
+      switch (data.id) {
+        case "escena1": altura = 1.6; break;
+        case "escena2": altura = 1.7; break;
+        case "escena3": altura = 1.5; break;
+        case "escena4": altura = 1.6; break;
+      }
+      cameraEl.setAttribute("position", `0 ${altura} 0`);
+
       fadeIn();
 
       videoMain.onended = () => {
@@ -317,5 +323,5 @@ function showGalleryVR(hs) {
   createSceneMenu();
   loadScene(0);
   addNativeVRButton();
-  console.log("✅ Tour VR cargado correctamente con video lateral y carrusel.");
+  console.log("✅ Tour VR cargado correctamente con video lateral, carrusel y cámara ajustada.");
 };
