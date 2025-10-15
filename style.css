@@ -1,106 +1,138 @@
-/* ---------- GENERAL ---------- */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-  background: linear-gradient(180deg, #022633 0%, #071826 100%);
-  color: #fff;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+const tourData = {
+  escenas: [
+    {
+id: "escena1",
+      titulo: "La Piedra del Peñol",
+      archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
+      hotspots: [
+        {
+          id: "hs1",
+          tipo: "info",
+          x: -2,
+          y: 1,
+          z: -2,
+          titulo: "Piedra del Peñol",
+          descripcion:
+            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé."
+        },
+        {
+          id: "hs2",
+          tipo: "camera",
+          x: 2,
+          y: 1,
+          z: -2,
+          titulo: "Plaza - Galería",
+          descripcion: "Imágenes del lugar.",
+          imagenes: [
+            "images/imagen1.jpeg",
+            "images/imagen2.jpeg",
+            "images/imagen3.jpeg"
+          ],
+          caption: "Galería — Plaza Principal"
+        }
+      ]
+    },
 
-/* ---------- SIDE PANEL (para modo no-VR) ---------- */
-.tour-container {
-  display: flex;
-  max-width: 1400px;
-  margin: 10px auto;
-  gap: 12px;
-  position: relative;
-  align-items: flex-start;
-}
+    {
+id: "escena2",
+      titulo: "Guatape – Malecon - Embalse",
+      archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape2.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video2.mp4",
+      hotspots: [
+        {
+          id: "hs3",
+          tipo: "camera",
+          x: 1,
+          y: 0.5,
+          z: -2,
+          titulo: "Calle - Galería",
+          descripcion: "Fotos de la Calle del Recuerdo.",
+          imagenes: [
+            "images/imagen2.jpeg",
+            "images/imagen3.jpeg",
+            "images/imagen1.jpeg"
+          ],
+          caption: "Galería — Calle del Recuerdo"
+        },
+        {
+          id: "hs4",
+          tipo: "info",
+          x: -2,
+          y: 1,
+          z: -1,
+          titulo: "Plaza Principal",
+          descripcion: "Lugar ideal para disfrutar de comidas típicas y el ambiente local."
+        }
+      ]
+    },
 
-.side-panel {
-  width: 26%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 8px;
-}
+    {
+id: "escena3",
+      titulo: "Guatape – Pueblo de Zocalos",
+      archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape3.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video3.mp4",
+      hotspots: [
+        {
+          id: "hs5",
+          tipo: "info",
+          x: 0,
+          y: 1.5,
+          z: -3,
+          titulo: "Mirador de la Piedra",
+          descripcion:
+            "Vistas panorámicas de todo el embalse y el pueblo desde lo alto del mirador."
+        },
+        {
+          id: "hs6",
+          tipo: "camera",
+          x: 2,
+          y: -1,
+          z: -2,
+          titulo: "Picnic - Galería",
+          descripcion: "Imágenes del mirador y la zona de picnic.",
+          imagenes: [
+            "images/imagen3.jpeg",
+            "images/imagen1.jpeg"
+          ],
+          caption: "Galería — Mirador"
+        }
+      ]
+    },
 
-/* ---------- LATERAL VIDEO CARD ---------- */
-#video-card a-plane {
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-}
-#video-lateral-vr {
-  border-radius: 10px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-}
-#btn-play-vr,
-#btn-pause-vr {
-  transition: transform 0.2s ease;
-}
-#btn-play-vr:hover,
-#btn-pause-vr:hover {
-  transform: scale(1.15);
-}
+   {
+id: "escena4",
+      titulo: "Calle se las sombrillas",
+      archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape4.mp4",
+      lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
+      hotspots: [
+        {
+          id: "hs5",
+          tipo: "info",
+          x: 0,
+          y: 1.5,
+          z: -3,
+          titulo: "Mirador de la Piedra",
+          descripcion:
+            "Vistas panorámicas de todo el embalse y el pueblo desde lo alto del mirador."
+        },
+        {
+          id: "hs6",
+          tipo: "camera",
+          x: 2,
+          y: -1,
+          z: -2,
+          titulo: "Picnic - Galería",
+          descripcion: "Imágenes del mirador y la zona de picnic.",
+          imagenes: [
+            "images/imagen3.jpeg",
+            "images/imagen1.jpeg"
+          ],
+          caption: "Galería — Mirador"
+        }
+      ]
+    }
+  ]
+};
 
-/* ---------- OVERLAY (DOM) ---------- */
-.overlay {
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  opacity:0;
-  pointer-events:none;
-  transition: opacity 0.25s ease;
-  z-index: 9999;
-}
-.overlay.visible { opacity:1; pointer-events:auto; }
-.overlay img { max-width: 85%; max-height: 80%; border-radius:10px; box-shadow: 0 12px 30px rgba(0,0,0,0.7); }
-
-/* ---------- A-FRAME ELEMENTS ---------- */
-a-image.clickable, a-plane.clickable, a-box.clickable {
-  cursor: pointer;
-  transition: transform 0.18s ease, opacity 0.18s ease;
-}
-a-image.clickable:hover, a-plane.clickable:hover, a-box.clickable:hover {
-  transform: scale(1.06);
-}
-
-/* ---------- INFO PANEL VR ---------- */
-#info-panel-vr {
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,211,77,0.12);
-}
-
-/* ---------- IMMERSIVE GALLERY ---------- */
-#immersive-gallery a-plane#gallery-bg { border-radius: 12px; }
-#gallery-image { box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-
-/* ---------- MENU ---------- */
-#scene-menu {
-  transition: transform 0.28s ease;
-}
-#scene-menu a-plane {
-  transition: all 0.3s ease, scale 0.25s ease;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-}
-
-/* ---------- HOTSPOTS ---------- */
-a-image[src="#info-img"], a-image[src="#camara-img"] {
-  border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-  opacity: 0.9;
-}
-
-/* ---------- RESPONSIVE ---------- */
-@media (max-width: 900px) {
-  .side-panel { width: 34%; }
-}
+export default tourData;
