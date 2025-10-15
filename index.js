@@ -16,11 +16,10 @@ window.onload = () => {
   const exitVrBtn = document.getElementById("exit-vr-btn");
   const videoCard = document.getElementById("video-card");
 
-  // Botones del video lateral
   const btnPlay = document.getElementById("btn-play-vr");
   const btnPause = document.getElementById("btn-pause-vr");
   const btnCerrar = document.getElementById("btn-cerrar-vr");
-  const reopenIcon = document.getElementById("video-reopen-icon"); // 🔹 nuevo icono para reabrir
+  const reopenIcon = document.getElementById("video-reopen-icon");
 
   // Overlay de fundido
   const fadeOverlay = document.createElement("a-plane");
@@ -37,7 +36,6 @@ window.onload = () => {
   let menuVisible = false;
   let playbackEnabled = false;
 
-  // --- Inicializar reproducción manual (con sonido) ---
   function enablePlaybackOnce() {
     if (playbackEnabled) return;
     [videoMain, videoLateral].forEach((v) => {
@@ -47,11 +45,9 @@ window.onload = () => {
     });
     playbackEnabled = true;
     window.removeEventListener("click", enablePlaybackOnce);
-    console.log("🔊 Reproducción habilitada con audio.");
   }
   window.addEventListener("click", enablePlaybackOnce);
 
-  // --- Fundido suave ---
   const fadeIn = (cb) => {
     fadeOverlay.setAttribute("animation", "property: material.opacity; from:1; to:0; dur:600");
     setTimeout(() => cb && cb(), 600);
@@ -61,17 +57,12 @@ window.onload = () => {
     setTimeout(() => cb && cb(), 600);
   };
 
-  // --- Detener todos los videos ---
   function stopAllVideos() {
     [videoMain, videoLateral].forEach((v) => {
-      try {
-        v.pause();
-        v.currentTime = 0;
-      } catch (e) {}
+      try { v.pause(); v.currentTime = 0; } catch (e) {}
     });
   }
 
-  // --- Cargar escena ---
   function loadScene(index) {
     const data = tourData.escenas[index];
     if (!data) return;
@@ -79,8 +70,6 @@ window.onload = () => {
     currentSceneIndex = index;
     fadeOut(() => {
       stopAllVideos();
-
-      // Asignar videos
       videoMain.src = data.archivo;
       videoLateral.src = data.lateralVideo;
       videoLateralVR.setAttribute("src", "#video-lateral");
@@ -88,7 +77,6 @@ window.onload = () => {
       videoMain.load();
       videoLateral.load();
 
-      // Reproducir solo el principal con audio
       videoMain.muted = false;
       videoMain.volume = 1.0;
       videoLateral.muted = true;
@@ -100,16 +88,12 @@ window.onload = () => {
       createHotspots(data.hotspots);
       fadeIn();
 
-      console.log("🎬 Escena cargada:", data.titulo);
-
-      // Auto-avance
       videoMain.onended = () => {
         if (currentSceneIndex < tourData.escenas.length - 1) loadScene(currentSceneIndex + 1);
       };
     });
   }
 
-  // --- Hotspots ---
   function createHotspots(hotspots) {
     hotspotContainer.innerHTML = "";
     hotspots.forEach((hs, i) => {
@@ -124,6 +108,7 @@ window.onload = () => {
         "animation__fadein",
         `property: opacity; from: 0; to: 1; dur: 800; delay: ${120 * i}`
       );
+
       const label = document.createElement("a-text");
       label.setAttribute("value", hs.titulo);
       label.setAttribute("align", "center");
@@ -148,7 +133,6 @@ window.onload = () => {
   }
   infoCloseVR.addEventListener("click", () => infoPanelVR.setAttribute("visible", false));
 
-  // --- Menú de escenas ---
   function createSceneMenu() {
     sceneMenu.innerHTML = "";
     const bg = document.createElement("a-plane");
@@ -199,29 +183,20 @@ window.onload = () => {
   menuIcon.addEventListener("click", () => toggleMenu());
   exitVrBtn.addEventListener("click", () => sceneEl.exitVR && sceneEl.exitVR());
 
-  // --- Controles del video lateral (con audio y reabrir) ---
+  // Video lateral controls
   btnPlay.addEventListener("click", () => {
     videoLateral.muted = false;
     videoLateral.volume = 1.0;
     videoLateral.play().catch(() => {});
-    console.log("▶️ Play lateral con audio");
   });
-
-  btnPause.addEventListener("click", () => {
-    videoLateral.pause();
-    console.log("⏸️ Pause lateral");
-  });
-
+  btnPause.addEventListener("click", () => { videoLateral.pause(); });
   btnCerrar.addEventListener("click", () => {
     videoLateral.pause();
     videoLateral.currentTime = 0;
     videoLateral.muted = true;
     videoCard.setAttribute("visible", false);
     if (reopenIcon) reopenIcon.setAttribute("visible", true);
-    console.log("❌ Cerrar lateral (muteado)");
   });
-
-  // --- Reabrir video lateral ---
   if (reopenIcon) {
     reopenIcon.addEventListener("click", () => {
       videoCard.setAttribute("visible", true);
@@ -230,11 +205,9 @@ window.onload = () => {
       videoLateral.muted = false;
       videoLateral.volume = 1.0;
       videoLateral.play().catch(() => {});
-      console.log("🎬 Video lateral reabierto con audio");
     });
   }
 
-  // --- Cursor y láser ---
   sceneEl.addEventListener("enter-vr", () => {
     setTimeout(() => {
       const lasers = document.querySelectorAll("[laser-controls]");
@@ -242,12 +215,9 @@ window.onload = () => {
         l.setAttribute("visible", true);
         l.setAttribute("raycaster", "objects: .clickable; lineColor: #ffd34d");
       });
-      console.log("🔆 Láser activado correctamente.");
     }, 800);
   });
 
-  // --- Iniciar ---
   createSceneMenu();
   loadScene(0);
-  console.log("🌎 Tour VR iniciado.");
 };

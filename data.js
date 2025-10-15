@@ -1,7 +1,7 @@
 const tourData = {
   escenas: [
     {
-id: "escena1",
+      id: "escena1",
       titulo: "La Piedra",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape1.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video1.mp4",
@@ -9,35 +9,29 @@ id: "escena1",
         {
           id: "hs1",
           tipo: "info",
-          x: -2,
-          y: 1,
-          z: -2,
-          titulo: "Piedra del Penol",
-          descripcion:
-            "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé. Imponente y majestuosa, La Piedra del Penol es uno de los monumentos naturales mas impresionantes de Colombia."
+          x: -2, y: 1, z: -2,
+          titulo: "Piedra del Peñol",
+          descripcion: "Un monolito de 220 metros con una vista espectacular del embalse de Guatapé..."
         },
         {
           id: "hs2",
           tipo: "camera",
-          x: 2,
-          y: 1,
-          z: -2,
-          titulo: "Galeria de imagenes",
-          descripcion: "Imágenes del lugar.",
+          x: 2, y: 1, z: -2,
+          titulo: "Galería de imágenes",
+          descripcion: "Imágenes del lugar",
           imagenes: [
-            "images/imagen1.jpeg",
-            "images/guat1.jpeg",
-            "images/guat1(2).jpeg",
-            "images/guat1(3).jpeg",
-            "images/guat1(1).jpeg"
-          ],
-          caption: "Imagenes"
+            {src:"images/imagen1.jpeg", caption:"Vista panorámica"},
+            {src:"images/guat1.jpeg", caption:"Subida a La Piedra"},
+            {src:"images/guat1(2).jpeg", caption:"Escaleras"},
+            {src:"images/guat1(3).jpeg", caption:"Cima"},
+            {src:"images/guat1(1).jpeg", caption:"Vista desde lejos"}
+          ]
         }
       ]
     },
 
     {
-id: "escena2",
+      id: "escena2",
       titulo: "Guatape – Malecon - Embalse",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape2.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video2.mp4",
@@ -45,34 +39,29 @@ id: "escena2",
         {
           id: "hs3",
           tipo: "camera",
-          x: 1,
-          y: 0.5,
-          z: -2,
-          titulo: "Galeria de imagenes",
+          x: 1, y: 0.5, z: -2,
+          titulo: "Galería de imágenes",
           descripcion: "Fotos por el malecon y embalse",
           imagenes: [
-            "images/guat2.jpeg",
-            "images/guat2(2).jpeg",
-            "images/guat2(1).jpeg",
-            "images/guat2(1).jpg",
-            "images/guat2(2).jpg"
-          ],
-          caption: "Galería de imagenes"
+            {src:"images/guat2.jpeg", caption:"Malecon"},
+            {src:"images/guat2(2).jpeg", caption:"Embarcadero"},
+            {src:"images/guat2(1).jpeg", caption:"Paisaje"},
+            {src:"images/guat2(1).jpg", caption:"Reflejo del embalse"},
+            {src:"images/guat2(2).jpg", caption:"Atardecer"}
+          ]
         },
         {
           id: "hs4",
           tipo: "info",
-          x: -2,
-          y: 1,
-          z: -1,
+          x: -2, y: 1, z: -1,
           titulo: "Paseo en barco",
-          descripcion: "El encanto del malecon de Guatape, punto ideal para relajarte y disfrutar la vista del embalse. <br>Emprende un paseo en barco y vive una experiencia inolvidable entre montanas, islas y paisajes unicos."
+          descripcion: "El encanto del malecon de Guatape, punto ideal para relajarte..."
         }
       ]
     },
 
     {
-id: "escena3",
+      id: "escena3",
       titulo: "Guatape – Pueblo de Zocalos",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape3.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video3.mp4",
@@ -80,65 +69,52 @@ id: "escena3",
         {
           id: "hs5",
           tipo: "info",
-          x: 0,
-          y: 1.5,
-          z: -3,
+          x: 0, y: 1.5, z: -3,
           titulo: "Guatape – Pueblo de Zocalos",
-          descripcion:
-            "Conocido como el pueblo mas colorido de Colombia, Guatape encanta con sus zocalos llenos de arte, calles vibrantes y un ambiente alegre que refleja la calidez de su gente."
+          descripcion: "Conocido como el pueblo más colorido de Colombia..."
         },
         {
           id: "hs6",
           tipo: "camera",
-          x: 2,
-          y: -1,
-          z: -2,
-          titulo: "Galeria",
-          descripcion: "Imagenes",
+          x: 2, y: -1, z: -2,
+          titulo: "Galería",
+          descripcion: "Imágenes del pueblo",
           imagenes: [
-            "images/guat3.jpg",
-            "images/guat3(1).jpeg",
-            "images/guat(6).jpeg",
-            "images/guat3(2).jpeg"
-          ],
-          caption: "Galeria de imagenes"
+            {src:"images/guat3.jpg", caption:"Calle principal"},
+            {src:"images/guat3(1).jpeg", caption:"Zócalos"},
+            {src:"images/guat(6).jpeg", caption:"Arte callejero"},
+            {src:"images/guat3(2).jpeg", caption:"Plaza"}
+          ]
         }
       ]
     },
 
-   {
-id: "escena4",
+    {
+      id: "escena4",
       titulo: "Calle de las Sombrillas",
       archivo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/guatape4.mp4",
       lateralVideo: "https://pub-1ab3c72b80f94ad28d41f13ba24bec51.r2.dev/video4.mp4",
       hotspots: [
         {
-          id: "hs5",
+          id: "hs7",
           tipo: "info",
-          x: 0,
-          y: 1.5,
-          z: -3,
-          titulo: "Calle de las Sombrillas y Plaza de los Zocalos",
-          descripcion:
-            "Un rincon lleno de color y magia. Las sombrillas suspendidas decoran el cielo, guiando el camino hacia la Plaza de los Zocalos, donde el arte y la tradicion dan vida al corazon de Guatape."
+          x: 0, y: 1.5, z: -3,
+          titulo: "Calle de las Sombrillas",
+          descripcion: "Un rincón lleno de color y magia..."
         },
         {
-          id: "hs6",
+          id: "hs8",
           tipo: "camera",
-          x: 2,
-          y: -1,
-          z: -2,
-          titulo: "Calle de las Sombrillas y Plaza de los Zocalos",
-          descripcion: "Imagenes",
+          x: 2, y: -1, z: -2,
+          titulo: "Galería de Sombrillas",
+          descripcion: "Imagenes de la calle",
           imagenes: [
-            "images/guata4(1).jpg",
-            "images/guata4(2).jpg",
-            "images/guata4(3).jpg",
-            "images/guata4(4).jpg",
-            "images/guata4(5).jpg",
-            "images/guata4(1).jpg"
-          ],
-          caption: "Galería"
+            {src:"images/guata4(1).jpg", caption:"Calle central"},
+            {src:"images/guata4(2).jpg", caption:"Sombrillas"},
+            {src:"images/guata4(3).jpg", caption:"Tiendas"},
+            {src:"images/guata4(4).jpg", caption:"Plaza"},
+            {src:"images/guata4(5).jpg", caption:"Atardecer"}
+          ]
         }
       ]
     }
